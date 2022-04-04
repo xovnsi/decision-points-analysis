@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pnml>
+  <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+    <page id="n0">
+      <place id="source">
+        <name>
+          <text>source</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="p_0">
+        <name>
+          <text>p_0</text>
+        </name>
+      </place>
+      <place id="p_1">
+        <name>
+          <text>p_1</text>
+        </name>
+      </place>
+      <place id="p_2">
+        <name>
+          <text>p_2</text>
+        </name>
+      </place>
+      <place id="p_4">
+        <name>
+          <text>p_4</text>
+        </name>
+      </place>
+      <place id="sink">
+        <name>
+          <text>sink</text>
+        </name>
+      </place>
+      <place id="p_3">
+        <name>
+          <text>p_3</text>
+        </name>
+      </place>
+      <place id="p_5">
+        <name>
+          <text>p_5</text>
+        </name>
+      </place>
+      <place id="p_6">
+        <name>
+          <text>p_6</text>
+        </name>
+      </place>
+      <place id="p_7">
+        <name>
+          <text>p_7</text>
+        </name>
+      </place>
+      <place id="p_8">
+        <name>
+          <text>p_8</text>
+        </name>
+      </place>
+      <place id="p_9">
+        <name>
+          <text>p_9</text>
+        </name>
+      </place>
+      <place id="p_10">
+        <name>
+          <text>p_10</text>
+        </name>
+      </place>
+      <transition id="trans_P">
+        <name>
+          <text>Evaluate Appeal</text>
+        </name>
+      </transition>
+      <transition id="trans_Q" guard="appeal == False">
+        <name>
+          <text>Archive</text>
+        </name>
+        <readVariable>appeal</readVariable>
+      </transition>
+      <transition id="trans_R" guard="appeal == True">
+        <name>
+          <text>Rework</text>
+        </name>
+        <readVariable>appeal</readVariable>
+      </transition>
+      <transition id="trans_A">
+        <name>
+          <text>Register claim</text>
+        </name>
+      </transition>
+      <transition id="trans_D">
+        <name>
+          <text>Evaluate Claim</text>
+        </name>
+      </transition>
+      <transition id="trans_B" guard="amount &gt; 500 &amp;&amp; policyType == &quot;normal&quot;">
+        <name>
+          <text>Check all</text>
+        </name>
+        <readVariable>amount</readVariable>
+        <readVariable>policyType</readVariable>
+      </transition>
+      <transition id="trans_E" guard="status == &quot;approved&quot;">
+        <name>
+          <text>Issue Payment</text>
+        </name>
+        <readVariable>status</readVariable>
+      </transition>
+      <transition id="trans_C" guard="amount &lt;= 500 || policyType == &quot;premium&quot;">
+        <name>
+          <text>Check payment only</text>
+        </name>
+        <readVariable>amount</readVariable>
+        <readVariable>policyType</readVariable>
+      </transition>
+      <transition id="trans_F" guard="status == &quot;rejected&quot;">
+        <name>
+          <text>trans_F</text>
+        </name>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="27a4113a-55cb-49d6-8d1e-3861d2e6966b"/>
+        <readVariable>status</readVariable>
+      </transition>
+      <transition id="trans_G" guard="status == &quot;approved&quot;">
+        <name>
+          <text>trans_G</text>
+        </name>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="c202ff05-71e5-4c1b-ac87-4f02b46356cd"/>
+        <readVariable>status</readVariable>
+      </transition>
+      <transition id="trans_H" guard="communication == &quot;letter&quot;">
+        <name>
+          <text>Send rejection letter</text>
+        </name>
+        <readVariable>communication</readVariable>
+      </transition>
+      <transition id="trans_I" guard="communication == &quot;email&quot;">
+        <name>
+          <text>Send rejection email</text>
+        </name>
+        <readVariable>communication</readVariable>
+      </transition>
+      <transition id="trans_L" guard="communication == &quot;letter&quot;">
+        <name>
+          <text>Send approval letter</text>
+        </name>
+        <readVariable>communication</readVariable>
+      </transition>
+      <transition id="trans_N">
+        <name>
+          <text>trans_N</text>
+        </name>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="af0206bd-02c2-4d13-9ee4-14c5fccaae3e"/>
+      </transition>
+      <transition id="trans_M" guard="communication == &quot;email&quot;">
+        <name>
+          <text>Send approval email</text>
+        </name>
+        <readVariable>communication</readVariable>
+      </transition>
+      <transition id="trans_O">
+        <name>
+          <text>trans_O</text>
+        </name>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="d05ef027-92e3-4c63-96b7-48447e165ee3"/>
+      </transition>
+      <arc id="140212617987600" source="p_5" target="trans_L"/>
+      <arc id="140212617986832" source="p_2" target="trans_F"/>
+      <arc id="140212617944848" source="source" target="trans_A"/>
+      <arc id="140212617986448" source="p_1" target="trans_D"/>
+      <arc id="140212617987216" source="trans_F" target="p_4"/>
+      <arc id="140212617987984" source="trans_L" target="p_7"/>
+      <arc id="140212617988368" source="trans_N" target="p_8"/>
+      <arc id="140212617988752" source="p_9" target="trans_P"/>
+      <arc id="140212617989136" source="trans_Q" target="sink"/>
+      <arc id="140212617986352" source="trans_C" target="p_1"/>
+      <arc id="140212617986736" source="p_2" target="trans_E"/>
+      <arc id="140212617987120" source="trans_E" target="p_8"/>
+      <arc id="140212617987504" source="trans_G" target="p_5"/>
+      <arc id="140212617987888" source="trans_I" target="p_6"/>
+      <arc id="140212617988272" source="p_7" target="trans_O"/>
+      <arc id="140212617988656" source="p_8" target="trans_P"/>
+      <arc id="140212617989040" source="p_10" target="trans_Q"/>
+      <arc id="140212617987408" source="p_4" target="trans_I"/>
+      <arc id="140212617987024" source="p_3" target="trans_G"/>
+      <arc id="140212617986256" source="trans_B" target="p_1"/>
+      <arc id="140212617945040" source="p_0" target="trans_B"/>
+      <arc id="140212617986640" source="trans_D" target="p_3"/>
+      <arc id="140212617987792" source="trans_H" target="p_6"/>
+      <arc id="140212617988176" source="p_6" target="trans_N"/>
+      <arc id="140212617988560" source="trans_O" target="p_9"/>
+      <arc id="140212617988944" source="p_10" target="trans_R"/>
+      <arc id="140212617987312" source="p_4" target="trans_H"/>
+      <arc id="140212617986928" source="p_3" target="trans_F"/>
+      <arc id="140212617944944" source="trans_A" target="p_0"/>
+      <arc id="140212617986160" source="p_0" target="trans_C"/>
+      <arc id="140212617986544" source="trans_D" target="p_2"/>
+      <arc id="140212617987696" source="p_5" target="trans_M"/>
+      <arc id="140212617988080" source="trans_M" target="p_7"/>
+      <arc id="140212617988464" source="trans_N" target="p_9"/>
+      <arc id="140212617988848" source="trans_P" target="p_10"/>
+      <arc id="140212617989232" source="trans_R" target="p_1"/>
+    </page>
+    <finalmarkings>
+      <marking>
+        <place idref="sink">
+          <text>1</text>
+        </place>
+      </marking>
+    </finalmarkings>
+  </net>
+</pnml>

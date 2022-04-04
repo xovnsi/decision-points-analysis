@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pnml>
+  <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+    <page id="n0">
+      <place id="source">
+        <name>
+          <text>source</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="p_1">
+        <name>
+          <text>p_1</text>
+        </name>
+      </place>
+      <place id="p_2">
+        <name>
+          <text>p_2</text>
+        </name>
+      </place>
+      <place id="p_0">
+        <name>
+          <text>p_0</text>
+        </name>
+      </place>
+      <place id="p_4">
+        <name>
+          <text>p_4</text>
+        </name>
+      </place>
+      <place id="sink">
+        <name>
+          <text>sink</text>
+        </name>
+      </place>
+      <place id="p_3">
+        <name>
+          <text>p_3</text>
+        </name>
+      </place>
+      <place id="p_5">
+        <name>
+          <text>p_5</text>
+        </name>
+      </place>
+      <transition id="trans_A">
+        <name>
+          <text>A</text>
+        </name>
+      </transition>
+      <transition id="trans_D">
+        <name>
+          <text>D</text>
+        </name>
+      </transition>
+      <transition id="trans_C" guard="amount &lt;= 500 || policyType == &quot;premium&quot;">
+        <name>
+          <text>C</text>
+        </name>
+        <readVariable>amount</readVariable>
+        <readVariable>policyType</readVariable>
+      </transition>
+      <transition id="trans_B" guard="amount &gt; 500 &amp;&amp; policyType == &quot;normal&quot;">
+        <name>
+          <text>B</text>
+        </name>
+        <readVariable>amount</readVariable>
+        <readVariable>policyType</readVariable>
+      </transition>
+      <transition id="trans_E" guard="status == &quot;approved&quot;">
+        <name>
+          <text>E</text>
+        </name>
+        <readVariable>status</readVariable>
+      </transition>
+      <transition id="trans_F" guard="status == &quot;rejected&quot;">
+        <name>
+          <text>F</text>
+        </name>
+        <readVariable>status</readVariable>
+      </transition>
+      <transition id="trans_G" guard="status == &quot;approved&quot;">
+        <name>
+          <text>G</text>
+        </name>
+        <readVariable>status</readVariable>
+      </transition>
+      <transition id="trans_H">
+        <name>
+          <text>H</text>
+        </name>
+      </transition>
+      <arc id="140597458739984" source="trans_F" target="p_5"/>
+      <arc id="140597458701712" source="trans_A" target="p_0"/>
+      <arc id="140597458702096" source="trans_C" target="p_1"/>
+      <arc id="140597458739600" source="p_3" target="trans_F"/>
+      <arc id="140597458740368" source="trans_H" target="sink"/>
+      <arc id="140597458739888" source="trans_F" target="p_4"/>
+      <arc id="140597458701616" source="source" target="trans_A"/>
+      <arc id="140597458702000" source="trans_B" target="p_1"/>
+      <arc id="140597458739504" source="p_2" target="trans_F"/>
+      <arc id="140597458740272" source="p_5" target="trans_H"/>
+      <arc id="140597458739792" source="trans_E" target="p_4"/>
+      <arc id="140597458740176" source="p_4" target="trans_H"/>
+      <arc id="140597458701904" source="p_0" target="trans_C"/>
+      <arc id="140597458702288" source="trans_D" target="p_2"/>
+      <arc id="140597458739408" source="p_2" target="trans_E"/>
+      <arc id="140597458739696" source="p_3" target="trans_G"/>
+      <arc id="140597458740080" source="trans_G" target="p_5"/>
+      <arc id="140597458701808" source="p_0" target="trans_B"/>
+      <arc id="140597458702192" source="p_1" target="trans_D"/>
+      <arc id="140597458739312" source="trans_D" target="p_3"/>
+    </page>
+    <finalmarkings>
+      <marking>
+        <place idref="sink">
+          <text>1</text>
+        </place>
+      </marking>
+    </finalmarkings>
+  </net>
+</pnml>
