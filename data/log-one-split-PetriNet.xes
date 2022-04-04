@@ -1,0 +1,2004 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<trace>
+		<string key="concept:name" value="0" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T12:30:40.026576" />
+			<string key="A" value="5.931125205354151" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T12:35:40.026576" />
+			<string key="A" value="5.931125205354151" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T12:40:40.026576" />
+			<string key="A" value="5.931125205354151" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="1" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T12:45:40.026576" />
+			<string key="A" value="2.9795077085898667" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T12:50:40.026576" />
+			<string key="A" value="2.9795077085898667" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T12:55:40.026576" />
+			<string key="A" value="2.9795077085898667" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="2" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T13:00:40.026576" />
+			<string key="A" value="9.045751807251829" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T13:05:40.026576" />
+			<string key="A" value="9.045751807251829" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T13:10:40.026576" />
+			<string key="A" value="9.045751807251829" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="3" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T13:15:40.026576" />
+			<string key="A" value="1.9749783212612781" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T13:20:40.026576" />
+			<string key="A" value="1.9749783212612781" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T13:25:40.026576" />
+			<string key="A" value="1.9749783212612781" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="4" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T13:30:40.026576" />
+			<string key="A" value="9.391819635140914" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T13:35:40.026576" />
+			<string key="A" value="9.391819635140914" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T13:40:40.026576" />
+			<string key="A" value="9.391819635140914" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="5" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T13:45:40.026576" />
+			<string key="A" value="1.1651972604652505" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T13:50:40.026576" />
+			<string key="A" value="1.1651972604652505" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T13:55:40.026576" />
+			<string key="A" value="1.1651972604652505" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="6" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T14:00:40.026576" />
+			<string key="A" value="2.43534506809578" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T14:05:40.026576" />
+			<string key="A" value="2.43534506809578" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T14:10:40.026576" />
+			<string key="A" value="2.43534506809578" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="7" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T14:15:40.026576" />
+			<string key="A" value="8.017367706266928" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T14:20:40.026576" />
+			<string key="A" value="8.017367706266928" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T14:25:40.026576" />
+			<string key="A" value="8.017367706266928" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="8" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T14:30:40.026576" />
+			<string key="A" value="7.0899732453809525" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T14:35:40.026576" />
+			<string key="A" value="7.0899732453809525" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T14:40:40.026576" />
+			<string key="A" value="7.0899732453809525" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="9" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T14:45:40.026576" />
+			<string key="A" value="9.667693089866733" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T14:50:40.026576" />
+			<string key="A" value="9.667693089866733" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T14:55:40.026576" />
+			<string key="A" value="9.667693089866733" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="10" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T15:00:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T15:05:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T15:10:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="11" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T15:15:40.026576" />
+			<string key="A" value="0.6643416115663592" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T15:20:40.026576" />
+			<string key="A" value="0.6643416115663592" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T15:25:40.026576" />
+			<string key="A" value="0.6643416115663592" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="12" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T15:30:40.026576" />
+			<string key="A" value="4.43498955981002" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T15:35:40.026576" />
+			<string key="A" value="4.43498955981002" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T15:40:40.026576" />
+			<string key="A" value="4.43498955981002" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="13" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T15:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T15:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T15:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="14" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T16:00:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T16:05:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T16:10:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="15" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T16:15:40.026576" />
+			<string key="A" value="8.60182838475719" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T16:20:40.026576" />
+			<string key="A" value="8.60182838475719" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T16:25:40.026576" />
+			<string key="A" value="8.60182838475719" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="16" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T16:30:40.026576" />
+			<string key="A" value="1.441722809055822" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T16:35:40.026576" />
+			<string key="A" value="1.441722809055822" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T16:40:40.026576" />
+			<string key="A" value="1.441722809055822" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="17" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T16:45:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T16:50:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T16:55:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="18" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T17:00:40.026576" />
+			<string key="A" value="2.7644130377218836" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T17:05:40.026576" />
+			<string key="A" value="2.7644130377218836" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T17:10:40.026576" />
+			<string key="A" value="2.7644130377218836" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="19" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T17:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T17:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T17:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="20" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T17:30:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T17:35:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T17:40:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="21" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T17:45:40.026576" />
+			<string key="A" value="2.7628123141659975" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T17:50:40.026576" />
+			<string key="A" value="2.7628123141659975" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T17:55:40.026576" />
+			<string key="A" value="2.7628123141659975" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="22" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T18:00:40.026576" />
+			<string key="A" value="0.40975429981906286" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T18:05:40.026576" />
+			<string key="A" value="0.40975429981906286" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T18:10:40.026576" />
+			<string key="A" value="0.40975429981906286" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="23" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T18:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T18:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T18:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="24" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T18:30:40.026576" />
+			<string key="A" value="7.8247005461307015" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T18:35:40.026576" />
+			<string key="A" value="7.8247005461307015" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T18:40:40.026576" />
+			<string key="A" value="7.8247005461307015" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="25" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T18:45:40.026576" />
+			<string key="A" value="5.287733027096955" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T18:50:40.026576" />
+			<string key="A" value="5.287733027096955" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T18:55:40.026576" />
+			<string key="A" value="5.287733027096955" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="26" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T19:00:40.026576" />
+			<string key="A" value="8.734738500928733" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T19:05:40.026576" />
+			<string key="A" value="8.734738500928733" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T19:10:40.026576" />
+			<string key="A" value="8.734738500928733" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="27" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T19:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T19:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T19:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="28" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T19:30:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T19:35:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T19:40:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="29" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T19:45:40.026576" />
+			<string key="A" value="7.934203565032741" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T19:50:40.026576" />
+			<string key="A" value="7.934203565032741" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T19:55:40.026576" />
+			<string key="A" value="7.934203565032741" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="30" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T20:00:40.026576" />
+			<string key="A" value="7.423148156431037" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T20:05:40.026576" />
+			<string key="A" value="7.423148156431037" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T20:10:40.026576" />
+			<string key="A" value="7.423148156431037" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="31" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T20:15:40.026576" />
+			<string key="A" value="1.383392430866729" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T20:20:40.026576" />
+			<string key="A" value="1.383392430866729" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T20:25:40.026576" />
+			<string key="A" value="1.383392430866729" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="32" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T20:30:40.026576" />
+			<string key="A" value="1.724757205968025" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T20:35:40.026576" />
+			<string key="A" value="1.724757205968025" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T20:40:40.026576" />
+			<string key="A" value="1.724757205968025" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="33" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T20:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T20:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T20:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="34" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T21:00:40.026576" />
+			<string key="A" value="1.7733016216630049" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T21:05:40.026576" />
+			<string key="A" value="1.7733016216630049" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T21:10:40.026576" />
+			<string key="A" value="1.7733016216630049" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="35" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T21:15:40.026576" />
+			<string key="A" value="4.5908501131979484" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T21:20:40.026576" />
+			<string key="A" value="4.5908501131979484" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T21:25:40.026576" />
+			<string key="A" value="4.5908501131979484" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="36" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T21:30:40.026576" />
+			<string key="A" value="8.97463637223801" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T21:35:40.026576" />
+			<string key="A" value="8.97463637223801" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T21:40:40.026576" />
+			<string key="A" value="8.97463637223801" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="37" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T21:45:40.026576" />
+			<string key="A" value="1.7389021643626446" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T21:50:40.026576" />
+			<string key="A" value="1.7389021643626446" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T21:55:40.026576" />
+			<string key="A" value="1.7389021643626446" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="38" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T22:00:40.026576" />
+			<string key="A" value="7.832246846905857" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T22:05:40.026576" />
+			<string key="A" value="7.832246846905857" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T22:10:40.026576" />
+			<string key="A" value="7.832246846905857" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="39" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T22:15:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T22:20:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T22:25:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="40" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T22:30:40.026576" />
+			<string key="A" value="9.754426788089244" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T22:35:40.026576" />
+			<string key="A" value="9.754426788089244" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T22:40:40.026576" />
+			<string key="A" value="9.754426788089244" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="41" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T22:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T22:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T22:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="42" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T23:00:40.026576" />
+			<string key="A" value="5.828674803555792" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T23:05:40.026576" />
+			<string key="A" value="5.828674803555792" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T23:10:40.026576" />
+			<string key="A" value="5.828674803555792" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="43" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T23:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-02-28T23:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T23:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="44" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T23:30:40.026576" />
+			<string key="A" value="2.254376389273365" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T23:35:40.026576" />
+			<string key="A" value="2.254376389273365" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T23:40:40.026576" />
+			<string key="A" value="2.254376389273365" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="45" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-02-28T23:45:40.026576" />
+			<string key="A" value="4.743884640795447" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-02-28T23:50:40.026576" />
+			<string key="A" value="4.743884640795447" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-02-28T23:55:40.026576" />
+			<string key="A" value="4.743884640795447" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="46" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T00:00:40.026576" />
+			<string key="A" value="4.464359336767036" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T00:05:40.026576" />
+			<string key="A" value="4.464359336767036" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T00:10:40.026576" />
+			<string key="A" value="4.464359336767036" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="47" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T00:15:40.026576" />
+			<string key="A" value="8.587511367067744" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T00:20:40.026576" />
+			<string key="A" value="8.587511367067744" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T00:25:40.026576" />
+			<string key="A" value="8.587511367067744" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="48" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T00:30:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T00:35:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T00:40:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="49" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T00:45:40.026576" />
+			<string key="A" value="0.4371437509733711" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T00:50:40.026576" />
+			<string key="A" value="0.4371437509733711" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T00:55:40.026576" />
+			<string key="A" value="0.4371437509733711" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="50" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T01:00:40.026576" />
+			<string key="A" value="3.5417051587861215" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T01:05:40.026576" />
+			<string key="A" value="3.5417051587861215" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T01:10:40.026576" />
+			<string key="A" value="3.5417051587861215" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="51" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T01:15:40.026576" />
+			<string key="A" value="6.252154355002278" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T01:20:40.026576" />
+			<string key="A" value="6.252154355002278" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T01:25:40.026576" />
+			<string key="A" value="6.252154355002278" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="52" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T01:30:40.026576" />
+			<string key="A" value="9.03689959377298" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T01:35:40.026576" />
+			<string key="A" value="9.03689959377298" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T01:40:40.026576" />
+			<string key="A" value="9.03689959377298" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="53" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T01:45:40.026576" />
+			<string key="A" value="8.770945604086348" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T01:50:40.026576" />
+			<string key="A" value="8.770945604086348" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T01:55:40.026576" />
+			<string key="A" value="8.770945604086348" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="54" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T02:00:40.026576" />
+			<string key="A" value="1.8040116566342979" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T02:05:40.026576" />
+			<string key="A" value="1.8040116566342979" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T02:10:40.026576" />
+			<string key="A" value="1.8040116566342979" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="55" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T02:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T02:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T02:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="56" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T02:30:40.026576" />
+			<string key="A" value="4.30410386918714" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T02:35:40.026576" />
+			<string key="A" value="4.30410386918714" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T02:40:40.026576" />
+			<string key="A" value="4.30410386918714" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="57" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T02:45:40.026576" />
+			<string key="A" value="8.101579154625826" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T02:50:40.026576" />
+			<string key="A" value="8.101579154625826" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T02:55:40.026576" />
+			<string key="A" value="8.101579154625826" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="58" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T03:00:40.026576" />
+			<string key="A" value="0.1851285439326844" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T03:05:40.026576" />
+			<string key="A" value="0.1851285439326844" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T03:10:40.026576" />
+			<string key="A" value="0.1851285439326844" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="59" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T03:15:40.026576" />
+			<string key="A" value="0.633912530379046" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T03:20:40.026576" />
+			<string key="A" value="0.633912530379046" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T03:25:40.026576" />
+			<string key="A" value="0.633912530379046" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="60" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T03:30:40.026576" />
+			<string key="A" value="6.001943875395731" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T03:35:40.026576" />
+			<string key="A" value="6.001943875395731" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T03:40:40.026576" />
+			<string key="A" value="6.001943875395731" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="61" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T03:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T03:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T03:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="62" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T04:00:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T04:05:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T04:10:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="63" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T04:15:40.026576" />
+			<string key="A" value="9.849076855625679" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T04:20:40.026576" />
+			<string key="A" value="9.849076855625679" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T04:25:40.026576" />
+			<string key="A" value="9.849076855625679" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="64" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T04:30:40.026576" />
+			<string key="A" value="7.655814246725026" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T04:35:40.026576" />
+			<string key="A" value="7.655814246725026" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T04:40:40.026576" />
+			<string key="A" value="7.655814246725026" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="65" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T04:45:40.026576" />
+			<string key="A" value="0.3428846013201847" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T04:50:40.026576" />
+			<string key="A" value="0.3428846013201847" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T04:55:40.026576" />
+			<string key="A" value="0.3428846013201847" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="66" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T05:00:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T05:05:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T05:10:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="67" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T05:15:40.026576" />
+			<string key="A" value="6.0248286946846905" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T05:20:40.026576" />
+			<string key="A" value="6.0248286946846905" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T05:25:40.026576" />
+			<string key="A" value="6.0248286946846905" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="68" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T05:30:40.026576" />
+			<string key="A" value="4.326005956941529" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T05:35:40.026576" />
+			<string key="A" value="4.326005956941529" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T05:40:40.026576" />
+			<string key="A" value="4.326005956941529" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="69" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T05:45:40.026576" />
+			<string key="A" value="3.8272886707962392" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T05:50:40.026576" />
+			<string key="A" value="3.8272886707962392" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T05:55:40.026576" />
+			<string key="A" value="3.8272886707962392" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="70" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T06:00:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T06:05:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T06:10:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="71" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T06:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T06:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T06:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="72" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T06:30:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T06:35:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T06:40:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="73" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T06:45:40.026576" />
+			<string key="A" value="2.5240657134387856" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T06:50:40.026576" />
+			<string key="A" value="2.5240657134387856" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T06:55:40.026576" />
+			<string key="A" value="2.5240657134387856" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="74" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T07:00:40.026576" />
+			<string key="A" value="3.2565778966825842" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T07:05:40.026576" />
+			<string key="A" value="3.2565778966825842" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T07:10:40.026576" />
+			<string key="A" value="3.2565778966825842" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="75" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T07:15:40.026576" />
+			<string key="A" value="5.761600942219729" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T07:20:40.026576" />
+			<string key="A" value="5.761600942219729" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T07:25:40.026576" />
+			<string key="A" value="5.761600942219729" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="76" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T07:30:40.026576" />
+			<string key="A" value="1.0455325433961138" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T07:35:40.026576" />
+			<string key="A" value="1.0455325433961138" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T07:40:40.026576" />
+			<string key="A" value="1.0455325433961138" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="77" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T07:45:40.026576" />
+			<string key="A" value="3.1335951481071254" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T07:50:40.026576" />
+			<string key="A" value="3.1335951481071254" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T07:55:40.026576" />
+			<string key="A" value="3.1335951481071254" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="78" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T08:00:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T08:05:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T08:10:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="79" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T08:15:40.026576" />
+			<string key="A" value="1.9092816391813694" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T08:20:40.026576" />
+			<string key="A" value="1.9092816391813694" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T08:25:40.026576" />
+			<string key="A" value="1.9092816391813694" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="80" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T08:30:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T08:35:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T08:40:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="81" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T08:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T08:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T08:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="82" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T09:00:40.026576" />
+			<string key="A" value="2.7925977473234296" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T09:05:40.026576" />
+			<string key="A" value="2.7925977473234296" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T09:10:40.026576" />
+			<string key="A" value="2.7925977473234296" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="83" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T09:15:40.026576" />
+			<string key="A" value="3.391065709653817" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T09:20:40.026576" />
+			<string key="A" value="3.391065709653817" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T09:25:40.026576" />
+			<string key="A" value="3.391065709653817" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="84" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T09:30:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T09:35:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T09:40:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="85" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T09:45:40.026576" />
+			<string key="A" value="4.239052310764108" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T09:50:40.026576" />
+			<string key="A" value="4.239052310764108" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T09:55:40.026576" />
+			<string key="A" value="4.239052310764108" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="86" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T10:00:40.026576" />
+			<string key="A" value="1.0186474910444654" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T10:05:40.026576" />
+			<string key="A" value="1.0186474910444654" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T10:10:40.026576" />
+			<string key="A" value="1.0186474910444654" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="87" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T10:15:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T10:20:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T10:25:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="88" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T10:30:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T10:35:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T10:40:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="89" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T10:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T10:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T10:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="90" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T11:00:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T11:05:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T11:10:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="91" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T11:15:40.026576" />
+			<string key="A" value="5.5613803651876985" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T11:20:40.026576" />
+			<string key="A" value="5.5613803651876985" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T11:25:40.026576" />
+			<string key="A" value="5.5613803651876985" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="92" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T11:30:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T11:35:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T11:40:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="93" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T11:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T11:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T11:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="94" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T12:00:40.026576" />
+			<string key="A" value="8.133528998685145" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T12:05:40.026576" />
+			<string key="A" value="8.133528998685145" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T12:10:40.026576" />
+			<string key="A" value="8.133528998685145" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="95" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T12:15:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T12:20:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T12:25:40.026576" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="96" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T12:30:40.026576" />
+			<string key="A" value="9.07306809070382" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T12:35:40.026576" />
+			<string key="A" value="9.07306809070382" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T12:40:40.026576" />
+			<string key="A" value="9.07306809070382" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="97" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T12:45:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T12:50:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T12:55:40.026576" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="98" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T13:00:40.026576" />
+			<string key="A" value="5.497467436718098" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_2" />
+			<date key="time:timestamp" value="2022-03-01T13:05:40.026576" />
+			<string key="A" value="5.497467436718098" />
+			<string key="cat" value="cat_1" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T13:10:40.026576" />
+			<string key="A" value="5.497467436718098" />
+			<string key="cat" value="cat_1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="99" />
+		<event>
+			<string key="concept:name" value="label_1" />
+			<date key="time:timestamp" value="2022-03-01T13:15:40.026576" />
+			<string key="A" value="1.1838718887036626" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_3" />
+			<date key="time:timestamp" value="2022-03-01T13:20:40.026576" />
+			<string key="A" value="1.1838718887036626" />
+			<string key="cat" value="cat_2" />
+		</event>
+		<event>
+			<string key="concept:name" value="label_4" />
+			<date key="time:timestamp" value="2022-03-01T13:25:40.026576" />
+			<string key="A" value="1.1838718887036626" />
+			<string key="cat" value="cat_2" />
+		</event>
+	</trace>
+</log>
