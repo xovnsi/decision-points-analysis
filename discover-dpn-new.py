@@ -108,8 +108,7 @@ for trace in log:
 
 from sklearn import linear_model, preprocessing
 for decision_point in decision_points_data.keys():
-    print("")
-    print(decision_point)
+    print("\n", decision_point)
 
     dataset = decision_points_data[decision_point]
     X = pd.get_dummies(dataset[dataset.columns.difference(['target'])])
@@ -117,12 +116,11 @@ for decision_point in decision_points_data.keys():
     X_scaled = scaler.fit_transform(X)
     y = dataset[['target']].values.ravel()
 
-    logistic_mn = linear_model.LogisticRegression(penalty='l1', multi_class='multinomial', solver='saga')
+    logistic_mn = linear_model.LogisticRegression(C=0.1, penalty='l1', fit_intercept=False, multi_class='multinomial', solver='saga', max_iter=200)
     logistic_mn.fit(X_scaled, y)
 
     print("Train accuracy: {}".format(logistic_mn.score(X_scaled, y)))
-    print("Input features: {}".format(X.columns))
-    print("Output classes: {}".format(logistic_mn.classes_))
+    print("Input features: {}. Output features: {}".format(X.columns.values, logistic_mn.classes_))
     # print(logistic_mn.coef_, logistic_mn.intercept_)
     # prob = [(1 / (1 + np.exp(c))) for c in logistic_mn.coef_]
     # print(prob)
@@ -135,7 +133,7 @@ for decision_point in decision_points_data.keys():
     equations_df = pd.DataFrame(rounded_coefs, columns=X.columns)
     equations_df['intercept'] = [round(x, 3) for x in logistic_mn.intercept_]
     equations_df['class'] = logistic_mn.classes_[1:]
-    # print(equations_df)
+    print("Weights:\n", equations_df)
 
     decisions = dict()
     for row_ind in range(len(equations_df)):
@@ -151,7 +149,25 @@ for decision_point in decision_points_data.keys():
             rule = rule + "+ " + str(equations_df.loc[row_ind, 'intercept'])
         rule = rule + " >= 0"
         decisions[equations_df.loc[row_ind, 'class']] = rule
-    print(decisions)
+    print("Rule using weights: ", decisions)
+
+    final_df = pd.DataFrame(columns=dataset.columns)
+    for row_ind in range(len(equations_df)):
+        new_row = dict.fromkeys(dataset.columns)
+        for attribute in dataset.columns.difference(['target']):
+            if attributes_map[attribute] == 'categorical':
+                attr_cols = [c for c in X.columns if c.startswith(attribute)]
+                attr_df = pd.DataFrame(data=pd.to_numeric(equations_df.loc[row_ind, attr_cols])).transpose()
+                chosen_attr = attr_df.idxmax(axis=1).values[0]
+                new_row[attribute] = chosen_attr.split("_")[1]
+            else:
+                new_row[attribute] = equations_df.loc[row_ind, attribute]
+        new_row['target'] = equations_df.loc[row_ind, 'class']
+        final_df = pd.concat([final_df, pd.DataFrame([new_row])])
+    print("From weights to categorical:\n", final_df)
+
+
+print("\n=============== DECISION TREES ===============")
 
 for decision_point in decision_points_data.keys():
     print("")
