@@ -69,13 +69,11 @@ tic = time()
 attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
                   'communication': 'categorical', 'discarded': 'boolean'}
 
-# Dictionary of attributes data for every decision point
-# Initialized with ALL the attributes from attributes_map, plus a target key
+# Dictionary of attributes data for every decision point, with a target key to be used later on
 decision_points_data = dict()
 for place in net.places:
     if len(place.out_arcs) >= 2:
-        decision_points_data[place.name] = {k: [] for k in attributes_map}
-        decision_points_data[place.name]['target'] = []
+        decision_points_data[place.name] = {k: [] for k in ['target']}
 
 # Scanning the log to get the data
 for trace in log:
@@ -83,7 +81,7 @@ for trace in log:
     if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
         trace_attr_row = trace.attributes
 
-    attr_values = dict()
+    attr_values = {k: [] for k in attributes_map}
     last_event_name = 'None'
     for event in trace:
         trans_from_event = trans_events_map[event["concept:name"]]
@@ -94,20 +92,23 @@ for trace in log:
                                                       in_places_loops, trans_from_event)
 
         for place_from_event in places_from_event:
-            # Append the last attribute values to the decision point dictionary
-            for a in decision_points_data[place_from_event[0]].keys():
-                if a in attr_values:
-                    decision_points_data[place_from_event[0]][a].append(attr_values[a][0])     # 0 to avoid nested lists
-                elif a != 'target':
-                    decision_points_data[place_from_event[0]][a].append(np.nan)
+            # Append the last attribute values to the decision point dictionary (creating the key if not already there)
+            for a in attr_values.keys():
+                if a not in decision_points_data[place_from_event[0]]:
+                    decision_points_data[place_from_event[0]][a] = []
+                decision_points_data[place_from_event[0]][a].append(attr_values[a][0])   # index 0 to avoid nested lists
             # Append the target transition label to the decision point dictionary
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
-        # Update the attribute values dictionary with the current event values
+        # Update the attribute values dictionary with the current event values (the existing ones, otherwise np.nan)
         event_attr = get_attributes_from_event(event)
         event_attr.pop('time:timestamp')
         event_attr.pop('concept:name')
-        attr_values.update(event_attr)
+        for a in attr_values.keys():
+            if a in event_attr:
+                attr_values[a] = event_attr[a]
+            else:
+                attr_values[a] = [np.nan]
         # Update trace attributes: why cannot it be done once at the beginning?
         if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
             attr_values.update(trace_attr_row)
