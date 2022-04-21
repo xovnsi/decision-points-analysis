@@ -81,7 +81,7 @@ for trace in log:
     if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
         trace_attr_row = trace.attributes
 
-    attr_values = {k: [] for k in attributes_map}
+    event_attr = dict()
     last_event_name = 'None'
     for event in trace:
         trans_from_event = trans_events_map[event["concept:name"]]
@@ -92,26 +92,22 @@ for trace in log:
                                                       in_places_loops, trans_from_event)
 
         for place_from_event in places_from_event:
-            # Append the last attribute values to the decision point dictionary (creating the key if not already there)
-            for a in attr_values.keys():
+            # Append the last attribute values to the decision point dictionary
+            for a in event_attr.keys():
+                # If the attribute is not present, add it as a new key, filling the previous entries with np.nan
                 if a not in decision_points_data[place_from_event[0]]:
-                    decision_points_data[place_from_event[0]][a] = []
-                decision_points_data[place_from_event[0]][a].append(attr_values[a][0])   # index 0 to avoid nested lists
-            # Append the target transition label to the decision point dictionary
+                    entries = len(decision_points_data[place_from_event[0]]['target'])
+                    decision_points_data[place_from_event[0]][a] = [np.nan] * entries
+                decision_points_data[place_from_event[0]][a].append(event_attr[a][0])   # index 0 to avoid nested lists
+            # Append also the target transition label to the decision point dictionary
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
-        # Update the attribute values dictionary with the current event values (the existing ones, otherwise np.nan)
+        # Get the attribute values dictionary containing the current event values
         event_attr = get_attributes_from_event(event)
-        event_attr.pop('time:timestamp')
-        event_attr.pop('concept:name')
-        for a in attr_values.keys():
-            if a in event_attr:
-                attr_values[a] = event_attr[a]
-            else:
-                attr_values[a] = [np.nan]
+        [event_attr.pop(k) for k in ['time:timestamp', 'concept:name']]
         # Update trace attributes: why cannot it be done once at the beginning?
         if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
-            attr_values.update(trace_attr_row)
+            event_attr.update(trace_attr_row)
 
         # Update the last event name with the current event name
         last_event_name = event['concept:name']

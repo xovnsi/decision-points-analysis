@@ -1,11 +1,11 @@
 import pm4py
 from pm4py.algo.discovery.inductive import algorithm as inductive_miner
-from pm4py.algo.discovery.alpha import algorithm as aplha_miner
+from pm4py.algo.discovery.alpha import algorithm as alpha_miner
 from pm4py.algo.decision_mining import algorithm as decision_mining
 
 event_log = pm4py.read_xes('./data/roadtraffic100traces.xes')
 
-net, im, fm = aplha_miner.apply(event_log)
+net, im, fm = alpha_miner.apply(event_log)
 
 decision_points = []
 for place in net.places:
