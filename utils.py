@@ -132,6 +132,7 @@ def get_next_not_silent(place, not_silent, vertex_in_loops) -> list:
     silent, the algorithm computes recursively the next not silent.
     """
     # first stop condition
+    #breakpoint()
     if len(place.in_arcs) > 1 and not place.name in vertex_in_loops:
         return not_silent
     out_arcs_label = [arc.target.label for arc in place.out_arcs]
@@ -254,7 +255,7 @@ def get_vertex_names_from_c_matrix(c_matrix, row_names, columns_names):
                 vertex_in_loop.add(row)
                 vertex_in_loop.add(col)
     #breakpoint()
-    return vertex_in_loop
+    return sorted(vertex_in_loop)
 
 def detect_loops(net) -> set:
     """ Detects loops in a Petri Net
@@ -277,7 +278,8 @@ def detect_loops(net) -> set:
     old_quadrant_4 = np.zeros((len(places_names), len(places_names)))
     cont_r = 1
     places_trans_in_loop = set()
-    # Every iteration detect loop of length 2*cont_r, due to the bipartite nature of the net
+    vertex_in_loop = dict()
+    # Every iteration detects loop of length 2*cont_r, due to the bipartite nature of the net
     while (cont_r <= len(places_names) + len(trans_names)):
         cont_r += 1
         # initialize new A and C quadrants
@@ -298,9 +300,33 @@ def detect_loops(net) -> set:
             c_quadrant_2 = np.logical_and(new_quadrant_2, new_quadrant_3T)
             c_quadrant_3 = np.logical_and(new_quadrant_3, new_quadrant_2T)
             vert_loop = get_vertex_names_from_c_matrix(c_quadrant_2, trans_names, places_names)
+            #breakpoint()
+#            if len(vert_loop) > 0:
+#                found_multiple_loops = False
+#                for loop_length in vertex_in_loop.keys():
+#                    if 2*cont_r % int(loop_length.split('_')[1]) == 0 and list(vert_loop) in vertex_in_loop[loop_length]:
+#                        found_multiple_loops = True
+#                if not found_multiple_loops:
+#                    if "length_{}".format(2*cont_r) in vertex_in_loop:
+#                        vertex_in_loop["length_{}".format(2*cont_r)].append(list(vert_loop))
+#                    else:
+#                        vertex_in_loop["length_{}".format(2*cont_r)] = [list(vert_loop)]
             places_trans_in_loop = places_trans_in_loop.union(vert_loop)
-            vert_loop = get_vertex_names_from_c_matrix(c_quadrant_3, places_names, trans_names)
-            places_trans_in_loop = places_trans_in_loop.union(vert_loop)
+            if len(vert_loop) > 0:
+                vert_loop.extend(get_vertex_names_from_c_matrix(c_quadrant_4, places_names, places_names))
+            else:
+                vert_loop = get_vertex_names_from_c_matrix(c_quadrant_4, places_names, places_names)
+#            if len(vert_loop) > 0:
+#                found_multiple_loops = False
+#                for loop_length in vertex_in_loop.keys():
+#                    if 2*cont_r % int(loop_length.split('_')[1]) == 0 and list(vert_loop) in vertex_in_loop[loop_length]:
+#                        found_multiple_loops = True
+#                if not found_multiple_loops:
+#                    if "length_{}".format(2*cont_r) in vertex_in_loop:
+#                        vertex_in_loop["length_{}".format(2*cont_r)].append(list(vert_loop))
+#                    else:
+#                        vertex_in_loop["length_{}".format(2*cont_r)] = [list(vert_loop)]
+#            places_trans_in_loop = places_trans_in_loop.union(vert_loop)
         else:
             new_quadrant_1 = np.dot(out_adj, old_quadrant_3)
             new_quadrant_4 = np.dot(in_adj.T, old_quadrant_2)
@@ -309,8 +335,31 @@ def detect_loops(net) -> set:
             c_quadrant_1 = np.logical_and(new_quadrant_1, new_quadrant_1T)
             c_quadrant_4 = np.logical_and(new_quadrant_4, new_quadrant_4T)
             vert_loop = get_vertex_names_from_c_matrix(c_quadrant_1, trans_names, trans_names)
+#            if len(vert_loop) > 0:
+#                found_multiple_loops = False
+#                for loop_length in vertex_in_loop.keys():
+#                    if 2*cont_r % int(loop_length.split('_')[1]) == 0 and list(vert_loop) in vertex_in_loop[loop_length]:
+#                        found_multiple_loops = True
+#                if not found_multiple_loops:
+#                    if "length_{}".format(2*cont_r) in vertex_in_loop:
+#                        vertex_in_loop["length_{}".format(2*cont_r)].append(list(vert_loop))
+#                    else:
+#                        vertex_in_loop["length_{}".format(2*cont_r)] = [list(vert_loop)]
             places_trans_in_loop = places_trans_in_loop.union(vert_loop)
-            vert_loop = get_vertex_names_from_c_matrix(c_quadrant_4, places_names, places_names)
+            if len(vert_loop) > 0:
+                vert_loop.extend(get_vertex_names_from_c_matrix(c_quadrant_4, places_names, places_names))
+            else:
+                vert_loop = get_vertex_names_from_c_matrix(c_quadrant_4, places_names, places_names)
+#            if len(vert_loop) > 0:
+#                found_multiple_loops = False
+#                for loop_length in vertex_in_loop.keys():
+#                    if 2*cont_r % int(loop_length.split('_')[1]) == 0 and list(vert_loop) in vertex_in_loop[loop_length]:
+#                        found_multiple_loops = True
+#                if not found_multiple_loops:
+#                    if "length_{}".format(2*cont_r) in vertex_in_loop:
+#                        vertex_in_loop["length_{}".format(2*cont_r)].append(list(vert_loop))
+#                    else:
+#                        vertex_in_loop["length_{}".format(2*cont_r)] = [list(vert_loop)]
             places_trans_in_loop = places_trans_in_loop.union(vert_loop)
         # update old quadrants
         old_quadrant_1 = new_quadrant_1
@@ -318,4 +367,63 @@ def detect_loops(net) -> set:
         old_quadrant_3 = new_quadrant_3
         old_quadrant_4 = new_quadrant_4
 
-    return places_trans_in_loop
+        if len(vert_loop) > 0:
+            found_multiple_loops = False
+            vert_loops_discriminated = discriminate_loops(net, vert_loop)
+            for el in vert_loops_discriminated:
+                el.sort()
+            #breakpoint()
+            for vert_loop_discriminated in vert_loops_discriminated:
+                for loop_length in vertex_in_loop.keys():
+                    if 2*cont_r % int(loop_length.split('_')[1]) == 0 and vert_loop_discriminated in vertex_in_loop[loop_length]:
+                        found_multiple_loops = True
+                if not found_multiple_loops:
+                    if not "length_{}".format(2*cont_r) in vertex_in_loop.keys():
+                        vertex_in_loop["length_{}".format(2*cont_r)] = [vert_loop_discriminated]
+                    else:
+                        vertex_in_loop["length_{}".format(2*cont_r)].append(vert_loop_discriminated)
+    return vertex_in_loop
+
+def discriminate_loops(net, vertex_in_loop):
+    vertex_set = set(vertex_in_loop) 
+    vertex_list = list()
+    while len(vertex_set) > 0:
+        first_element_name = list(vertex_set)[0]
+        if "p_" in first_element_name or "source" in first_element_name or "sink" in first_element_name:
+            first_element = [place for place in net.places if place.name == first_element_name][0]
+        else:
+            first_element = [trans for trans in net.transitions if trans.name == first_element_name][0]
+        #breakpoint()
+        vertex = search_adjacent_loop_vertex(first_element, [], vertex_in_loop)
+        vertex = [vert.name for vert in vertex]
+        vertex.sort()
+        vertex_list.append(vertex)
+        vertex_loop_set = set(vertex)
+        vertex_set = vertex_set.difference(vertex_loop_set)
+        #breakpoint()
+    return vertex_list
+
+def search_adjacent_loop_vertex(vertex, vertex_in_loop, total_vertex_in_loop):
+    #breakpoint()
+    vertex_in_loop.append(vertex)
+    if vertex_in_loop[0] in vertex.out_arcs:
+        return vertex_in_loop
+    else:
+        for out_arc in vertex.out_arcs:
+            if out_arc.target.name in total_vertex_in_loop and not out_arc.target in vertex_in_loop:
+                search_adjacent_loop_vertex(out_arc.target, vertex_in_loop, total_vertex_in_loop)
+    return vertex_in_loop
+    
+def delete_composite_loops(vertex_in_loop):
+    for loop_length in vertex_in_loop.keys():
+        for sequence in vertex_in_loop[loop_length]:
+            for loop_length_inner in vertex_in_loop.keys():
+                if not loop_length_inner == loop_length:
+                    for inner_sequence in vertex_in_loop[loop_length_inner]:
+                        if len(set(sequence).difference(inner_sequence)) == 0:
+                            vertex_in_loop[loop_length_inner].remove(inner_sequence)
+#                            if len(vertex_in_loop[loop_length_inner]) == 0:
+#                                vertex_in_loop.pop(loop_length_inner)
+    new_vertex_in_loop = dict((key, value) for key, value in vertex_in_loop.items() if value)
+    return new_vertex_in_loop
+
