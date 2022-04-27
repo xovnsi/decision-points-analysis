@@ -78,10 +78,9 @@ for place in net.places:
 # Scanning the log to get the data
 for trace in log:
     # Store the trace attributes (if any)
-    if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
-        trace_attr_row = trace.attributes
-
     event_attr = dict()
+    if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
+        event_attr.update(trace.attributes)
     last_event_name = 'None'
     for event in trace:
         trans_from_event = trans_events_map[event["concept:name"]]
@@ -105,10 +104,6 @@ for trace in log:
         # Get the attribute values dictionary containing the current event values
         event_attr = get_attributes_from_event(event)
         [event_attr.pop(k) for k in ['time:timestamp', 'concept:name']]
-        # Update trace attributes: why cannot it be done once at the beginning?
-        if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
-            event_attr.update(trace_attr_row)
-
         # Update the last event name with the current event name
         last_event_name = event['concept:name']
 
