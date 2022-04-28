@@ -80,7 +80,7 @@ event_attr = dict()
 # Scanning the log to get the data
 for trace in log:
     # Keep the same attributes observed in the previous traces (to keep dictionaries at the same length)
-    event_attr = {k: [np.nan] for k in event_attr.keys()}
+    event_attr = {k: ['NIL'] for k in event_attr.keys()}
     # Store the trace attributes (if any)
     if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
         event_attr.update(trace.attributes)
@@ -96,10 +96,10 @@ for trace in log:
         for place_from_event in places_from_event:
             # Append the last attribute values to the decision point dictionary
             for a in event_attr.keys():
-                # If the attribute is not present, add it as a new key, filling the previous entries with np.nan
+                # If the attribute is not present, add it as a new key, filling the previous entries with NIL
                 if a not in decision_points_data[place_from_event[0]]:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
-                    decision_points_data[place_from_event[0]][a] = [np.nan] * entries
+                    decision_points_data[place_from_event[0]][a] = ['NIL'] * entries
                 # In every case, append the new value
                 decision_points_data[place_from_event[0]][a].append(event_attr[a][0])   # index 0 to avoid nested lists
             # Append also the target transition label to the decision point dictionary
