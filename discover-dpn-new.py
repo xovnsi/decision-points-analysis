@@ -75,10 +75,13 @@ for place in net.places:
     if len(place.out_arcs) >= 2:
         decision_points_data[place.name] = {k: [] for k in ['target']}
 
+event_attr = dict()
+
 # Scanning the log to get the data
 for trace in log:
+    # Keep the same attributes observed in the previous traces (to keep dictionaries at the same length)
+    event_attr = {k: [np.nan] for k in event_attr.keys()}
     # Store the trace attributes (if any)
-    event_attr = dict()
     if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
         event_attr.update(trace.attributes)
     last_event_name = 'None'
@@ -93,13 +96,8 @@ for trace in log:
         for place_from_event in places_from_event:
             # Append the last attribute values to the decision point dictionary
             for a in event_attr.keys():
-                # If it is present, but it has not been seen in this trace yet (but it has been seen in previous traces)
-                # then fill the missing entries with np.nan
-                if a in decision_points_data[place_from_event[0]] and len(decision_points_data[place_from_event[0]][a]) < len(decision_points_data[place_from_event[0]]['target']):
-                    entries = len(decision_points_data[place_from_event[0]]['target']) - len(decision_points_data[place_from_event[0]][a])
-                    decision_points_data[place_from_event[0]][a] += [np.nan] * entries
                 # If the attribute is not present, add it as a new key, filling the previous entries with np.nan
-                elif a not in decision_points_data[place_from_event[0]]:
+                if a not in decision_points_data[place_from_event[0]]:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
                     decision_points_data[place_from_event[0]][a] = [np.nan] * entries
                 # In every case, append the new value
