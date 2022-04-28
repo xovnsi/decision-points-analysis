@@ -93,16 +93,22 @@ for trace in log:
         for place_from_event in places_from_event:
             # Append the last attribute values to the decision point dictionary
             for a in event_attr.keys():
+                # If it is present, but it has not been seen in this trace yet (but it has been seen in previous traces)
+                # then fill the missing entries with np.nan
+                if a in decision_points_data[place_from_event[0]] and len(decision_points_data[place_from_event[0]][a]) < len(decision_points_data[place_from_event[0]]['target']):
+                    entries = len(decision_points_data[place_from_event[0]]['target']) - len(decision_points_data[place_from_event[0]][a])
+                    decision_points_data[place_from_event[0]][a] += [np.nan] * entries
                 # If the attribute is not present, add it as a new key, filling the previous entries with np.nan
-                if a not in decision_points_data[place_from_event[0]]:
+                elif a not in decision_points_data[place_from_event[0]]:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
                     decision_points_data[place_from_event[0]][a] = [np.nan] * entries
+                # In every case, append the new value
                 decision_points_data[place_from_event[0]][a].append(event_attr[a][0])   # index 0 to avoid nested lists
             # Append also the target transition label to the decision point dictionary
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
         # Get the attribute values dictionary containing the current event values
-        event_attr = get_attributes_from_event(event)
+        event_attr.update(get_attributes_from_event(event))
         [event_attr.pop(k) for k in ['time:timestamp', 'concept:name']]
         # Update the last event name with the current event name
         last_event_name = event['concept:name']
