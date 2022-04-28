@@ -2,6 +2,7 @@ from decision_tree_utils import class_entropy, get_split_gain, get_total_thresho
 from Nodes import DecisionNode, LeafNode
 from typing import Union
 import pandas as pd
+import numpy as np
 
 
 class DecisionTree(object):
@@ -10,7 +11,7 @@ class DecisionTree(object):
         self._nodes = set()
         self._root_node = None
         # attributes map is a disctionary contianing the type of each attribute in the data.
-        # Must be on of ['categorical', 'boolean', 'continuous']
+        # Must be one of ['categorical', 'boolean', 'continuous']
         for attr_name in attributes_map.keys():
             if not attributes_map[attr_name] in ['continuous', 'categorical', 'boolean']:
                 raise Exception('Attribute type not supported')
@@ -18,9 +19,9 @@ class DecisionTree(object):
 
     def delete_node(self, node) -> None:
         """ Removes a node from the tree's set of nodes and disconnects it from its parent node """
-#        if node.get_parent_node() is None:
-#            breakpoint()
         parent_node = node.get_parent_node()
+        if node.get_parent_node() is None:
+            raise Exception("Can't delet node {}. Parent node not found".format(node._label))
         parent_node.delete_child(node)
         self._nodes.remove(node)
 
@@ -33,95 +34,181 @@ class DecisionTree(object):
         elif node.get_label() == 'root':
             self._root_node = node
         else:
-            raise Exception('Parent label not present in the tree')
+            raise Exception("Can't add node {}. Parent label not present in the tree".format(node._label))
 
-    def _predict(self, row_in, node) -> str:
-        """ Recursively traverse the tree (given the data in "row_in") until a leaf node and predicts the correspondent class """
+    def _predict(self, row_in, node, predictions_dict) -> dict:
+        """ Recursively traverse the tree (given the data in "row_in") until a leaf node and returns the class distribution """
+        if node is None:
+            raise Exception("Can't traverse the tree. Node is None")
         attribute = node.get_attribute().split(':')[0]
-        child = node.get_child(row_in[attribute])
-        if isinstance(child, LeafNode):
-            return child.predict_class()
+        # In the attribute is known, only the correspondent child is explored.
+        if row_in[attribute] != '?':
+            child = node.get_child(row_in[attribute])
+            if child is None:
+                raise Exception("Can't find child with attribute '{}'".format(attribute))
+            if isinstance(child, LeafNode):
+                for target in child._classes.keys():
+                    predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
+                    predictions_dict['total_sum'] += child._classes[target] # total sum is needed for the final probability computation
+                return predictions_dict
+            else:
+                return self._predict(row_in, child, predictions_dict)
         else:
-            return self._predict(row_in, child)
+            # In case of unknown attribute, the prediction is spread on every child node.
+            for child in node.get_childs():
+                if isinstance(child, LeafNode):
+                    for target in child._classes.keys():
+                        predictions_dict[target].append((child._classes[target], sum(child._classes.values())))
+                        predictions_dict['total_sum'] += child._classes[target]
+                else:
+                    predictions_dict = self._predict(row_in, child, predictions_dict)
+            return predictions_dict
 
-    def predict(self, data_in):
-        """ Strating from the root, predicts the class corresponding to the features contained in "data_in" """
+    def predict(self, data_in, distribution=False):
+        """ Starting from the root, predicts the class corresponding to the features contained in "data_in" """
         attribute = self._root_node.get_attribute().split(":")[0]
         preds = list()
         # data_in is a pandas DataFrame
-        #breakpoint()
         for index, row in data_in.iterrows():
-            child = self._root_node.get_child(row[attribute])
-            if isinstance(child, LeafNode):
-                preds.append(child.predict_class())
+            # Every class will have a list of tuple corresponding to every leaf reached (in case of unknown attribute) 
+            predictions_dict = {k: [] for k in data_in['target'].unique()}
+            predictions_dict['total_sum'] = 0
+            # if attribute is known, only the correspondent child is explored
+            if row[attribute] != '?':
+                child = self._root_node.get_child(row[attribute])
+                if child is None:
+                    raise Exception("Can't find child with attribute '{}'".format(attribute))
+                if isinstance(child, LeafNode):
+                    for target in child._classes.keys():
+                        predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
+                        predictions_dict['total_sum'] += child._classes[target] # needed for the final probability computation
+                    preds.append(predictions_dict)
+                else:
+                    preds.append(self._predict(row, child, predictions_dict))
             else:
-                preds.append(self._predict(row, child))
-        return preds
+                # if attribute is unknown, the case is spreaded to every child node
+                for child in self._root_node.get_childs():
+                    if isinstance(child, LeafNode):
+                        for target in child._classes.keys():
+                            predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
+                            predictions_dict['total_sum'] += child._classes[target] # needed for the final probability computation
+                    else:
+                        # recursive part
+                        predictions_dict = self._predict(row, child, predictions_dict)
+                preds.append(predictions_dict)
+        # probability distribution computation for every prediction required
+        out_preds = list() 
+        out_distr = list()
+        for pred in preds:
+            pred_distribution = {k: [] for k in data_in['target'].unique()} 
+            for target in pred_distribution.keys():
+                cond_prob = 0
+                # for every leaf selected in the previous part, containing the considered target class
+                for conditional in pred[target]:
+                    cond_prob += conditional[0] / pred['total_sum']
+                pred_distribution[target] = np.round(cond_prob, 4)
+            # select the class with max probability
+            out_preds.append(max(pred_distribution, key=pred_distribution.get))
+            out_distr.append(pred_distribution)
+        # return also the distribution or just the prediction
+        if distribution:
+            out_func = (out_preds, out_distr)
+        else:
+            out_func = out_preds
+
+        return out_func
 
     def get_split(self, data_in) -> Union[float, float, str]:
         """ Compute the best split of the input data """
-        #breakpoint()
         max_gain_ratio = None
         threshold_max_gain_ratio = None
         split_attribute = None
         # if there is only the target column or the aren't data the split doesn't exist 
         if len(data_in['target'].unique()) > 1 and len(data_in) > 0:
-            max_gain_ratio = 0
+            # in order the split to be chosen, its information gain must be at least equal to the mean of all the tests considered 
+            tests_examined = {'gain_ratio': list(), 'info_gain': list(),
+                    'threshold': list(), 'attribute': list(), 'not_near_trivial_subset': list()}
             for column in data_in.columns:
                 # gain ratio and threshold (if exist) for every feature 
                 if not column in ['target', 'weight'] and len(data_in[column].unique()) > 1:
-                    gain_ratio, threshold = get_split_gain(data_in[[column, 'target']], 
+                    gain_ratio, info_gain, threshold, are_there_at_least_two = get_split_gain(data_in[[column, 'target', 'weight']], 
                         self._attributes_map[column])
-                    # keep the best split
-                    if gain_ratio > max_gain_ratio:
-                        max_gain_ratio = gain_ratio
-                        threshold_max_gain_ratio = threshold
-                        split_attribute = column
-        return max_gain_ratio, threshold_max_gain_ratio, split_attribute
+                    tests_examined['gain_ratio'].append(gain_ratio)
+                    tests_examined['info_gain'].append(info_gain)
+                    tests_examined['threshold'].append(threshold)
+                    tests_examined['attribute'].append(column)
+                    tests_examined['not_near_trivial_subset'].append(are_there_at_least_two)
+            # select the best split
+            tests_examined = pd.DataFrame.from_dict(tests_examined)
+            mean_info_gain = tests_examined['info_gain'].mean()
+            # The best split must have at the least two subset with at least two cases 
+            # TODO the above condition should be user dependent
+            select_max_gain_ratio = tests_examined[(tests_examined['info_gain'] >= mean_info_gain) & (tests_examined['not_near_trivial_subset'] == True)]
+            if len(select_max_gain_ratio) != 0:
+                max_gain_ratio_idx = select_max_gain_ratio['gain_ratio'].idxmax()
+                max_gain_ratio = select_max_gain_ratio.loc[max_gain_ratio_idx, 'gain_ratio']
+                max_gain_ratio_threshold = select_max_gain_ratio.loc[max_gain_ratio_idx, 'threshold']
+                split_attribute = select_max_gain_ratio.loc[max_gain_ratio_idx, 'attribute']
+            else:
+                max_gain_ratio = None
+                max_gain_ratio_threshold = None
+                split_attribute = None
+        else:
+            max_gain_ratio = None
+            max_gain_ratio_threshold = None
+            split_attribute = None
+            
+        return max_gain_ratio, max_gain_ratio_threshold, split_attribute
 
-    def split_node(self, node, data_in) -> None:
+    def split_node(self, node, data_in, data_total) -> None:
         """ Recurseviley split a node based on "data_in" until some conditions are met and a leaves nodes are added to the tree """ 
-        #breakpoint()
         # categorical and boolean arguments can be selected only one time in a "line of succession"
         if not ('<' in node.get_label() or '>' in node.get_label()) and not node.get_label() == 'root': 
             data_in = data_in.copy(deep=True) 
             data_in = data_in.drop(columns=[node.get_label().split()[0]])
         max_gain_ratio, local_threshold, split_attribute = self.get_split(data_in)
-        #breakpoint()
         # compute error predicting the most frequent class without splitting
         node_errors = data_in['target'].value_counts().sum() - data_in['target'].value_counts().max()
         # if split attribute does not exist then is a leaf 
         if not split_attribute is None:
             child_errors = self.compute_split_error(data_in[[split_attribute, 'target']], local_threshold)
             # if child errors are greater the actual error of the node than the split is useless
-            if child_errors > node_errors:
+            if child_errors >= node_errors:
                 # the node (default type "DecisionNode") is "transformed" in a leaf node ("LeafNode" type)
                 parent_node = node.get_parent_node()
+                #breakpoint()
                 self.delete_node(node)
-                node = LeafNode(dict(data_in['target'].value_counts()), node.get_label())
+                node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
                 self.add_node(node, parent_node)
             else:
-                # compute global threshold from local one
-                #breakpoint()
-                threshold = get_total_threshold(data_in[split_attribute], local_threshold)
-                # if the attribute with the greatest gain is continuous than the spit is binary
+                # compute global threshold (on the complete dataset) from local one
+                threshold = get_total_threshold(data_total[split_attribute], local_threshold)
+                # if the attribute with the greatest gain is continuous than the split is binary
                 if self._attributes_map[split_attribute] == 'continuous':
                     node.set_attribute('{}:{}'.format(split_attribute, threshold), 'continuous')
                     # create DecisionNode, recursion and add node
-                    low_split_node = DecisionNode('{} <= {}'.format(split_attribute, threshold))
+                    # Low split
+                    low_split_node = DecisionNode('{} <= {}'.format(split_attribute, float(threshold)))
                     self.add_node(low_split_node, node)
+                    # the split is computed on the known data and then weighted on unknown ones
                     data_known = data_in[data_in[split_attribute] != '?']
                     data_unknown = data_in[data_in[split_attribute] == '?']
                     weight_unknown = len(data_known[data_known[split_attribute] <= threshold]) / len(data_known)
-                    data_unknown['weight'] = [weight_unknown] * len(data_unknown)
-                    new_data_low = pd.concat([data_known[data_known[split_attribute] <= threshold], data_unknown], ignore_index=True)
-                    self.split_node(low_split_node, new_data_low)
-                    high_split_node = DecisionNode('{} > {}'.format(split_attribute, threshold))
+                    new_weight = (np.array([weight_unknown] * len(data_unknown)) * np.array(data_unknown['weight'].copy(deep=True))).tolist()
+                    new_data_unknown = data_unknown.copy(deep=True)
+                    new_data_unknown.loc[:, ['weight']] = new_weight
+                    # concat the unknown data to the known ones, weighted, and pass to the next split
+                    new_data_low = pd.concat([data_known[data_known[split_attribute] <= threshold], new_data_unknown], ignore_index=True)
+                    self.split_node(low_split_node, new_data_low, data_total)
+                    # High split
+                    high_split_node = DecisionNode('{} > {}'.format(split_attribute, float(threshold)))
                     self.add_node(high_split_node, node)
                     weight_unknown = len(data_known[data_known[split_attribute] > threshold]) / len(data_known)
-                    data_unknown['weight'] = [weight_unknown] * len(data_unknown)
-                    new_data_high = pd.concat([data_known[data_known[split_attribute] > threshold], data_unknown], ignore_index=True)
-                    self.split_node(high_split_node, new_data_high)
+                    new_weight = (np.array([weight_unknown] * len(data_unknown)) * np.array(data_unknown['weight'].copy(deep=True))).tolist()
+                    new_data_unknown = data_unknown.copy(deep=True)
+                    new_data_unknown.loc[:, ['weight']] = new_weight
+                    new_data_high = pd.concat([data_known[data_known[split_attribute] > threshold], new_data_unknown], ignore_index=True)
+                    self.split_node(high_split_node, new_data_high, data_total)
                 else:
                     # if the attribute is categorical or boolean than there is a node for every possible attribute value
                     node.set_attribute(split_attribute, self._attributes_map[split_attribute])
@@ -131,17 +218,22 @@ class DecisionTree(object):
                         # create DecisionNode, recursion and add node
                         child_node = DecisionNode('{} = {}'.format(split_attribute, attr_value))
                         self.add_node(child_node, node)
+                        # the split is computed on the known data and then weighted on unknown ones
                         weight_unknown = len(data_known[data_known[split_attribute] == attr_value]) / len(data_known)
-                        data_unknown['weight'] = [weight_unknown] * len(data_unknown)
-                        new_data = pd.concat([data_known[data_known[split_attribute] == attr_value], data_unknown], ignore_index=True)
-                        self.split_node(child_node, new_data)
+                        new_weight = (np.array([weight_unknown] * len(data_unknown)) * np.array(data_unknown['weight'].copy(deep=True))).tolist()
+                        new_data_unknown = data_unknown.copy(deep=True)
+                        new_data_unknown.loc[:, ['weight']] = new_weight
+                        # concat the unknown data to the known ones, weighted, and pass to the next split
+                        new_data = pd.concat([data_known[data_known[split_attribute] == attr_value], new_data_unknown], ignore_index=True)
+                        self.split_node(child_node, new_data, data_total)
         else:
             # the node (default type "DecisionNode") is "transformed" in a leaf node ("LeafNode" type)
             parent_node = node.get_parent_node()
-#            if parent_node is None:
-#                breakpoint()
+            if parent_node is None:
+                raise Exception("Can't transform DecisionNode {} in LeafNode: no parent found".format(node.get_label()))
             self.delete_node(node)
-            node = LeafNode(dict(data_in['target'].value_counts()), node.get_label())
+            # the final number of class contained is the sum of the weights of every row with that specific target
+            node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
             self.add_node(node, parent_node)
 
     def compute_split_error(self, data_in, threshold) -> int:
@@ -175,7 +267,7 @@ class DecisionTree(object):
         # add weight to dataset in order to handle unknown values
         data_in['weight'] = [1] * len(data_in)
         data_in = data_in.fillna('?')
-        self.split_node(self._root_node, data_in)
+        self.split_node(self._root_node, data_in, data_in)
 
     def get_leaves_nodes(self):
         """ Returns a list of the leaves nodes """

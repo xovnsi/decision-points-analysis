@@ -24,7 +24,7 @@ class Node(object):
             try:
                 self._threshold = float(self._attribute.split(':')[1])
             except:
-                raise Exception("Threshold must be a numerica value")
+                raise Exception("Threshold must be a numerical value")
         elif not self._attribute_type in ['categorical', 'boolean']:
             raise Exception("Attribute value not supported")
 
@@ -86,8 +86,8 @@ class LeafNode(Node):
     def __init__(self, classes, parent_attribute_value):
         super().__init__(parent_attribute_value)
         self._classes = classes
-        # TODO implement weigth count for prediction of data woth unknown attribute
-        self._label_class = max(self._classes.items(), key=operator.itemgetter(1))[0]
+        # The label class of the node is the class with maximum number of examples
+        self._label_class = max(self._classes.items(), key=operator.itemgetter(1))[0] 
 
     def get_class_names(self) -> list:
         """ Returns the classes contained in the node after the training """
@@ -96,8 +96,4 @@ class LeafNode(Node):
     def get_class_examples(self, class_name) -> int:
         """ Retruns the number of examples of a specific class contained in the node after the training """
         return self._classes[class_name]
-
-    def predict_class(self):
-        """ Predicts a class, based on the most frequent class contained in the node after the training """
-        return self._label_class
     

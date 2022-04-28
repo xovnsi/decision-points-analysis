@@ -15,7 +15,7 @@ for trace in log:
                     event[attr] = float(event[attr])
                 except:
                     pass
-breakpoint()
+#breakpoint()
 net, im, fm = pm4py.discover_petri_net_inductive(log)
 net, im, fm = decision_mining.create_data_petri_nets_with_decisions(log, net, im, fm)
 #net, im, fm = pnml_importer.apply("models/running-example-Will-BPM-silent-loops-silent-loopB.pnml")
