@@ -3,13 +3,14 @@ from pm4py.algo.discovery.inductive import algorithm as inductive_miner
 from pm4py.algo.discovery.alpha import algorithm as alpha_miner
 from pm4py.statistics.variants.log import get as variants_module
 from pm4py.algo.conformance.tokenreplay import algorithm as token_replay
+from pm4py.algo.decision_mining.algorithm import simplify_token_replay
 from utils import *
 from pm4py.algo.conformance.alignments.petri_net import algorithm as ali
 from DecisionTree import DecisionTree
 from sklearn import metrics
 
 # Import the log
-event_log = pm4py.read_xes('./data/log-running-example-Will-BPM-silent-loops-silent-loopB.xes')
+event_log = pm4py.read_xes('./data/log-running-example-Will-BPM-silent.xes')
 
 # Extract the process model
 net, im, fm = alpha_miner.apply(event_log)
@@ -17,6 +18,8 @@ net, im, fm = alpha_miner.apply(event_log)
 # Get all the useful data structures to handle loops etc.
 loop_vertex = detect_loops(net)
 in_places_loops = get_in_place_loop(net, loop_vertex)
+out_places_loops = get_out_place_loop(net, loop_vertex)
+
 in_transitions_loop = list()
 for place_name in in_places_loops:
     place = [place_net for place_net in net.places if place_net.name == place_name]
@@ -24,11 +27,11 @@ for place_name in in_places_loops:
     for out_arc in place.out_arcs:
         out_transitions = get_next_not_silent(place, [], loop_vertex)
         in_transitions_loop.extend(out_transitions)
-out_places_loops = get_out_place_loop(net, loop_vertex)
+
 trans_events_map = get_map_transitions_events(net)
 places_events_map = get_map_place_to_events(net, loop_vertex)
 
-# Attributes map
+# Attributes map to be used in the decision tree at the end
 attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
                   'communication': 'categorical', 'discarded': 'boolean'}
 
@@ -45,22 +48,13 @@ for variant in variants_idxs:
     one_variant.append(variant)
 
 replay_result = token_replay.apply(event_log, net, im, fm)
-
-variant = {}
-for element in replay_result:
-    if tuple(element['activated_transitions']) not in variant:
-        variant[tuple(element['activated_transitions'])] = True
-smaller_replay = []
-for element in replay_result:
-    if variant[tuple(element['activated_transitions'])]:
-        smaller_replay.append(element)
-        variant[tuple(element['activated_transitions'])] = False
+replay_result = simplify_token_replay(replay_result)
 
 # Get the data using alignments when needed
 count = 0   # variants counter
 event_attr = dict()
 
-for variant in smaller_replay:
+for variant in replay_result:
     if variant['trace_fitness'] == 1.0:
         for trace_index in variants_idxs[one_variant[count]]:
             trace = event_log[trace_index]
