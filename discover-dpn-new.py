@@ -111,16 +111,18 @@ for trace in log:
         # Update the last event name with the current event name
         last_event_name = event['concept:name']
 
-# For each decision point, create a dataframe, fit a decision tree and print the extracted rules
+# For each decision point (with values for at least one attribute, apart from the 'target' attribute)
+# create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
-    print("\n", decision_point)
-    dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
-    feature_names = get_feature_names(dataset)
-    dt = DecisionTree(attributes_map)
-    dt.fit(dataset)
-    y_pred = dt.predict(dataset.drop(columns=['target']))
-    print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-    print(dt.extract_rules())
+    if len(decision_points_data[decision_point]) > 1:
+        print("\n", decision_point)
+        dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
+        feature_names = get_feature_names(dataset)
+        dt = DecisionTree(attributes_map)
+        dt.fit(dataset)
+        y_pred = dt.predict(dataset.drop(columns=['target']))
+        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+        print(dt.extract_rules())
 
 toc = time()
 print("Total time: {}".format(toc-tic))

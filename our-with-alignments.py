@@ -9,7 +9,7 @@ from DecisionTree import DecisionTree
 from sklearn import metrics
 
 # Import the log
-event_log = pm4py.read_xes('./data/roadtraffic100traces.xes')
+event_log = pm4py.read_xes('./data/log-running-example-Will-BPM-silent-loops-silent-loopB.xes')
 
 # Extract the process model
 net, im, fm = alpha_miner.apply(event_log)
@@ -139,11 +139,12 @@ for variant in smaller_replay:
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
-    print("\n", decision_point)
-    dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
-    feature_names = get_feature_names(dataset)
-    dt = DecisionTree(attributes_map)
-    dt.fit(dataset)
-    y_pred = dt.predict(dataset.drop(columns=['target']))
-    print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-    print(dt.extract_rules())
+    if len(decision_points_data[decision_point]) > 1:
+        print("\n", decision_point)
+        dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
+        feature_names = get_feature_names(dataset)
+        dt = DecisionTree(attributes_map)
+        dt.fit(dataset)
+        y_pred = dt.predict(dataset.drop(columns=['target']))
+        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+        print(dt.extract_rules())
