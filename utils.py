@@ -602,7 +602,7 @@ def get_all_dp_from_event_to_sink(event, loops, places):
                         if len(out_arc.target.out_arcs) > 1:
                             places.append((out_arc.target.name, out_arc_inn.target.name))
                         places = get_all_dp_from_event_to_sink(out_arc_inn.target, loops, places)
-            if len(places) == places_length_before:
+            if len(places) == places_length_before and len(places) != 0:
                 places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
     

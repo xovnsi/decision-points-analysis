@@ -114,12 +114,14 @@ for trace in log:
         for place_from_event in places_from_event:
             # Append the last attribute values to the decision point dictionary
             for a in event_attr.keys():
-                # If the attribute is not present, add it as a new key, filling the previous entries with NIL
-                if a not in decision_points_data[place_from_event[0]]:
+                # If attribute is not present, and it is not nan, add it as a new key, filling previous entries with nan
+                if a not in decision_points_data[place_from_event[0]] and event_attr[a][0] is not np.nan:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
                     decision_points_data[place_from_event[0]][a] = [np.nan] * entries
-                # In every case, append the new value
-                decision_points_data[place_from_event[0]][a].append(event_attr[a][0])   # index 0 to avoid nested lists
+                    decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
+                # Else, if attribute is present, just append it to the existing list
+                elif a in decision_points_data[place_from_event[0]]:
+                    decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
             # Append also the target transition label to the decision point dictionary
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
@@ -137,10 +139,12 @@ for trace in log:
     if len(places_from_event) > 0:
         for place_from_event in places_from_event:
             for a in event_attr.keys():
-                if a not in decision_points_data[place_from_event[0]]:
+                if a not in decision_points_data[place_from_event[0]] and event_attr[a][0] is not np.nan:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
                     decision_points_data[place_from_event[0]][a] = [np.nan] * entries
-                decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
+                    decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
+                elif a in decision_points_data[place_from_event[0]]:
+                    decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
 # For each decision point (with values for at least one attribute, apart from the 'target' attribute)
