@@ -70,7 +70,7 @@ for loop in loops:
 # Get the map of places and events
 general_places_events_map = get_map_place_to_events(net, loops)
 
-#Attributes map
+# Attributes map
 tic = time()
 attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
                   'communication': 'categorical', 'discarded': 'boolean'}
@@ -95,7 +95,7 @@ for trace in log:
         number_of_loops[loop.name] = 0
 
     # Keep the same attributes observed in the previous traces (to keep dictionaries at the same length)
-    event_attr = {k: ['NIL'] for k in event_attr.keys()}
+    event_attr = {k: [np.nan] for k in event_attr.keys()}
     # Store the trace attributes (if any)
     if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
         event_attr.update(trace.attributes)
@@ -117,7 +117,7 @@ for trace in log:
                 # If the attribute is not present, add it as a new key, filling the previous entries with NIL
                 if a not in decision_points_data[place_from_event[0]]:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
-                    decision_points_data[place_from_event[0]][a] = ['NIL'] * entries
+                    decision_points_data[place_from_event[0]][a] = [np.nan] * entries
                 # In every case, append the new value
                 decision_points_data[place_from_event[0]][a].append(event_attr[a][0])   # index 0 to avoid nested lists
             # Append also the target transition label to the decision point dictionary
@@ -139,7 +139,7 @@ for trace in log:
             for a in event_attr.keys():
                 if a not in decision_points_data[place_from_event[0]]:
                     entries = len(decision_points_data[place_from_event[0]]['target'])
-                    decision_points_data[place_from_event[0]][a] = ['NIL'] * entries
+                    decision_points_data[place_from_event[0]][a] = [np.nan] * entries
                 decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
@@ -152,7 +152,7 @@ for decision_point in decision_points_data.keys():
         feature_names = get_feature_names(dataset)
         dt = DecisionTree(attributes_map)
         dt.fit(dataset)
-        y_pred = dt.predict(dataset.drop(columns=['target']))
+        y_pred = dt.predict(dataset)
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
         print(dt.extract_rules())
 

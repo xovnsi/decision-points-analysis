@@ -1,37 +1,73 @@
 import pm4py
+import os
+import argcomplete, argparse
+from pm4py.objects.petri_net.importer import importer as pnml_importer
+from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.algo.discovery.inductive import algorithm as inductive_miner
 from pm4py.algo.discovery.alpha import algorithm as alpha_miner
 from pm4py.statistics.variants.log import get as variants_module
 from pm4py.algo.conformance.tokenreplay import algorithm as token_replay
 from pm4py.algo.decision_mining.algorithm import simplify_token_replay
 from utils import *
+from Loops import Loop
 from pm4py.algo.conformance.alignments.petri_net import algorithm as ali
 from DecisionTree import DecisionTree
 from sklearn import metrics
 
-# Import the log
-event_log = pm4py.read_xes('./data/log-running-example-Will-BPM-silent.xes')
+def ModelCompleter(**kwargs):
+    return [name.split('.')[0] for name in os.listdir('models')]
+# Argument (verbose and net_name)
+parser = argparse.ArgumentParser()
+parser.add_argument("net_name", help="name of the petri net file (without extension)", type=str).completer = ModelCompleter
+argcomplete.autocomplete(parser)
+# parse arguments
+args = parser.parse_args()
+net_name = args.net_name
+
+try:
+    # net, initial_marking, final_marking = pnml_importer.apply("models/{}.pnml".format(net_name))
+    net, im, fm = pnml_importer.apply("models/{}.pnml".format(net_name))
+except:
+    raise Exception("File not found")
+event_log = xes_importer.apply('data/log-{}.xes'.format(net_name))
+# net, im, fm = pm4py.discover_petri_net_inductive(log)
+for trace in event_log:
+    for event in trace:
+        for attr in event.keys():
+           # if attr == 'appeal':
+           #     breakpoint()
+            if not isinstance(event[attr], bool):
+                try:
+                    event[attr] = float(event[attr])
+                except:
+                    pass
 
 # Extract the process model
-net, im, fm = alpha_miner.apply(event_log)
+# net, im, fm = alpha_miner.apply(event_log)
 
 # Get all the useful data structures to handle loops etc.
-loop_vertex = detect_loops(net)
-in_places_loops = get_in_place_loop(net, loop_vertex)
-out_places_loops = get_out_place_loop(net, loop_vertex)
-
-in_transitions_loop = list()
-for place_name in in_places_loops:
-    place = [place_net for place_net in net.places if place_net.name == place_name]
-    place = place[0]
-    for out_arc in place.out_arcs:
-        out_transitions = get_next_not_silent(place, [], loop_vertex)
-        in_transitions_loop.extend(out_transitions)
-
 trans_events_map = get_map_transitions_events(net)
-places_events_map = get_map_place_to_events(net, loop_vertex)
+events_trans_map = get_map_events_transitions(net)
 
-# Attributes map to be used in the decision tree at the end
+loop_vertex = detect_loops(net)
+loop_vertex = delete_composite_loops(loop_vertex)
+
+loops = list()
+for loop_length in loop_vertex.keys():
+    for i, loop in enumerate(loop_vertex[loop_length]):
+        events_loop = [events_trans_map[vertex] for vertex in loop if vertex in events_trans_map.keys()]
+        loop_obj = Loop(loop, events_loop, net, "{}_{}".format(loop_length, i))
+        loops.append(loop_obj)
+
+for loop in loops:
+    loop.set_nearest_input(net, loops)
+    loop.set_dp_forward_order_transition(net)
+    loop.set_dp_backward_order_transition(net)
+
+# Get the map of places and events
+general_places_events_map = get_map_place_to_events(net, loops)
+
+# Attributes map
 attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
                   'communication': 'categorical', 'discarded': 'boolean'}
 
@@ -40,6 +76,8 @@ decision_points_data = dict()
 for place in net.places:
     if len(place.out_arcs) >= 2:
         decision_points_data[place.name] = {k: [] for k in ['target']}
+
+event_attr = dict()
 
 # Get the variants
 variants_idxs = variants_module.get_variants_from_log_trace_idx(event_log)
@@ -58,27 +96,41 @@ for variant in replay_result:
     if variant['trace_fitness'] == 1.0:
         for trace_index in variants_idxs[one_variant[count]]:
             trace = event_log[trace_index]
+            places_events_map = general_places_events_map.copy()
+            dp_list = list(places_events_map.keys())
+            transition_sequence = list()
+            event_sequence = list()
+            number_of_loops = dict()
+            for loop in loops:
+                loop.set_inactive()
+                number_of_loops[loop.name] = 0
+
             # Keep the same attributes observed in the previous traces (to keep dictionaries at the same length)
-            event_attr = {k: ['NIL'] for k in event_attr.keys()}
+            event_attr = {k: [np.nan] for k in event_attr.keys()}
             # Store the trace attributes (if any)
             if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
                 event_attr.update(trace.attributes)
             last_event_name = 'None'
+
             for event in trace:
                 trans_from_event = trans_events_map[event["concept:name"]]
+                transition_sequence.append(trans_from_event)
+                event_sequence.append(event['concept:name'])
                 last_event_trans = trans_events_map[last_event_name]
-                # Places that are interested in the current transition
-                places_from_event = get_place_from_transition(places_events_map, event['concept:name'], loop_vertex,
-                                                              last_event_trans, in_transitions_loop, out_places_loops,
-                                                              in_places_loops, trans_from_event)
+
+                places_events_map, dp_list = update_places_map_dp_list_if_looping(net, dp_list, places_events_map,
+                                                                                  loops, event_sequence,
+                                                                                  number_of_loops, trans_events_map)
+                places_from_event = get_place_from_event(places_events_map, event['concept:name'], dp_list)
+                dp_list = update_dp_list(places_from_event, dp_list)
 
                 for place_from_event in places_from_event:
                     # Append the last attribute values to the decision point dictionary
                     for a in event_attr.keys():
-                        # If the attribute is not present, add it as a new key, filling the previous entries with NIL
+                        # If the attribute is not present, add it as a new key, filling the previous entries with np.nan
                         if a not in decision_points_data[place_from_event[0]]:
                             entries = len(decision_points_data[place_from_event[0]]['target'])
-                            decision_points_data[place_from_event[0]][a] = ['NIL'] * entries
+                            decision_points_data[place_from_event[0]][a] = [np.nan] * entries
                         # In every case, append the new value
                         decision_points_data[place_from_event[0]][a].append(event_attr[a][0])  # 0 to avoid nested lists
                     # Append also the target transition label to the decision point dictionary
@@ -89,37 +141,65 @@ for variant in replay_result:
                 [event_attr.pop(k) for k in ['time:timestamp', 'concept:name']]
                 # Update the last event name with the current event name
                 last_event_name = event['concept:name']
+
+            # Final update of the current trace (from last event to sink)
+            transition = [trans for trans in net.transitions if trans.label == event['concept:name']][0]
+
+            places_from_event = get_all_dp_from_event_to_sink(transition, loops, [])
+
+            if len(places_from_event) > 0:
+                for place_from_event in places_from_event:
+                    for a in event_attr.keys():
+                        if a not in decision_points_data[place_from_event[0]]:
+                            entries = len(decision_points_data[place_from_event[0]]['target'])
+                            decision_points_data[place_from_event[0]][a] = [np.nan] * entries
+                        decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
+                    decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
+
     else:
         example_trace = event_log[variants_idxs[one_variant[count]][0]]
         alignment = ali.apply(example_trace, net, im, fm)['alignment']
         for trace_index in variants_idxs[one_variant[count]]:
             trace = event_log[trace_index]
+            places_events_map = general_places_events_map.copy()
+            dp_list = list(places_events_map.keys())
+            transition_sequence = list()
+            event_sequence = list()
+            number_of_loops = dict()
+            for loop in loops:
+                loop.set_inactive()
+                number_of_loops[loop.name] = 0
+
             # Keep the same attributes observed in the previous traces (to keep dictionaries at the same length)
-            event_attr = {k: ['NIL'] for k in event_attr.keys()}
+            event_attr = {k: [np.nan] for k in event_attr.keys()}
             # Store the trace attributes (if any)
             if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
                 event_attr.update(trace.attributes)
             last_event_name = 'None'
             j = 0   # log event index
+
             for el in alignment:
                 if el[1] != '>>':   # If move in model
                     trans_from_event = trans_events_map[el[1]]
+                    transition_sequence.append(trans_from_event)
+                    event_sequence.append(el[1])
                     last_event_trans = trans_events_map[last_event_name]
-                    # Places that are interested in the current transition
-                    places_from_event = get_place_from_transition(places_events_map, el[1], loop_vertex,
-                                                                  last_event_trans, in_transitions_loop,
-                                                                  out_places_loops,
-                                                                  in_places_loops, trans_from_event)
+
+                    places_events_map, dp_list = update_places_map_dp_list_if_looping(net, dp_list, places_events_map,
+                                                                                      loops, event_sequence,
+                                                                                      number_of_loops, trans_events_map)
+                    places_from_event = get_place_from_event(places_events_map, el[1], dp_list)
+                    dp_list = update_dp_list(places_from_event, dp_list)
 
                     for place_from_event in places_from_event:
                         # Append the last attribute values to the decision point dictionary
                         for a in event_attr.keys():
-                            # If attribute is not present, add it as a new key, filling the previous entries with NIL
+                            # If attribute is not present, add it as a new key, filling the previous entries with np.nan
                             if a not in decision_points_data[place_from_event[0]]:
                                 entries = len(decision_points_data[place_from_event[0]]['target'])
-                                decision_points_data[place_from_event[0]][a] = ['NIL'] * entries
+                                decision_points_data[place_from_event[0]][a] = [np.nan] * entries
                             # In every case, append the new value
-                            decision_points_data[place_from_event[0]][a].append(event_attr[a][0])  # 0 avoid nested list
+                            decision_points_data[place_from_event[0]][a].append(event_attr[a][0])  # 0 for nested lists
                         # Append also the target transition label to the decision point dictionary
                         decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
                 if el[0] != '>>' and el[1] != '>>':     # If move in log and model
@@ -129,16 +209,31 @@ for variant in replay_result:
                 if el[0] != '>>':   # If move in log, go to the next log event
                     last_event_name = trace[j]['concept:name']
                     j += 1
+            # Final update of the current trace (from last event to sink)
+            transition = [trans for trans in net.transitions if trans.label == el[1]][0]
+
+            places_from_event = get_all_dp_from_event_to_sink(transition, loops, [])
+
+            if len(places_from_event) > 0:
+                for place_from_event in places_from_event:
+                    for a in event_attr.keys():
+                        if a not in decision_points_data[place_from_event[0]]:
+                            entries = len(decision_points_data[place_from_event[0]]['target'])
+                            decision_points_data[place_from_event[0]][a] = [np.nan] * entries
+                        decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
+                    decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
+
     count += 1
 
-# For each decision point, create a dataframe, fit a decision tree and print the extracted rules
+# For each decision point (with values for at least one attribute, apart from the 'target' attribute)
+# create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
     if len(decision_points_data[decision_point]) > 1:
         print("\n", decision_point)
-        dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
+        dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
         feature_names = get_feature_names(dataset)
         dt = DecisionTree(attributes_map)
         dt.fit(dataset)
-        y_pred = dt.predict(dataset.drop(columns=['target']))
+        y_pred = dt.predict(dataset)
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
         print(dt.extract_rules())

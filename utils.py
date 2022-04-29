@@ -512,7 +512,7 @@ def count_length_from_source(place, input_places, count, loops, lengths, initial
                     for loop in loops:
                         if loop.is_vertex_output_loop(out_arc_inn.target) and not loop.is_vertex_output_loop(out_arc_inn.source):
                             count += 1
-                            lengths = cont_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
+                            lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
                         else:
                             not_in_loop = True
                     if not_in_loop:
