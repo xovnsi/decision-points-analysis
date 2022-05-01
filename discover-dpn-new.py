@@ -69,10 +69,7 @@ for loop in loops:
 # Get the map of places and events
 general_places_events_map = get_map_place_to_events(net, loops)
 
-# Attributes map
 tic = time()
-attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-                  'communication': 'categorical', 'discarded': 'boolean'}
 
 # Dictionary of attributes data for every decision point, with a target key to be used later on
 decision_points_data = dict()
@@ -148,9 +145,13 @@ for trace in log:
 
 
 attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous',
-        'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
-        'org.resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
-        'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical', 'lastSent': 'categorical'}
+                  'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
+                  'org.resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+                  'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
+                  'lastSent': 'categorical'}
+
+attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+                  'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point (with values for at least one attribute, apart from the 'target' attribute)
 # create a dataframe, fit a decision tree and print the extracted rules

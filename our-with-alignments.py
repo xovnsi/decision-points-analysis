@@ -233,15 +233,26 @@ for variant in replay_result:
 
     count += 1
 
+attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous',
+                  'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
+                  'org.resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+                  'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
+                  'lastSent': 'categorical'}
+
+attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+                  'communication': 'categorical', 'discarded': 'boolean'}
+
 # For each decision point (with values for at least one attribute, apart from the 'target' attribute)
 # create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
     if len(decision_points_data[decision_point]) > 1:
         print("\n", decision_point)
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
+        dataset.columns = dataset.columns.str.replace(':', '.')
         feature_names = get_feature_names(dataset)
         dt = DecisionTree(attributes_map)
         dt.fit(dataset)
-        y_pred = dt.predict(dataset)
-        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-        print(dt.extract_rules())
+        if not len(dt.get_nodes()) == 1:
+            y_pred = dt.predict(dataset.drop(columns=['target']))
+            print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+            print(dt.extract_rules())
