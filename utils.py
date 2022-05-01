@@ -512,7 +512,7 @@ def count_length_from_source(place, input_places, count, loops, lengths, initial
                     for loop in loops:
                         if loop.is_vertex_output_loop(out_arc_inn.target) and not loop.is_vertex_output_loop(out_arc_inn.source):
                             count += 1
-                            lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
+                            lengths = cont_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
                         else:
                             not_in_loop = True
                     if not_in_loop:
@@ -561,21 +561,23 @@ def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_
                     loop_reachable = loop.dp_forward.copy()
                     for trans in places_map[dp].keys():
                         if loop.is_vertex_in_loop(trans):
-                            if event_sequence[-1] in loop.dp_forward[dp][trans]:
-                                if isinstance(places_map[dp][trans], set):
-                                    #breakpoint()
-                                    places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
-                                    places_map[dp][trans] = places_map[dp][trans].union(loop_reachable[dp][trans])
+                            if trans in loop.dp_forward[dp].keys():
+                                if event_sequence[-1] in loop.dp_forward[dp][trans]:
+                                    if isinstance(places_map[dp][trans], set):
+                                        #breakpoint()
+                                        places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
+                                        places_map[dp][trans] = places_map[dp][trans].union(loop_reachable[dp][trans])
                 for dp in loop.dp_backward.keys():
                     if not dp in dp_list:
                         dp_list.append(dp)
                     loop_reachable = loop.dp_backward.copy()
                     for trans in places_map[dp].keys():
                         if loop.is_vertex_in_loop(trans):
-                            if event_sequence[-1] in loop.dp_backward[dp][trans]:
-                                if isinstance(places_map[dp][trans], set):
-                                    places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
-                                    places_map[dp][trans] = places_map[dp][trans].union(loop_reachable[dp][trans])
+                            if trans in loop.dp_backward[dp].keys():
+                                if event_sequence[-1] in loop.dp_backward[dp][trans]:
+                                    if isinstance(places_map[dp][trans], set):
+                                        places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
+                                        places_map[dp][trans] = places_map[dp][trans].union(loop_reachable[dp][trans])
     return places_map, dp_list
         
 def update_dp_list(places_from_event, dp_list):
@@ -602,7 +604,7 @@ def get_all_dp_from_event_to_sink(event, loops, places):
                         if len(out_arc.target.out_arcs) > 1:
                             places.append((out_arc.target.name, out_arc_inn.target.name))
                         places = get_all_dp_from_event_to_sink(out_arc_inn.target, loops, places)
-            if len(places) == places_length_before and len(places) != 0:
+            if len(places) == places_length_before:
                 places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
     

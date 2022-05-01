@@ -21,7 +21,7 @@ class DecisionTree(object):
         """ Removes a node from the tree's set of nodes and disconnects it from its parent node """
         parent_node = node.get_parent_node()
         if node.get_parent_node() is None:
-            raise Exception("Can't delet node {}. Parent node not found".format(node._label))
+            raise Exception("Can't delete node {}. Parent node not found".format(node._label))
         parent_node.delete_child(node)
         self._nodes.remove(node)
 
@@ -48,7 +48,10 @@ class DecisionTree(object):
                 raise Exception("Can't find child with attribute '{}'".format(attribute))
             if isinstance(child, LeafNode):
                 for target in child._classes.keys():
-                    predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
+                    if not target in predictions_dict.keys():
+                        predictions_dict[target] = [(child._classes[target], sum(child._classes.values()))]
+                    else:
+                        predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
                     predictions_dict['total_sum'] += child._classes[target] # total sum is needed for the final probability computation
                 return predictions_dict
             else:
@@ -58,7 +61,10 @@ class DecisionTree(object):
             for child in node.get_childs():
                 if isinstance(child, LeafNode):
                     for target in child._classes.keys():
-                        predictions_dict[target].append((child._classes[target], sum(child._classes.values())))
+                        if not target in predictions_dict.keys():
+                            predictions_dict[target] = [(child._classes[target], sum(child._classes.values()))]
+                        else:
+                            predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
                         predictions_dict['total_sum'] += child._classes[target]
                 else:
                     predictions_dict = self._predict(row_in, child, predictions_dict)
@@ -71,8 +77,9 @@ class DecisionTree(object):
         # data_in is a pandas DataFrame
         for index, row in data_in.iterrows():
             # Every class will have a list of tuple corresponding to every leaf reached (in case of unknown attribute) 
-            predictions_dict = {k: [] for k in data_in['target'].unique()}
-            predictions_dict['total_sum'] = 0
+            #predictions_dict = {k: [] for k in data_in['target'].unique()}
+            predictions_dict = {'total_sum': 0}
+            #predictions_dict['total_sum'] = 0
             # if attribute is known, only the correspondent child is explored
             if row[attribute] != '?':
                 child = self._root_node.get_child(row[attribute])
@@ -80,7 +87,10 @@ class DecisionTree(object):
                     raise Exception("Can't find child with attribute '{}'".format(attribute))
                 if isinstance(child, LeafNode):
                     for target in child._classes.keys():
-                        predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
+                        if not target in predictions_dict.keys():
+                            predictions_dict[target] = [(child._classes[target], sum(child._classes.values()))]
+                        else:
+                            predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
                         predictions_dict['total_sum'] += child._classes[target] # needed for the final probability computation
                     preds.append(predictions_dict)
                 else:
@@ -90,7 +100,10 @@ class DecisionTree(object):
                 for child in self._root_node.get_childs():
                     if isinstance(child, LeafNode):
                         for target in child._classes.keys():
-                            predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
+                            if not target in predictions_dict.keys():
+                                predictions_dict[target] = [(child._classes[target], sum(child._classes.values()))]
+                            else:
+                                predictions_dict[target].append((child._classes[target], sum(child._classes.values()))) # info about the leaf classes
                             predictions_dict['total_sum'] += child._classes[target] # needed for the final probability computation
                     else:
                         # recursive part
@@ -100,7 +113,7 @@ class DecisionTree(object):
         out_preds = list() 
         out_distr = list()
         for pred in preds:
-            pred_distribution = {k: [] for k in data_in['target'].unique()} 
+            pred_distribution = {k: [] for k in pred.keys() if k != 'total_sum'} 
             for target in pred_distribution.keys():
                 cond_prob = 0
                 # for every leaf selected in the previous part, containing the considered target class
@@ -176,15 +189,20 @@ class DecisionTree(object):
             if child_errors >= node_errors:
                 # the node (default type "DecisionNode") is "transformed" in a leaf node ("LeafNode" type)
                 parent_node = node.get_parent_node()
+                if parent_node is None and node.get_label() == 'root':
+                    print("The data are not feasible for fitting a tree. Can't find a suitable split of the root node.")
+                elif parent_node is None:
+                    raise Exception("Can't transform DecisionNode {} in LeafNode: no parent found".format(node.get_label()))
+                else:
                 #breakpoint()
-                self.delete_node(node)
-                node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
-                self.add_node(node, parent_node)
+                    self.delete_node(node)
+                    node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
+                    self.add_node(node, parent_node)
             else:
-                # compute global threshold (on the complete dataset) from local one
-                threshold = get_total_threshold(data_total[split_attribute], local_threshold)
                 # if the attribute with the greatest gain is continuous than the split is binary
                 if self._attributes_map[split_attribute] == 'continuous':
+                    # compute global threshold (on the complete dataset) from local one
+                    threshold = get_total_threshold(data_total[split_attribute], local_threshold)
                     node.set_attribute('{}:{}'.format(split_attribute, threshold), 'continuous')
                     # create DecisionNode, recursion and add node
                     # Low split
@@ -229,12 +247,15 @@ class DecisionTree(object):
         else:
             # the node (default type "DecisionNode") is "transformed" in a leaf node ("LeafNode" type)
             parent_node = node.get_parent_node()
-            if parent_node is None:
+            if parent_node is None and node.get_label() == 'root':
+                print("The data are not feasible for fitting a tree. Can't find a suitable split of the root node.")
+            elif parent_node is None:
                 raise Exception("Can't transform DecisionNode {} in LeafNode: no parent found".format(node.get_label()))
-            self.delete_node(node)
-            # the final number of class contained is the sum of the weights of every row with that specific target
-            node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
-            self.add_node(node, parent_node)
+            else:
+                self.delete_node(node)
+                # the final number of class contained is the sum of the weights of every row with that specific target
+                node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
+                self.add_node(node, parent_node)
 
     def compute_split_error(self, data_in, threshold) -> int:
         """ Computes the error made by the split if predicting the most frequent class for every child born after it """
@@ -242,6 +263,9 @@ class DecisionTree(object):
         attr_type = self._attributes_map[attr_name]
         # if continuous type the split is binary given by th threshold
         if attr_type == 'continuous':
+            data_in = data_in[data_in[attr_name] != '?']
+            data_in[attr_name] = data_in[attr_name].astype(float)
+            #breakpoint()
             split_left = data_in[data_in[attr_name] <= threshold]
             # pandas function to count the occurnces of the different value of target
             values_count = split_left['target'].value_counts()
@@ -288,3 +312,5 @@ class DecisionTree(object):
             rules[target_class] = "|| ".join(rules[target_class])
         return rules
 
+    def get_nodes(self):
+        return self._nodes

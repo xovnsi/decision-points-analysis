@@ -64,7 +64,7 @@ class Loop(object):
                             for out_arc_inn in out_arc.target.out_arcs:
                                 #breakpoint()
                                 not_silent = self.get_next_not_silent_forward(out_arc_inn.target, not_silent)
-                        dp_forward[place.name][out_arc.target.name] = not_silent
+                            dp_forward[place.name][out_arc.target.name] = not_silent
         self.dp_forward = dp_forward
 
 
@@ -210,14 +210,15 @@ class Loop(object):
             if not out_arc.target.label is None:
                 return reachable
             else:
-                for out_arc_inn in out_arc.target.out_arcs:
-                    if out_arc_inn.target.name in self.vertex:
-                        if out_arc_inn.target.name == end_place:
-                            reachable = True
-                        else:
-                            reachable = self.check_if_place_reachable_through_inv_act(out_arc_inn.target, end_place, reachable)
-                    if reachable:
-                        break
+                if out_arc.target.name in self.vertex:
+                    for out_arc_inn in out_arc.target.out_arcs:
+                        if out_arc_inn.target.name in self.vertex:
+                            if out_arc_inn.target.name == end_place:
+                                reachable = True
+                            else:
+                                reachable = self.check_if_place_reachable_through_inv_act(out_arc_inn.target, end_place, reachable)
+                        if reachable:
+                            break
             if reachable:
                 break
         return reachable

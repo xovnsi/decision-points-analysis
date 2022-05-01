@@ -8,6 +8,7 @@ def extract_rule(node, rule):
         return "{} && {}".format(node.get_label(), extract_rule(node.get_parent_node(), rule))
 
 def get_total_threshold(data, local_threshold):
+    data = data[data != '?'].astype(float)
     return data[data.le(local_threshold)].max()
 
 def class_entropy(data):
@@ -20,6 +21,7 @@ def get_split_gain(data_in, attr_type):
     split_info = 0
     local_threshold = None
     are_there_at_least_two = False
+    #breakpoint()
     if attr_type in ['categorical', 'boolean']:
         data_counts = data_in[attr_name].value_counts()
         total_count = len(data_in)
@@ -43,6 +45,7 @@ def get_split_gain(data_in, attr_type):
         data_in_sorted = data_in[attr_name].sort_values()
         thresholds = data_in_sorted.unique()[1:] - (np.diff(data_in_sorted.unique()) / 2)
         max_gain = 0
+        split_gain_max = 0
         for threshold in thresholds:
             freq_attr = data_in[data_in[attr_name] <= threshold][attr_name].count() / len(data_in)
             class_entropy_low = class_entropy(data_in[data_in[attr_name] <= threshold][['target', 'weight']])

@@ -29,7 +29,6 @@ argcomplete.autocomplete(parser)
 # parse arguments
 args = parser.parse_args()
 net_name = args.net_name
-k = 1
 
 try:
     #net, initial_marking, final_marking = pnml_importer.apply("models/{}.pnml".format(net_name))
@@ -37,7 +36,7 @@ try:
 except:
     raise Exception("File not found")
 log = xes_importer.apply('data/log-{}.xes'.format(net_name))
-#net, im, fm = pm4py.discover_petri_net_inductive(log)
+net, im, fm = pm4py.discover_petri_net_inductive(log)
 for trace in log:
     for event in trace:
         for attr in event.keys():
@@ -147,18 +146,26 @@ for trace in log:
                     decision_points_data[place_from_event[0]][a].append(event_attr[a][0])
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
+
+attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous',
+        'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
+        'org.resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+        'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical', 'lastSent': 'categorical'}
+
 # For each decision point (with values for at least one attribute, apart from the 'target' attribute)
 # create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
     if len(decision_points_data[decision_point]) > 1:
         print("\n", decision_point)
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
+        dataset.columns = dataset.columns.str.replace(':', '.')
         feature_names = get_feature_names(dataset)
         dt = DecisionTree(attributes_map)
         dt.fit(dataset)
-        y_pred = dt.predict(dataset)
-        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-        print(dt.extract_rules())
+        if not len(dt.get_nodes()) == 1:
+            y_pred = dt.predict(dataset.drop(columns=['target']))
+            print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+            print(dt.extract_rules())
 
 toc = time()
 print("Total time: {}".format(toc-tic))

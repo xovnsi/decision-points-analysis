@@ -22,6 +22,6 @@ for rule in rules.keys():
     print(rules[rule])
 pred_df = df.fillna('?').iloc[[1,5]]
 pred_df = pred_df.append({'Outlook': 'sunny', 'Temperature': 70, 'Humidity': '?', 'Windy': False, 'target': 'stocazzo'}, ignore_index=True)
-predictions = dt.predict(pred_df)
+predictions = dt.predict(pred_df.drop(columns=['target']))
 print("\nPredictions")
 print(predictions)
