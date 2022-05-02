@@ -44,8 +44,10 @@ for trace in event_log:
                     pass
 
 # Extract the process model
-net, im, fm = alpha_miner.apply(event_log)
+#net, im, fm = alpha_miner.apply(event_log)
+net, im, fm = pm4py.discover_petri_net_inductive(event_log)
 
+# Get all the useful data structures to handle loops etc.
 trans_events_map = get_map_transitions_events(net)
 events_trans_map = get_map_events_transitions(net)
 loop_vertex = detect_loops(net)
@@ -61,7 +63,8 @@ for loop in loops:
     loop.set_nearest_input(net, loops)
     loop.set_dp_forward_order_transition(net)
     loop.set_dp_backward_order_transition(net)
-# get the map of places and events
+
+# Get the map of places and events
 general_places_events_map = get_map_place_to_events(net, loops)
 
 # get the map of transitions and events
@@ -70,10 +73,6 @@ decision_points_data = dict()
 for place in net.places:
     if len(place.out_arcs) >= 2:
         decision_points_data[place.name] = pd.DataFrame()
-
-# fill the data
-attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean',
-                  'status': 'categorical', 'communication': 'categorical', 'discarded': 'boolean'}
 
 # Get the variants
 variants_idxs = variants_module.get_variants_from_log_trace_idx(event_log)
@@ -196,8 +195,7 @@ for variant in replay_result:
                         last_event_name = last_k_events[-1]['concept:name']
                     last_event_trans = trans_events_map[last_event_name]
                     # breakpoint()
-                    places_events_map, dp_list = update_places_map_dp_list_if_looping(
-                        net, dp_list, places_events_map, loops, event_sequence, number_of_loops, trans_events_map)
+                    places_events_map, dp_list = update_places_map_dp_list_if_looping(net, dp_list, places_events_map, loops, event_sequence, number_of_loops, trans_events_map)
                     places_from_event = get_place_from_event(places_events_map, el[1], dp_list)
                     dp_list = update_dp_list(places_from_event, dp_list)
                     for place_from_event in places_from_event:
@@ -251,14 +249,13 @@ attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal':
 # For each decision point (with values for at least one attribute, apart from the 'target' attribute)
 # create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
-    if len(decision_points_data[decision_point]) > 1:
-        print("\n", decision_point)
-        dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
-        dataset.columns = dataset.columns.str.replace(':', '.')
-        feature_names = get_feature_names(dataset)
-        dt = DecisionTree(attributes_map)
-        dt.fit(dataset)
-        if not len(dt.get_nodes()) == 1:
-            y_pred = dt.predict(dataset.drop(columns=['target']))
-            print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-            print(dt.extract_rules())
+    print("\n", decision_point)
+    dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
+    dataset.columns = dataset.columns.str.replace(':', '.')
+    feature_names = get_feature_names(dataset)
+    dt = DecisionTree(attributes_map)
+    dt.fit(dataset)
+    if not len(dt.get_nodes()) == 1:
+        y_pred = dt.predict(dataset.drop(columns=['target']))
+        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+        print(dt.extract_rules())

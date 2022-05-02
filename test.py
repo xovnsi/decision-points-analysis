@@ -10,7 +10,8 @@ event_log = pm4py.read_xes('./data/log-running-example-Will-BPM-silent-loops-sil
 
 attributes_map = {'policyType_normal': 'categorical', 'policyType_premium': 'categorical'}
 
-net, im, fm = alpha_miner.apply(event_log)
+#net, im, fm = alpha_miner.apply(event_log)
+net, im, fm = pm4py.discover_petri_net_inductive(event_log)
 
 decision_points = []
 for place in net.places:

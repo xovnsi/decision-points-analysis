@@ -43,7 +43,8 @@ for trace in event_log:
                     pass
 
 # Extract the process model
-net, im, fm = alpha_miner.apply(event_log)
+#net, im, fm = alpha_miner.apply(event_log)
+net, im, fm = pm4py.discover_petri_net_inductive(event_log)
 
 # Get all the useful data structures to handle loops etc.
 trans_events_map = get_map_transitions_events(net)
@@ -66,10 +67,6 @@ for loop in loops:
 
 # Get the map of places and events
 general_places_events_map = get_map_place_to_events(net, loops)
-
-# Attributes map
-attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-                  'communication': 'categorical', 'discarded': 'boolean'}
 
 # Dictionary of attributes data for every decision point, with a target key to be used later on
 decision_points_data = dict()
@@ -245,14 +242,13 @@ attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal':
 # For each decision point (with values for at least one attribute, apart from the 'target' attribute)
 # create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():
-    if len(decision_points_data[decision_point]) > 1:
-        print("\n", decision_point)
-        dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
-        dataset.columns = dataset.columns.str.replace(':', '.')
-        feature_names = get_feature_names(dataset)
-        dt = DecisionTree(attributes_map)
-        dt.fit(dataset)
-        if not len(dt.get_nodes()) == 1:
-            y_pred = dt.predict(dataset.drop(columns=['target']))
-            print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-            print(dt.extract_rules())
+    print("\n", decision_point)
+    dataset = pd.DataFrame.from_dict(decision_points_data[decision_point]).fillna('?')
+    dataset.columns = dataset.columns.str.replace(':', '.')
+    feature_names = get_feature_names(dataset)
+    dt = DecisionTree(attributes_map)
+    dt.fit(dataset)
+    if not len(dt.get_nodes()) == 1:
+        y_pred = dt.predict(dataset.drop(columns=['target']))
+        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+        print(dt.extract_rules())
