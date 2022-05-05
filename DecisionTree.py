@@ -3,7 +3,7 @@ from Nodes import DecisionNode, LeafNode
 from typing import Union
 import pandas as pd
 import numpy as np
-import re
+import scipy.stats as stats
 
 
 class DecisionTree(object):
@@ -325,13 +325,21 @@ class DecisionTree(object):
     def simplify_rule(self, vertical_rules, data_in):
         rules_to_be_removed = set()
         for rule in vertical_rules:
+            # Create the table for the Fisher test, separating the rule from the other rules of this leaf
             other_rules = vertical_rules[:]
             other_rules.remove(rule)
             table = self.create_table(rule, other_rules, data_in)
-            # TODO Fisher test
-            # TODO If rule is to be removed, append it to the rules_to_be_removed list
+            # Fisher test
+            res = stats.fisher_exact(table)
+            # If rule is to be removed, append it to the rules_to_be_removed set, and repeat the process without it
+            if res[1] > 0.01:
+                rules_to_be_removed.add(rule)
+                vertical_rules.remove(rule)
+                if len(vertical_rules) > 1:
+                    rules_to_be_removed = self.simplify_rule(vertical_rules, data_in)
+                break
 
-        # Remove the rules to be removed from the vertical_rules list, and return the result
+        # Remove the rules to be removed from the vertical_rules set, and return the result
         simplified_rules = set(vertical_rules).difference(rules_to_be_removed)
         return simplified_rules
 
@@ -394,6 +402,8 @@ class DecisionTree(object):
         for idx, value in count_other_but_not_rule.items():
             table['does not satisfy rule'][idx] = value
 
-        table_df = pd.DataFrame.from_dict(table, orient='index')
+        table_df = pd.DataFrame.from_dict(table, orient='index').fillna(0)
+        while len(table_df.columns) < 2:
+            table_df[len(table_df.columns)] = [0, 0]
 
         return table_df
