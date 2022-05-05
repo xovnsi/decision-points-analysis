@@ -315,8 +315,8 @@ class DecisionTree(object):
                 vertical_rules = str(vertical_rules[0])
 
             if leaf_node._label_class not in rules.keys():
-                rules[leaf_node._label_class] = list()
-            rules[leaf_node._label_class].append(vertical_rules)
+                rules[leaf_node._label_class] = set()
+            rules[leaf_node._label_class].add(vertical_rules)
 
         for target_class in rules.keys():
             rules[target_class] = " || ".join(rules[target_class])
@@ -330,13 +330,13 @@ class DecisionTree(object):
             other_rules.remove(rule)
             table = self.create_table(rule, other_rules, data_in)
             # Fisher test
-            res = stats.fisher_exact(table)
+            fisher_res = stats.fisher_exact(table)
             # If rule is to be removed, append it to the rules_to_be_removed set, and repeat the process without it
-            if res[1] > 0.01:
+            if fisher_res[1] > 0.01:
                 rules_to_be_removed.add(rule)
                 vertical_rules.remove(rule)
                 if len(vertical_rules) > 1:
-                    rules_to_be_removed = self.simplify_rule(vertical_rules, data_in)
+                    self.simplify_rule(vertical_rules, data_in)
                 break
 
         # Remove the rules to be removed from the vertical_rules set, and return the result
@@ -354,7 +354,7 @@ class DecisionTree(object):
             r_comp_list.append(r_comp)
             r_value_list.append(r_value)
         query = ""
-        for i in range(len(r_attr_list)):
+        for i in range(len(other_rules)):
             query = query + r_attr_list[i] + ' '
             if r_comp_list[i] == '=':
                 query = query + '==' + ' '
@@ -365,7 +365,7 @@ class DecisionTree(object):
                 query = query + r_value_list[i]
             except ValueError:
                 query = query + '"' + r_value_list[i] + '"'
-            if len(other_rules) > 1:
+            if i < len(other_rules) - 1:
                 query = query + ' ' + '&' + ' '
 
         # Examples in the training set that satisfy all the rules in "other_rules" in conjunction
@@ -394,8 +394,8 @@ class DecisionTree(object):
         # the corresponding number of examples in the training set
         table = {k: dict() for k in ['satisfies rule', 'does not satisfy rule']}
 
-        count_other_and_rule = examples_satisfies_other_and_rule.groupby('target').count().sum(axis=1)
-        count_other_but_not_rule = examples_satisfies_other_but_not_rule.groupby('target').count().sum(axis=1)
+        count_other_and_rule = examples_satisfies_other_and_rule.groupby('target').count().iloc[:, 0]
+        count_other_but_not_rule = examples_satisfies_other_but_not_rule.groupby('target').count().iloc[:, 0]
 
         for idx, value in count_other_and_rule.items():
             table['satisfies rule'][idx] = value
