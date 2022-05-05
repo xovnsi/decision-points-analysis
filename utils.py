@@ -512,7 +512,7 @@ def count_length_from_source(place, input_places, count, loops, lengths, initial
                     for loop in loops:
                         if loop.is_vertex_output_loop(out_arc_inn.target) and not loop.is_vertex_output_loop(out_arc_inn.source):
                             count += 1
-                            lengths = cont_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
+                            lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
                         else:
                             not_in_loop = True
                     if not_in_loop:
@@ -604,7 +604,7 @@ def get_all_dp_from_event_to_sink(event, loops, places):
                         if len(out_arc.target.out_arcs) > 1:
                             places.append((out_arc.target.name, out_arc_inn.target.name))
                         places = get_all_dp_from_event_to_sink(out_arc_inn.target, loops, places)
-            if len(places) == places_length_before:
+            if len(places) == places_length_before and len(places) > 0:
                 places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
     

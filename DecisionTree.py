@@ -1,8 +1,9 @@
-from decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rule
+from decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rule_from_leaf
 from Nodes import DecisionNode, LeafNode
 from typing import Union
 import pandas as pd
 import numpy as np
+import re
 
 
 class DecisionTree(object):
@@ -296,21 +297,103 @@ class DecisionTree(object):
     def get_leaves_nodes(self):
         """ Returns a list of the leaves nodes """
         return [node for node in self._nodes if isinstance(node, LeafNode)]
-        
-    def extract_rules(self): 
-        """ Returns a dictionary containing rulws extracted from the tree, already in logical form """
-        rules = dict()
-        # starting from the leaves going back to the root
-        for leaf_node in self.get_leaves_nodes():
-            rule = ""
-            if not leaf_node._label_class in rules.keys():
-                rules[leaf_node._label_class] = list()
-            rule = "{} && {}".format(leaf_node.get_label(), extract_rule(leaf_node.get_parent_node(), rule))
-            rule = "&&".join(rule.split("&&")[:-1])
-            rules[leaf_node._label_class].append(rule)
-        for target_class in rules.keys():
-            rules[target_class] = "|| ".join(rules[target_class])
-        return rules
 
     def get_nodes(self):
         return self._nodes
+        
+    def extract_rules(self, data_in):
+        """ Returns a dictionary containing rules extracted from the tree, already in logical form """
+        rules = dict()
+        # starting from the leaves going back to the root
+        for leaf_node in self.get_leaves_nodes():
+            vertical_rules = extract_rule_from_leaf(leaf_node)
+
+            if len(vertical_rules) > 1:
+                vertical_rules = self.simplify_rule(vertical_rules, data_in)
+                vertical_rules = " && ".join(vertical_rules)
+            else:
+                vertical_rules = str(vertical_rules[0])
+
+            if leaf_node._label_class not in rules.keys():
+                rules[leaf_node._label_class] = list()
+            rules[leaf_node._label_class].append(vertical_rules)
+
+        for target_class in rules.keys():
+            rules[target_class] = " || ".join(rules[target_class])
+        return rules
+
+    def simplify_rule(self, vertical_rules, data_in):
+        rules_to_be_removed = set()
+        for rule in vertical_rules:
+            other_rules = vertical_rules[:]
+            other_rules.remove(rule)
+            table = self.create_table(rule, other_rules, data_in)
+            # TODO Fisher test
+            # TODO If rule is to be removed, append it to the rules_to_be_removed list
+
+        # Remove the rules to be removed from the vertical_rules list, and return the result
+        simplified_rules = set(vertical_rules).difference(rules_to_be_removed)
+        return simplified_rules
+
+    def create_table(self, rule, other_rules, data_in):
+        # Create a query string with all the rules in "other_rules" in conjunction
+        r_attr_list = list()
+        r_comp_list = list()
+        r_value_list = list()
+        for r in other_rules:
+            r_attr, r_comp, r_value = r.split(' ')
+            r_attr_list.append(r_attr)
+            r_comp_list.append(r_comp)
+            r_value_list.append(r_value)
+        query = ""
+        for i in range(len(r_attr_list)):
+            query = query + r_attr_list[i] + ' '
+            if r_comp_list[i] == '=':
+                query = query + '==' + ' '
+            else:
+                query = query + r_comp_list[i] + ' '
+            try:
+                float(r_value_list[i])
+                query = query + r_value_list[i]
+            except ValueError:
+                query = query + '"' + r_value_list[i] + '"'
+            if len(other_rules) > 1:
+                query = query + ' ' + '&' + ' '
+
+        # Examples in the training set that satisfy all the rules in "other_rules" in conjunction
+        examples_satisfies_other = data_in.query(query)
+
+        # Create a query with the excluded rule
+        rule_attr, rule_comp, rule_value = rule.split(' ')
+        query_rule = rule_attr + ' '
+        if rule_comp == '=':
+            query_rule = query_rule + '==' + ' '
+        else:
+            query_rule = query_rule + rule_comp + ' '
+        try:
+            float(rule_value)
+            query_rule = query_rule + rule_value
+        except ValueError:
+            query_rule = query_rule + '"' + rule_value + '"'
+
+        # Examples in the training set that satisfy the excluded rule
+        examples_satisfies_other_and_rule = examples_satisfies_other.query(query_rule)
+
+        # Examples in the training set that satisfy all the rules in "other_rules" in conjunction but not the excluded rule
+        examples_satisfies_other_but_not_rule = examples_satisfies_other[~examples_satisfies_other.apply(tuple, 1).isin(examples_satisfies_other_and_rule.apply(tuple, 1))]
+
+        # Create the table which contains, for every target class and the satisfaction of the excluded rule,
+        # the corresponding number of examples in the training set
+        table = {k: dict() for k in ['satisfies rule', 'does not satisfy rule']}
+
+        count_other_and_rule = examples_satisfies_other_and_rule.groupby('target').count().sum(axis=1)
+        count_other_but_not_rule = examples_satisfies_other_but_not_rule.groupby('target').count().sum(axis=1)
+
+        for idx, value in count_other_and_rule.items():
+            table['satisfies rule'][idx] = value
+        for idx, value in count_other_but_not_rule.items():
+            table['does not satisfy rule'][idx] = value
+
+        table_df = pd.DataFrame.from_dict(table, orient='index')
+
+        return table_df

@@ -165,7 +165,7 @@ for decision_point in decision_points_data.keys():
     if not len(dt.get_nodes()) == 1:
         y_pred = dt.predict(dataset.drop(columns=['target']))
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-        print(dt.extract_rules())
+        print(dt.extract_rules(dataset))
 
 toc = time()
 print("Total time: {}".format(toc-tic))
