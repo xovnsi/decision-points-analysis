@@ -11,11 +11,10 @@ from pm4py.algo.decision_mining import algorithm as decision_mining
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
-from utils import detect_loops, get_in_place_loop, get_next_not_silent
-from utils import get_out_place_loop, get_map_place_to_events
-from utils import get_place_from_event, delete_composite_loops
+from loop_utils import detect_loops, get_in_place_loop, get_out_place_loop, delete_composite_loops, get_input_near_source
+from utils import get_next_not_silent, get_map_place_to_events, get_place_from_event
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
-from utils import extract_rules, get_map_transitions_events, get_input_near_source
+from utils import extract_rules, get_map_transitions_events
 from utils import get_map_events_transitions, update_dp_list, get_all_dp_from_event_to_sink
 from DecisionTree import DecisionTree
 from Loops import Loop
@@ -40,8 +39,6 @@ net, im, fm = pm4py.discover_petri_net_inductive(log)
 for trace in log:
     for event in trace:
         for attr in event.keys():
-           # if attr == 'appeal':
-           #     breakpoint()
             if not isinstance(event[attr], bool):
                 try:
                     event[attr] = float(event[attr])

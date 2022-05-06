@@ -1,4 +1,4 @@
-from decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rule_from_leaf
+from decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rules_from_leaf
 from Nodes import DecisionNode, LeafNode
 from typing import Union
 import pandas as pd
@@ -300,14 +300,14 @@ class DecisionTree(object):
 
     def get_nodes(self):
         return self._nodes
-        
+
     def extract_rules(self, data_in):
         """ Returns a dictionary containing rules extracted from the tree, already in logical form """
         rules = dict()
         # For each leaf, extract the vertical rules, i.e. all the rules from the root to that leaf
         # Then simplify them, put the resulting rules in conjunction and append them to the rules dictionary
         for leaf_node in self.get_leaves_nodes():
-            vertical_rules = extract_rule_from_leaf(leaf_node)
+            vertical_rules = extract_rules_from_leaf(leaf_node)
 
             vertical_rules = self.simplify_rule(vertical_rules, data_in)
             if len(vertical_rules) > 0:
@@ -407,7 +407,8 @@ class DecisionTree(object):
         examples_satisfies_other_and_rule = examples_satisfies_other.query(query_rule)
 
         # Get the examples in the training set that satisfy all the rules in other_rules in conjunction but not the excluded rule
-        examples_satisfies_other_but_not_rule = examples_satisfies_other[~examples_satisfies_other.apply(tuple, 1).isin(examples_satisfies_other_and_rule.apply(tuple, 1))]
+        examples_satisfies_other_but_not_rule = examples_satisfies_other[
+            ~examples_satisfies_other.apply(tuple, 1).isin(examples_satisfies_other_and_rule.apply(tuple, 1))]
 
         # Create the table which contains, for every target class and the satisfaction of the excluded rule,
         # the corresponding number of examples in the training set
