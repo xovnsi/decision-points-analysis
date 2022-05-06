@@ -403,7 +403,14 @@ class DecisionTree(object):
             table['does not satisfy rule'][idx] = value
 
         table_df = pd.DataFrame.from_dict(table, orient='index').fillna(0)
-        while len(table_df.columns) < 2:
-            table_df[len(table_df.columns)] = [0, 0]
+
+        # Check to have a proper 2x2 dataframe
+        while table_df.shape != (2, 2):
+            if table_df.shape[0] < 2:
+                table_df.loc[len(table_df)] = 0
+            elif table_df.shape[1] < 2:
+                table_df[len(table_df.columns)] = 0
+            elif table_df.empty:
+                table_df = pd.DataFrame([[0, 0], [0, 0]])
 
         return table_df
