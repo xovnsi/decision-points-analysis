@@ -304,72 +304,91 @@ class DecisionTree(object):
     def extract_rules(self, data_in):
         """ Returns a dictionary containing rules extracted from the tree, already in logical form """
         rules = dict()
-        # starting from the leaves going back to the root
+        # For each leaf, extract the vertical rules, i.e. all the rules from the root to that leaf
+        # Then simplify them, put the resulting rules in conjunction and append them to the rules dictionary
         for leaf_node in self.get_leaves_nodes():
             vertical_rules = extract_rule_from_leaf(leaf_node)
 
-            if len(vertical_rules) > 1:
-                vertical_rules = self.simplify_rule(vertical_rules, data_in)
+            vertical_rules = self.simplify_rule(vertical_rules, data_in)
+            if len(vertical_rules) > 0:
                 vertical_rules = " && ".join(vertical_rules)
-            else:
-                vertical_rules = str(vertical_rules[0])
 
-            if leaf_node._label_class not in rules.keys():
-                rules[leaf_node._label_class] = set()
-            rules[leaf_node._label_class].add(vertical_rules)
+                if leaf_node._label_class not in rules.keys():
+                    rules[leaf_node._label_class] = set()
+                rules[leaf_node._label_class].add(vertical_rules)
 
+        # Put the rules for the same target class in disjunction
         for target_class in rules.keys():
             rules[target_class] = " || ".join(rules[target_class])
         return rules
 
     def simplify_rule(self, vertical_rules, data_in):
-        rules_to_be_removed = set()
+        """ Given the vertical rules for a leaf, drops the irrelevant rules recursively and returns the remaining
+        ones. In principle, all the rules could be removed: in that case, the result would be an empty list.
+        Method taken from "Simplifying Decision Trees" by J.R. Quinlan (1986)."""
+        rules_candidates_remove = list()
+        # For every rule in vertical_rules, check if it could be removed from vertical_rules
         for rule in vertical_rules:
-            # Create the table for the Fisher test, separating the rule from the other rules of this leaf
             other_rules = vertical_rules[:]
             other_rules.remove(rule)
-            table = self.create_table(rule, other_rules, data_in)
-            # Fisher test
-            fisher_res = stats.fisher_exact(table)
-            # If rule is to be removed, append it to the rules_to_be_removed set, and repeat the process without it
-            if fisher_res[1] > 0.01:
-                rules_to_be_removed.add(rule)
-                vertical_rules.remove(rule)
-                if len(vertical_rules) > 1:
-                    self.simplify_rule(vertical_rules, data_in)
-                break
+            remove, p_value = self.check_if_rule_could_be_removed(rule, other_rules, data_in)
+            if remove:
+                rules_candidates_remove.append((rule, p_value))
 
-        # Remove the rules to be removed from the vertical_rules set, and return the result
-        simplified_rules = set(vertical_rules).difference(rules_to_be_removed)
-        return simplified_rules
+        # Among the candidates rules, remove the one with the highest p-value (the most irrelevant)
+        if len(rules_candidates_remove) > 0:
+            max_p_value = rules_candidates_remove[0][1]
+            rule_to_remove = rules_candidates_remove[0][0]
+            for rule in rules_candidates_remove:
+                if rule[1] > max_p_value:
+                    max_p_value = rule[1]
+                    rule_to_remove = rule[0]
+            vertical_rules.remove(rule_to_remove)
+            # Then, if there are still rules in vertical_rules, repeat the process
+            if len(vertical_rules) > 0:
+                self.simplify_rule(vertical_rules, data_in)
+
+        return vertical_rules
+
+    def check_if_rule_could_be_removed(self, rule, other_rules, data_in):
+        """ Performs a Fisher Exact Test to decide if the rule could be dropped """
+        table = self.create_table(rule, other_rules, data_in)
+        fisher_res = stats.fisher_exact(table)
+        if fisher_res[1] > 0.01:
+            return True, fisher_res[1]
+        else:
+            return False, fisher_res[1]
 
     def create_table(self, rule, other_rules, data_in):
-        # Create a query string with all the rules in "other_rules" in conjunction
-        r_attr_list = list()
-        r_comp_list = list()
-        r_value_list = list()
-        for r in other_rules:
-            r_attr, r_comp, r_value = r.split(' ')
-            r_attr_list.append(r_attr)
-            r_comp_list.append(r_comp)
-            r_value_list.append(r_value)
-        query = ""
-        for i in range(len(other_rules)):
-            query = query + r_attr_list[i] + ' '
-            if r_comp_list[i] == '=':
-                query = query + '==' + ' '
-            else:
-                query = query + r_comp_list[i] + ' '
-            try:
-                float(r_value_list[i])
-                query = query + r_value_list[i]
-            except ValueError:
-                query = query + '"' + r_value_list[i] + '"'
-            if i < len(other_rules) - 1:
-                query = query + ' ' + '&' + ' '
-
-        # Examples in the training set that satisfy all the rules in "other_rules" in conjunction
-        examples_satisfies_other = data_in.query(query)
+        """ Creates a 2x2 table to perform the Fisher Exact Test on """
+        # Create a query string with all the rules in "other_rules" in conjunction (if there are other rules)
+        # Get the examples in the training set that satisfy all the rules in other_rules in conjunction
+        if len(other_rules) > 0:
+            r_attr_list = list()
+            r_comp_list = list()
+            r_value_list = list()
+            for r in other_rules:
+                r_attr, r_comp, r_value = r.split(' ')
+                r_attr_list.append(r_attr)
+                r_comp_list.append(r_comp)
+                r_value_list.append(r_value)
+            query = ""
+            for i in range(len(other_rules)):
+                query = query + r_attr_list[i] + ' '
+                if r_comp_list[i] == '=':
+                    query = query + '==' + ' '
+                else:
+                    query = query + r_comp_list[i] + ' '
+                try:
+                    float(r_value_list[i])
+                    query = query + r_value_list[i]
+                except ValueError:
+                    query = query + '"' + r_value_list[i] + '"'
+                if i < len(other_rules) - 1:
+                    query = query + ' ' + '&' + ' '
+            examples_satisfies_other = data_in.query(query)
+        else:
+            examples_satisfies_other = data_in.copy()
 
         # Create a query with the excluded rule
         rule_attr, rule_comp, rule_value = rule.split(' ')
@@ -384,10 +403,10 @@ class DecisionTree(object):
         except ValueError:
             query_rule = query_rule + '"' + rule_value + '"'
 
-        # Examples in the training set that satisfy the excluded rule
+        # Get the examples in the training set that satisfy the excluded rule
         examples_satisfies_other_and_rule = examples_satisfies_other.query(query_rule)
 
-        # Examples in the training set that satisfy all the rules in "other_rules" in conjunction but not the excluded rule
+        # Get the examples in the training set that satisfy all the rules in other_rules in conjunction but not the excluded rule
         examples_satisfies_other_but_not_rule = examples_satisfies_other[~examples_satisfies_other.apply(tuple, 1).isin(examples_satisfies_other_and_rule.apply(tuple, 1))]
 
         # Create the table which contains, for every target class and the satisfaction of the excluded rule,
@@ -406,11 +425,11 @@ class DecisionTree(object):
 
         # Check to have a proper 2x2 dataframe
         while table_df.shape != (2, 2):
-            if table_df.shape[0] < 2:
+            if table_df.empty:
+                table_df = pd.DataFrame([[0, 0], [0, 0]])
+            elif table_df.shape[0] < 2:
                 table_df.loc[len(table_df)] = 0
             elif table_df.shape[1] < 2:
                 table_df[len(table_df.columns)] = 0
-            elif table_df.empty:
-                table_df = pd.DataFrame([[0, 0], [0, 0]])
 
         return table_df
