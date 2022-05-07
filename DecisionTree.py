@@ -312,13 +312,15 @@ class DecisionTree(object):
         # Starting with a p_value threshold for the Fisher's Exact Test (for rule pruning) of 0.01, create the rules
         # dictionary. If for some target all the rules have been pruned, repeat the process increasing the threshold.
         p_threshold = 0.01
+        keep_rule = list()
         while p_threshold < 1:
             rules = dict()
             for leaf_node in self.get_leaves_nodes():
                 vertical_rules = extract_rules_from_leaf(leaf_node)
 
-                # Simplify the list of rules, if possible
-                vertical_rules = self._simplify_rule(vertical_rules, leaf_node._label_class, p_threshold, data_in)
+                # Simplify the list of rules, if possible (and if vertical_rules does not contain rules in keep_rule)
+                if not any([r in vertical_rules for r in keep_rule]):
+                    vertical_rules = self._simplify_rule(vertical_rules, leaf_node._label_class, p_threshold, data_in)
 
                 # Create the set corresponding to the target class in the rules dictionary, if not already present
                 if leaf_node._label_class not in rules.keys():
@@ -331,7 +333,9 @@ class DecisionTree(object):
                     rules[leaf_node._label_class].add(vertical_rules)
 
             # Put the rules for the same target class in disjunction. If there are no rules for some target class (they
-            # have been pruned) then increase the threshold and repeat the process, otherwise return the dictionary
+            # have been pruned) then increase the threshold and repeat the process. Also, if two target transitions have
+            # the same rule (because the original vertical rule has been pruned "too much"), repeat the process but
+            # avoid simplifying the rule that originated the problem. Otherwise, return the dictionary.
             empty_rule = False
             for target_class in rules.keys():
                 if len(rules[target_class]) == 0:
@@ -339,9 +343,11 @@ class DecisionTree(object):
                 else:
                     rules[target_class] = " || ".join(rules[target_class])
 
-            if empty_rule: #or len(set(rules.values())) != len(rules.values()) to avoid equal rules in different targets:
+            if empty_rule:
                 # TODO maybe increase more each time? This is precise but it may take long since the cap is 1
                 p_threshold += 0.01
+            elif len(rules.values()) != len(set(rules.values())):
+                keep_rule.extend([r for r in list(rules.values()) if list(rules.values()).count(r) >= 2])
             else:
                 break
 
