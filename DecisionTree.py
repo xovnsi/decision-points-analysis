@@ -339,7 +339,7 @@ class DecisionTree(object):
                 else:
                     rules[target_class] = " || ".join(rules[target_class])
 
-            if empty_rule:
+            if empty_rule: #or len(set(rules.values())) != len(rules.values()) to avoid equal rules in different targets:
                 # TODO maybe increase more each time? This is precise but it may take long since the cap is 1
                 p_threshold += 0.01
             else:
@@ -357,12 +357,16 @@ class DecisionTree(object):
         """
 
         rules_candidates_remove = list()
-        # For every rule in vertical_rules, check if it could be removed from vertical_rules
+        # For every rule in vertical_rules, check if it could be removed from vertical_rules.
+        # This is true if the related p-value returned by the Fisher's Exact Test is higher than the threshold.
+        # Indeed, a rule is considered relevant for the classification only if the null hypothesis (i.e. the two
+        # variables - table rows and columns - are independent) can be rejected at the threshold*100% level or better.
         for rule in vertical_rules:
             other_rules = vertical_rules[:]
             other_rules.remove(rule)
-            remove, p_value = self._check_if_rule_could_be_removed(rule, other_rules, leaf_class, p_threshold, data_in)
-            if remove:
+            table = self._create_fisher_table(rule, other_rules, leaf_class, data_in)
+            (_, p_value) = stats.fisher_exact(table)
+            if p_value > p_threshold:
                 rules_candidates_remove.append((rule, p_value))
 
         # Among the candidates rules, remove the one with the highest p-value (the most irrelevant)
@@ -379,22 +383,6 @@ class DecisionTree(object):
                 self._simplify_rule(vertical_rules, leaf_class, p_threshold, data_in)
 
         return vertical_rules
-
-    def _check_if_rule_could_be_removed(self, rule, other_rules, leaf_class, p_threshold, data_in) -> (bool, float):
-        """ Performs a Fisher's Exact Test to decide if the rule could be dropped. Returns True if that is the case
-        (otherwise False) and the p-value.
-
-        A rule could be dropped if the related p-value returned by the Fisher's Exact Test is higher than the threshold.
-        Indeed, a rule is considered relevant for the classification only if the null hypothesis (i.e. the two variables
-        - rows and columns of the table - are independent) can be rejected at the threshold*100% level or better.
-        """
-
-        table = self._create_fisher_table(rule, other_rules, leaf_class, data_in)
-        (_, p_value) = stats.fisher_exact(table)
-        if p_value > p_threshold:
-            return True, p_value
-        else:
-            return False, p_value
 
     def _create_fisher_table(self, rule, other_rules, leaf_class, data_in) -> pd.DataFrame:
         """ Creates a 2x2 table to be used for the Fisher's Exact Test.
