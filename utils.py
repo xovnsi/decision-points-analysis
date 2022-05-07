@@ -362,7 +362,8 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
                             places.append((out_arc.target.name, out_arc_inn.target.name))
                         places = get_all_dp_from_event_to_sink(out_arc_inn.target, loops, places)
                 # if anything changes, means that the cycle stopped: remove the last tuple appended
-                if len(places) == places_length_before:
+                # TODO I fixed this just to make the code work but probably the mistake is elsewhere
+                if len(places) == places_length_before and (out_arc.target.name, out_arc_inn.target.name) in places:
                     places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
     
