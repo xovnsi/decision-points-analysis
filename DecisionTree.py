@@ -347,7 +347,7 @@ class DecisionTree(object):
                 # TODO maybe increase more each time? This is precise but it may take long since the cap is 1
                 p_threshold += 0.01
             elif len(rules.values()) != len(set(rules.values())):
-                keep_rule.extend([r for r in list(rules.values()) if list(rules.values()).count(r) >= 2])
+                keep_rule.extend([r for r in set(rules.values()) if list(rules.values()).count(r) > 1])
             else:
                 break
 
@@ -384,9 +384,8 @@ class DecisionTree(object):
                     max_p_value = rule[1]
                     rule_to_remove = rule[0]
             vertical_rules.remove(rule_to_remove)
-            # Then, if there are still rules in vertical_rules, repeat the process
-            if len(vertical_rules) > 0:
-                self._simplify_rule(vertical_rules, leaf_class, p_threshold, data_in)
+            # Then, recurse the process on the remaining rules
+            self._simplify_rule(vertical_rules, leaf_class, p_threshold, data_in)
 
         return vertical_rules
 
@@ -401,22 +400,22 @@ class DecisionTree(object):
         # Create a query string with all the rules in "other_rules" in conjunction (if there are other rules)
         # Get the examples in the training set that satisfy all the rules in other_rules in conjunction
         if len(other_rules) > 0:
-            query = ""
+            query_other = ""
             for r in other_rules:
                 r_attr, r_comp, r_value = r.split(' ')
-                query += r_attr + ' '
+                query_other += r_attr + ' '
                 if r_comp == '=':
-                    query += '==' + ' '
+                    query_other += '==' + ' '
                 else:
-                    query += r_comp + ' '
+                    query_other += r_comp + ' '
                 try:
                     float(r_value)
-                    query += r_value
+                    query_other += r_value
                 except ValueError:
-                    query += '"' + r_value + '"'
+                    query_other += '"' + r_value + '"'
                 if r != other_rules[-1]:
-                    query += ' ' + '&' + ' '
-            examples_satisfy_other = data_in.query(query)
+                    query_other += ' ' + '&' + ' '
+            examples_satisfy_other = data_in.query(query_other)
         else:
             examples_satisfy_other = data_in.copy()
 
