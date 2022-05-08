@@ -143,7 +143,7 @@ for trace in log:
 
 attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous',
                   'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
-                  'org_resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+                  'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
                   'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
                   'lastSent': 'categorical'}
 
@@ -154,18 +154,23 @@ attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous'
 for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
+
     # TODO this float conversion of the dataset should be done once at the beginning (not also in fit, for example)
     for attr in attributes_map:
         if attributes_map[attr] == 'continuous':
             dataset[attr] = dataset[attr].astype(float)
     dataset.columns = dataset.columns.str.replace(':', '_')
-    feature_names = get_feature_names(dataset)
+    attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
+
     dt = DecisionTree(attributes_map)
     dt.fit(dataset)
+
     if not len(dt.get_nodes()) == 1:
         y_pred = dt.predict(dataset.drop(columns=['target']))
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-        print(dt.extract_rules(dataset))
+        rules = dt.extract_rules(dataset)
+        rules = {k: rules[k].replace('_', ':') for k in rules}
+        print(rules)
 
 toc = time()
 print("Total time: {}".format(toc-tic))

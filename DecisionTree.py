@@ -265,7 +265,7 @@ class DecisionTree(object):
         # if continuous type the split is binary given by th threshold
         if attr_type == 'continuous':
             data_in = data_in[data_in[attr_name] != '?']
-            data_in[attr_name] = data_in[attr_name].astype(float)
+            #TODO removed from here and put outside fit - data_in[attr_name] = data_in[attr_name].astype(float)
             #breakpoint()
             split_left = data_in[data_in[attr_name] <= threshold]
             # pandas function to count the occurnces of the different value of target
@@ -457,5 +457,5 @@ class DecisionTree(object):
             else:
                 table['does not satisfy rule']['not '+leaf_class] = value
 
-        table_df = pd.DataFrame.from_dict(table, orient='index').fillna(0)
+        table_df = pd.DataFrame.from_dict(table, orient='index')
         return table_df
