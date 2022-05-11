@@ -147,8 +147,8 @@ attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous'
                   'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
                   'lastSent': 'categorical'}
 
-#attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-#                  'communication': 'categorical', 'discarded': 'boolean'}
+attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+                  'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
 for decision_point in decision_points_data.keys():

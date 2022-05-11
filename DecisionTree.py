@@ -73,6 +73,7 @@ class DecisionTree(object):
 
     def predict(self, data_in, distribution=False):
         """ Starting from the root, predicts the class corresponding to the features contained in "data_in" """
+        data_in = data_in.fillna('?')
         attribute = self._root_node.get_attribute().split(":")[0]
         preds = list()
         # data_in is a pandas DataFrame
@@ -265,8 +266,6 @@ class DecisionTree(object):
         # if continuous type the split is binary given by th threshold
         if attr_type == 'continuous':
             data_in = data_in[data_in[attr_name] != '?']
-            #TODO removed from here and put outside fit - data_in[attr_name] = data_in[attr_name].astype(float)
-            #breakpoint()
             split_left = data_in[data_in[attr_name] <= threshold]
             # pandas function to count the occurnces of the different value of target
             values_count = split_left['target'].value_counts()
@@ -313,7 +312,7 @@ class DecisionTree(object):
         # dictionary. If for some target all the rules have been pruned, repeat the process increasing the threshold.
         p_threshold = 0.01
         keep_rule = list()
-        while p_threshold < 1:
+        while p_threshold <= 1.0:
             rules = dict()
             for leaf_node in self.get_leaves_nodes():
                 vertical_rules = extract_rules_from_leaf(leaf_node)
@@ -340,12 +339,13 @@ class DecisionTree(object):
             for target_class in rules.keys():
                 if len(rules[target_class]) == 0:
                     empty_rule = True
+                    break
                 else:
                     rules[target_class] = " || ".join(rules[target_class])
 
             if empty_rule:
                 # TODO maybe increase more each time? This is precise but it may take long since the cap is 1
-                p_threshold += 0.01
+                p_threshold = round(p_threshold + 0.01, 2)
             elif len(rules.values()) != len(set(rules.values())):
                 keep_rule.extend([r for r in set(rules.values()) if list(rules.values()).count(r) > 1])
             else:
