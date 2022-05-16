@@ -1,3 +1,5 @@
+import subprocess
+
 import pm4py
 import os
 from time import time
@@ -161,6 +163,35 @@ for decision_point in decision_points_data.keys():
             dataset[attr] = dataset[attr].astype(float)
     dataset.columns = dataset.columns.str.replace(':', '_')
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
+
+    # Discovering branching conditions with Daikon
+    # For now I use the existing version of Daikon, since it supports csv (after an initial conversion)
+    # It only applies to binary decision points
+    target_datasets = [x for _, x in dataset.groupby('target')]
+    if len(target_datasets) == 2:
+        invariants = {}
+        for target_dataset in target_datasets:
+            target = target_dataset['target'].unique()[0]
+            target_dataset.drop(columns=['target']).fillna('?').to_csv(path_or_buf='dataset.csv', index=False)
+            subprocess.run(['perl', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
+            subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '-o', 'invariants.inv',
+                            '--no_text_output', '--noversion', 'dataset.dtrace', 'dataset.decls'])
+            inv = subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.PrintInvariants',
+                                  'invariants.inv'], capture_output=True, text=True)
+            invariants[target] = []
+            for line in inv.stdout.splitlines():
+                if not any(x in line for x in ["===", "aprogram.point:::POINT", "one of"]):
+                    invariants[target].append(line)
+
+            for file_name in ['dataset.csv', 'dataset.dtrace', 'dataset.decls', 'invariants.inv']:
+                try:
+                    os.remove(file_name)
+                except FileNotFoundError:
+                    continue
+
+        # Now that we have a list containing the invariants for each target, we can build a conjunctive expression for each one
+        print(invariants)
+    continue
 
     dt = DecisionTree(attributes_map)
     dt.fit(dataset)
