@@ -1,3 +1,8 @@
+import math
+import os
+import subprocess
+from operator import itemgetter
+
 import numpy as np
 import pandas as pd
 from sklearn.tree import export_text
@@ -365,4 +370,77 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
                 if len(places) == places_length_before and len(places) > 0:
                     places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
-    
+
+
+def get_daikon_invariants(dataset):
+    dataset.drop(columns=['target']).to_csv(path_or_buf='dataset.csv', index=False)
+    subprocess.run(['perl', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
+    subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '-o', 'invariants.inv',
+                    '--no_text_output', '--noversion', 'dataset.dtrace', 'dataset.decls'])
+    inv = subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.PrintInvariants',
+                          'invariants.inv'], capture_output=True, text=True)
+    invariants = []
+    for line in inv.stdout.splitlines():
+        if not any(x in line for x in ["===", "aprogram.point:::POINT", "one of"]):
+            invariants.append(line)
+
+    for file_name in ['dataset.csv', 'dataset.dtrace', 'dataset.decls', 'invariants.inv']:
+        try:
+            os.remove(file_name)
+        except FileNotFoundError:
+            continue
+
+    return invariants
+
+
+def build_conj_expr(set_1, set_2, invariants):
+    atom_information_gains = []
+    for inv in invariants:
+        atom_information_gains.append((inv, compute_information_gain(set_1, set_2, inv)))
+
+    element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
+    resulting_expr = [element_with_max_gain[0]]
+    atom_information_gains.remove(element_with_max_gain)
+
+    while len(atom_information_gains) > 0:
+        element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
+        resulting_expr_and = ' & '.join(resulting_expr)
+        new_predicate = ' & '.join([resulting_expr_and, element_with_max_gain[0]])
+        if compute_information_gain(set_1, set_2, new_predicate) > compute_information_gain(set_1, set_2, resulting_expr_and):
+            resulting_expr.append(element_with_max_gain[0])
+        atom_information_gains.remove(element_with_max_gain)
+
+    return ' && '.join(resulting_expr)
+
+
+def _compute_entropy(set_1, set_2):
+    size_1 = len(set_1)
+    size_2 = len(set_2)
+    if size_1 == 0 or size_2 == 0:
+        return 0
+    else:
+        fraction_1 = size_1 / (size_1 + size_2)
+        fraction_2 = size_2 / (size_1 + size_2)
+        return - (fraction_1 * math.log2(fraction_1)) - (fraction_2 * math.log2(fraction_2))
+
+
+def compute_information_gain(set_1, set_2, predicate):
+    # TODO is this always correct or could it be inverted?
+    predicate = predicate.replace('"True"', '1')
+    predicate = predicate.replace('"False"', '0')
+
+    size_1 = len(set_1)
+    size_2 = len(set_2)
+    set_1_pred = set_1.query(predicate)
+    size_1_pred = len(set_1_pred)
+    set_1_not_pred = set_1[~set_1.apply(tuple, 1).isin(set_1_pred.apply(tuple, 1))]
+    size_1_not_pred = len(set_1_not_pred)
+    set_2_pred = set_2.query(predicate)
+    size_2_pred = len(set_2_pred)
+    set_2_not_pred = set_2[~set_2.apply(tuple, 1).isin(set_2_pred.apply(tuple, 1))]
+    size_2_not_pred = len(set_2_not_pred)
+
+    fraction_1 = ((size_1_pred + size_2_pred) * _compute_entropy(set_1_pred, set_2_pred)) / (size_1 + size_2)
+    fraction_2 = ((size_1_not_pred + size_2_not_pred) * _compute_entropy(set_1_not_pred, set_2_not_pred)) / (size_1 + size_2)
+
+    return _compute_entropy(set_1, set_2) - fraction_1 - fraction_2

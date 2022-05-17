@@ -1,5 +1,3 @@
-import subprocess
-
 import pm4py
 import os
 from time import time
@@ -18,6 +16,7 @@ from utils import get_next_not_silent, get_map_place_to_events, get_place_from_e
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
 from utils import extract_rules, get_map_transitions_events
 from utils import get_map_events_transitions, update_dp_list, get_all_dp_from_event_to_sink
+from utils import get_daikon_invariants, build_conj_expr
 from DecisionTree import DecisionTree
 from Loops import Loop
 
@@ -167,30 +166,40 @@ for decision_point in decision_points_data.keys():
     # Discovering branching conditions with Daikon
     # For now I use the existing version of Daikon, since it supports csv (after an initial conversion)
     # It only applies to binary decision points
+    dataset = dataset.fillna('?')
     target_datasets = [x for _, x in dataset.groupby('target')]
     if len(target_datasets) == 2:
-        invariants = {}
-        for target_dataset in target_datasets:
-            target = target_dataset['target'].unique()[0]
-            target_dataset.drop(columns=['target']).fillna('?').to_csv(path_or_buf='dataset.csv', index=False)
-            subprocess.run(['perl', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
-            subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '-o', 'invariants.inv',
-                            '--no_text_output', '--noversion', 'dataset.dtrace', 'dataset.decls'])
-            inv = subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.PrintInvariants',
-                                  'invariants.inv'], capture_output=True, text=True)
-            invariants[target] = []
-            for line in inv.stdout.splitlines():
-                if not any(x in line for x in ["===", "aprogram.point:::POINT", "one of"]):
-                    invariants[target].append(line)
+        invariants_1 = get_daikon_invariants(target_datasets[0])
+        invariants_2 = get_daikon_invariants(target_datasets[1])
 
-            for file_name in ['dataset.csv', 'dataset.dtrace', 'dataset.decls', 'invariants.inv']:
-                try:
-                    os.remove(file_name)
-                except FileNotFoundError:
-                    continue
+        # Conversion categorical to numeric to satisfy Daikon invariants (like policyType > discarded)
+        for dataset in target_datasets:
+            for attr in attributes_map:
+                if attr in dataset and attributes_map[attr] == 'categorical':
+                    mapping = {item: i for i, item in enumerate(sorted(dataset[attr].unique()))}
+                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
+                elif attr in dataset and attributes_map[attr] == 'boolean':
+                    unique_values = (sorted(dataset[attr].unique().astype(str)))
+                    mapping = {}
+                    for i, item in enumerate(unique_values):
+                        if item == 'True':
+                            mapping[True] = i
+                        elif item == 'False':
+                            mapping[False] = i
+                        else:
+                            mapping['?'] = i
+                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
 
-        # Now that we have a list containing the invariants for each target, we can build a conjunctive expression for each one
-        print(invariants)
+        if len(invariants_1) > 0:
+            conj_expr_1 = build_conj_expr(target_datasets[0], target_datasets[1], invariants_1)
+        else:
+            conj_expr_1 = None
+        if len(invariants_2) > 0:
+            conj_expr_2 = build_conj_expr(target_datasets[0], target_datasets[1], invariants_2)
+        else:
+            conj_expr_2 = None
+
+        print(conj_expr_1, conj_expr_2)
     continue
 
     dt = DecisionTree(attributes_map)
