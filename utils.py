@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.tree import export_text
 
+
 def print_matrix(matrix, row_names, col_names):
     row_cols_name = "   "
     for col_name in col_names:
@@ -20,6 +21,7 @@ def print_matrix(matrix, row_names, col_names):
             else:
                 row = "{}     {}".format(row, matrix[i, j])
         print(row)
+
 
 def get_map_place_to_events(net, loops) -> dict:
     """ Gets a mapping of decision point and their target transitions
@@ -51,10 +53,12 @@ def get_map_place_to_events(net, loops) -> dict:
                         for loop in loops:
                             if loop.is_vertex_in_loop(place.name):
                                 next_place_silent = silent_out_arc.target
-                                next_not_silent = get_next_not_silent(next_place_silent, next_not_silent, loops, [place.name], loop.name)
+                                next_not_silent = get_next_not_silent(next_place_silent, next_not_silent, loops,
+                                                                      [place.name], loop.name)
                             else:
                                 next_place_silent = silent_out_arc.target
-                                next_not_silent = get_next_not_silent(next_place_silent, next_not_silent, loops, [place.name], 'None')
+                                next_not_silent = get_next_not_silent(next_place_silent, next_not_silent, loops,
+                                                                      [place.name], 'None')
                     # remove not silent transitions impossible to reach without activating a loop
                     next_not_silent_to_be_removed = set()
                     for not_silent in next_not_silent:
@@ -66,6 +70,7 @@ def get_map_place_to_events(net, loops) -> dict:
                             next_not_silent_to_be_removed = next_not_silent_to_be_removed.union(set(loop.events))
                     places[place.name][arc.target.name] = next_not_silent.difference(next_not_silent_to_be_removed)
     return places
+
 
 def get_next_not_silent(place, not_silent, loops, start_places, loop_name_start) -> list:
     """ Recursively compute the first not silent transition connected to a place
@@ -97,8 +102,10 @@ def get_next_not_silent(place, not_silent, loops, start_places, loop_name_start)
         is_input = False
         is_output = False
     # TODO check it the arcs of the skip are coming from the same place
-    is_input_a_skip = len(place.in_arcs) == 2 and len([arc.source.name for arc in place.in_arcs if arc.source.label is None]) == 1
-    if (len(place.in_arcs) > 1 and not (is_input or is_input_a_skip)) or place.name in start_places: # or (is_output and loop_name == loop_name_start):
+    is_input_a_skip = len(place.in_arcs) == 2 and len(
+        [arc.source.name for arc in place.in_arcs if arc.source.label is None]) == 1
+    if (len(place.in_arcs) > 1 and not (
+            is_input or is_input_a_skip)) or place.name in start_places:  # or (is_output and loop_name == loop_name_start):
         return not_silent
     out_arcs_label = [arc.target.label for arc in place.out_arcs]
     # second stop condition: all not silent outputs
@@ -114,7 +121,8 @@ def get_next_not_silent(place, not_silent, loops, start_places, loop_name_start)
             for out_arc_inn in out_arc.target.out_arcs:
                 added_start_place = False
                 for loop in loops:
-                    if loop.is_vertex_input_loop(out_arc_inn.target.name) and int(loop.name.split("_")[1]) != int(loop_length) and not out_arc_inn.target.name in start_places:
+                    if loop.is_vertex_input_loop(out_arc_inn.target.name) and int(loop.name.split("_")[1]) != int(
+                            loop_length) and not out_arc_inn.target.name in start_places:
                         start_places.append(out_arc_inn.target.name)
                         added_start_place = True
                 # if the place is an input to another loop (nested loops), we propagate inside the other loop too
@@ -125,10 +133,13 @@ def get_next_not_silent(place, not_silent, loops, start_places, loop_name_start)
                         else:
                             for next_out_arcs in out_arc_inner_loop.target.out_arcs:
                                 next_place_silent = next_out_arcs.target
-                                not_silent = get_next_not_silent(next_place_silent, not_silent, loops, start_places, loop_name_start)
+                                not_silent = get_next_not_silent(next_place_silent, not_silent, loops, start_places,
+                                                                 loop_name_start)
                 else:
-                    not_silent = get_next_not_silent(out_arc_inn.target, not_silent, loops, start_places, loop_name_start)
+                    not_silent = get_next_not_silent(out_arc_inn.target, not_silent, loops, start_places,
+                                                     loop_name_start)
     return not_silent
+
 
 def get_place_from_event(places_map, event, dp_list) -> list:
     """ Returns the places that are decision points of a certain transition
@@ -137,12 +148,13 @@ def get_place_from_event(places_map, event, dp_list) -> list:
     returns the list of decision point referred to the input event
     """
 
-    places = list() 
+    places = list()
     for place in dp_list:
         for trans in places_map[place].keys():
             if event in places_map[place][trans]:
                 places.append((place, trans))
     return places
+
 
 def get_attributes_from_event(event) -> dict:
     """ Return the attributes of an event
@@ -163,6 +175,7 @@ def get_attributes_from_event(event) -> dict:
             attributes[attribute] = [event[attribute]]
     return attributes
 
+
 def extract_rules(dt, feature_names) -> dict:
     """ Returns a readable version of a decision tree rules
 
@@ -173,7 +186,7 @@ def extract_rules(dt, feature_names) -> dict:
     """
     text_rules = export_text(dt)
     for feature_name in feature_names.keys():
-            text_rules = text_rules.replace(feature_names[feature_name], feature_name) 
+        text_rules = text_rules.replace(feature_names[feature_name], feature_name)
     text_rules = text_rules.split('\n')[:-1]
     extracted_rules = dict()
     one_complete_pass = ""
@@ -199,6 +212,7 @@ def extract_rules(dt, feature_names) -> dict:
                 tree_level += 1
     return extracted_rules
 
+
 def get_feature_names(dataset) -> dict:
     """
     Returns a dictionary containing the numerated name of the features
@@ -210,6 +224,7 @@ def get_feature_names(dataset) -> dict:
         if not feature == 'target':
             features[feature] = "feature_{}".format(index)
     return features
+
 
 def get_map_transitions_events(net) -> dict:
     """ Compute a map of transitions name and events
@@ -224,6 +239,7 @@ def get_map_transitions_events(net) -> dict:
     map_trans_events['None'] = 'None'
     return map_trans_events
 
+
 def get_map_events_transitions(net) -> dict:
     """ Compute a map of event name and transitions name
 
@@ -231,11 +247,12 @@ def get_map_events_transitions(net) -> dict:
     a dictionary containing for every transition the corresponding event name
     """
     # initialize
-    map_events_trans= dict()
+    map_events_trans = dict()
     for trans in net.transitions:
         if not trans.label is None:
             map_events_trans[trans.name] = trans.label
     return map_events_trans
+
 
 def check_if_reachable_without_loops(loops, start_trans, end_trans, reachable) -> bool:
     """ Check if a transition is reachable from another one without using loops
@@ -272,7 +289,9 @@ def check_if_reachable_without_loops(loops, start_trans, end_trans, reachable) -
             break
     return reachable
 
-def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_sequence, number_of_loops, trans_events_map) -> [dict, list]:
+
+def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_sequence, number_of_loops,
+                                         trans_events_map) -> [dict, list]:
     """ Updates the map of transitions related to a decision point in case a loop is active
 
     Given an event sequence, checks if there are active loops (i.e. the sequence is reproducible only
@@ -328,7 +347,8 @@ def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_
                                         places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
                                         places_map[dp][trans] = places_map[dp][trans].union(loop_reachable[dp][trans])
     return places_map, dp_list
-        
+
+
 def update_dp_list(places_from_event, dp_list) -> list:
     """ Updates the list of decision points if related with the event
 
@@ -340,6 +360,7 @@ def update_dp_list(places_from_event, dp_list) -> list:
             dp_list.remove(place)
     return dp_list
 
+
 def get_all_dp_from_event_to_sink(event, loops, places) -> list:
     """ Returns all the decision points from the event to the sink, passing through invisible transitions
 
@@ -349,7 +370,7 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
     """
     for out_arc in event.out_arcs:
         if out_arc.target.name == 'sink':
-           return places
+            return places
         else:
             is_output = False
             for loop in loops:
@@ -372,7 +393,65 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
     return places
 
 
-def get_daikon_invariants(dataset):
+def discovering_branching_conditions(dataset, attributes_map) -> dict:
+    """ Alternative method for discovering branching conditions, using Daikon invariant detector
+
+    For the moment it uses the existing version of Daikon, since it supports csv files (after a conversion).
+    It only supports binary decision points. It returns a dictionary containing the discovered rule for each branch.
+    Method taken from "Discovering Branching Conditions from Business Process Execution Logs" by Massimiliano de Leoni,
+    Marlon Dumas, and Luciano Garcia-Banuelos.
+    """
+
+    dataset = dataset.fillna('?')
+    gb = dataset.groupby('target')
+    target_datasets = [x for _, x in gb]
+
+    if len(target_datasets) == 2:
+        invariants_1 = _get_daikon_invariants(target_datasets[0])
+        invariants_2 = _get_daikon_invariants(target_datasets[1])
+
+        # Conversion categorical to numeric to satisfy Daikon invariants (like policyType > discarded)
+        # I.e. the values in the column "policyType" which can be "normal" or "premium" are converted to 0 and 1 resp.
+        # Dictionary "contains_bool_na" contains, for each dataset, the names of the boolean attributes which contains
+        # missing values ('?'). If present, the conversion will put '?' to 0, 'False' to 1 and 'True' to 2.
+        contains_bool_na = {0: [], 1: []}
+        for d, dataset in enumerate(target_datasets):
+            for attr in attributes_map:
+                if attr in dataset and attributes_map[attr] == 'categorical':
+                    mapping = {item: i for i, item in enumerate(sorted(dataset[attr].unique()))}
+                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
+                elif attr in dataset and attributes_map[attr] == 'boolean':
+                    unique_values = (sorted(dataset[attr].unique().astype(str)))
+                    mapping = {}
+                    for i, item in enumerate(unique_values):
+                        if item == 'True':
+                            mapping[True] = i
+                        elif item == 'False':
+                            mapping[False] = i
+                        else:
+                            mapping['?'] = i
+                            contains_bool_na[d].append(attr)
+                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
+
+        # Building the conjunctive expression for each branch of the decision point
+        # TODO the paper also talks about other two approaches (disjunctive conditions and latent variables)
+        conj_expr_1 = _build_conj_expr(target_datasets[0], target_datasets[1], invariants_1, contains_bool_na)
+        conj_expr_2 = _build_conj_expr(target_datasets[0], target_datasets[1], invariants_2, contains_bool_na)
+
+        # Adjusting the conditions to ensure that one is the negation of the other
+        conj_expr_1, conj_expr_2 = _adjust_conditions(target_datasets[0], target_datasets[1], conj_expr_1, conj_expr_2, contains_bool_na)
+
+        return {list(gb.groups.keys())[0]: conj_expr_1, list(gb.groups.keys())[1]: conj_expr_2}
+
+
+def _get_daikon_invariants(dataset) -> list:
+    """ Extracting the invariants from a set of observation instances related to a branch of a decision point
+
+    After exporting the DataFrame as a csv file, a Perl script is launched to create the input files for Daikon in the
+    proper format. Then, Daikon is called to discover the invariants. Finally, the extracted invariants are cleaned
+    to be used later and returned as a list.
+    """
+
     dataset.drop(columns=['target']).to_csv(path_or_buf='dataset.csv', index=False)
     subprocess.run(['perl', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
     subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '-o', 'invariants.inv',
@@ -393,27 +472,39 @@ def get_daikon_invariants(dataset):
     return invariants
 
 
-def build_conj_expr(set_1, set_2, invariants):
-    atom_information_gains = []
-    for inv in invariants:
-        atom_information_gains.append((inv, compute_information_gain(set_1, set_2, inv)))
+def _build_conj_expr(set_1, set_2, invariants, contains_bool_na) -> str | None:
+    """ Builds a conjunctive expression starting from the invariants found.
 
-    element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
-    resulting_expr = [element_with_max_gain[0]]
-    atom_information_gains.remove(element_with_max_gain)
+    The resulting conjunctive expression is built using a greedy approach. The first atom selected is the one with the
+    highest information gain. Then, iteratively, the atom with the highest information gain is added, provided that the
+    resulting conjunctive expression, adding that atom, increases the information gain.
+    The resulting conjunctive expression is then returned as a string.
+    """
 
-    while len(atom_information_gains) > 0:
+    if len(invariants) == 0:
+        return None
+    else:
+        atom_information_gains = []
+        for inv in invariants:
+            atom_information_gains.append((inv, _compute_information_gain(set_1, set_2, [inv], contains_bool_na)))
+
         element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
-        resulting_expr_and = ' & '.join(resulting_expr)
-        new_predicate = ' & '.join([resulting_expr_and, element_with_max_gain[0]])
-        if compute_information_gain(set_1, set_2, new_predicate) > compute_information_gain(set_1, set_2, resulting_expr_and):
-            resulting_expr.append(element_with_max_gain[0])
+        resulting_expr = [element_with_max_gain[0]]
         atom_information_gains.remove(element_with_max_gain)
 
-    return ' && '.join(resulting_expr)
+        while len(atom_information_gains) > 0:
+            element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
+            new_predicate = resulting_expr + [element_with_max_gain[0]]
+            if _compute_information_gain(set_1, set_2, new_predicate, contains_bool_na) > _compute_information_gain(set_1, set_2, resulting_expr, contains_bool_na):
+                resulting_expr.append(element_with_max_gain[0])
+            atom_information_gains.remove(element_with_max_gain)
+
+        return ' && '.join(resulting_expr)
 
 
-def _compute_entropy(set_1, set_2):
+def _compute_entropy(set_1, set_2) -> float:
+    """ Computes the entropy of the two sets of observation instances """
+
     size_1 = len(set_1)
     size_2 = len(set_2)
     if size_1 == 0 or size_2 == 0:
@@ -424,23 +515,68 @@ def _compute_entropy(set_1, set_2):
         return - (fraction_1 * math.log2(fraction_1)) - (fraction_2 * math.log2(fraction_2))
 
 
-def compute_information_gain(set_1, set_2, predicate):
-    # TODO is this always correct or could it be inverted?
-    predicate = predicate.replace('"True"', '1')
-    predicate = predicate.replace('"False"', '0')
+def _compute_information_gain(set_1, set_2, predicate, contains_bool_na) -> float:
+    """ Computes the information gain of predicate given the two sets of observation instances.
+
+    The additional attribute "contains_bool_na" is used to correctly convert the atoms of the predicate which contain
+    True or False equalities when there are missing values in the set(s) of observation instances.
+    """
+
+    predicate_1, predicate_2 = predicate.copy(), predicate.copy()
+
+    for i in range(len(predicate_1)):
+        if len(contains_bool_na[0]) > 0:
+            if any(a in predicate_1[i] for a in contains_bool_na[0]):
+                predicate_1[i] = predicate_1[i].replace('?', '0').replace('"False"', '1').replace('"True"', '2')
+        predicate_1[i] = predicate_1[i].replace('"False"', '0').replace('"True"', '1')
+
+    for i in range(len(predicate_2)):
+        if len(contains_bool_na[0]) > 0:
+            if any(a in predicate_2[i] for a in contains_bool_na[1]):
+                predicate_2[i] = predicate_2[i].replace('?', '0').replace('"False"', '1').replace('"True"', '2')
+        predicate_2[i] = predicate_2[i].replace('"False"', '0').replace('"True"', '1')
+
+    predicate_1 = ' & '.join(predicate_1)
+    predicate_2 = ' & '.join(predicate_2)
 
     size_1 = len(set_1)
     size_2 = len(set_2)
-    set_1_pred = set_1.query(predicate)
+    set_1_pred = set_1.query(predicate_1)
     size_1_pred = len(set_1_pred)
     set_1_not_pred = set_1[~set_1.apply(tuple, 1).isin(set_1_pred.apply(tuple, 1))]
     size_1_not_pred = len(set_1_not_pred)
-    set_2_pred = set_2.query(predicate)
+    set_2_pred = set_2.query(predicate_2)
     size_2_pred = len(set_2_pred)
     set_2_not_pred = set_2[~set_2.apply(tuple, 1).isin(set_2_pred.apply(tuple, 1))]
     size_2_not_pred = len(set_2_not_pred)
 
     fraction_1 = ((size_1_pred + size_2_pred) * _compute_entropy(set_1_pred, set_2_pred)) / (size_1 + size_2)
-    fraction_2 = ((size_1_not_pred + size_2_not_pred) * _compute_entropy(set_1_not_pred, set_2_not_pred)) / (size_1 + size_2)
+    fraction_2 = ((size_1_not_pred + size_2_not_pred) * _compute_entropy(set_1_not_pred, set_2_not_pred)) / (
+            size_1 + size_2)
 
     return _compute_entropy(set_1, set_2) - fraction_1 - fraction_2
+
+
+def _adjust_conditions(set_1, set_2, conj_expr_1, conj_expr_2, contains_bool_na) -> (str, str):
+    """ Adjusts the two conjunctive expression so that one is the negation of the other.
+
+    If one of them is empty, then it is set to the negation of the other. If they are both non-empty, then the one with
+    the lower information gain is set to the negation of the other.
+    """
+
+    if conj_expr_1 is None:
+        conj_expr_1 = 'not (' + conj_expr_2 + ')'
+    elif conj_expr_2 is None:
+        conj_expr_2 = 'not (' + conj_expr_1 + ')'
+    else:
+        expr_1_list = conj_expr_1.split(' && ')
+        expr_2_list = conj_expr_2.split(' && ')
+        info_gain_expr_1 = _compute_information_gain(set_1, set_2, expr_1_list, contains_bool_na)
+        info_gain_expr_2 = _compute_information_gain(set_1, set_2, expr_2_list, contains_bool_na)
+
+        if info_gain_expr_1 > info_gain_expr_2:
+            conj_expr_2 = 'not (' + conj_expr_1 + ')'
+        else:
+            conj_expr_1 = 'not (' + conj_expr_2 + ')'
+
+    return conj_expr_1, conj_expr_2

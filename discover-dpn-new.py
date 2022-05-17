@@ -16,7 +16,7 @@ from utils import get_next_not_silent, get_map_place_to_events, get_place_from_e
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
 from utils import extract_rules, get_map_transitions_events
 from utils import get_map_events_transitions, update_dp_list, get_all_dp_from_event_to_sink
-from utils import get_daikon_invariants, build_conj_expr
+from utils import discovering_branching_conditions
 from DecisionTree import DecisionTree
 from Loops import Loop
 
@@ -152,6 +152,7 @@ attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal':
                   'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
+
 for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
@@ -163,43 +164,9 @@ for decision_point in decision_points_data.keys():
     dataset.columns = dataset.columns.str.replace(':', '_')
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
-    # Discovering branching conditions with Daikon
-    # For now I use the existing version of Daikon, since it supports csv (after an initial conversion)
-    # It only applies to binary decision points
-    dataset = dataset.fillna('?')
-    target_datasets = [x for _, x in dataset.groupby('target')]
-    if len(target_datasets) == 2:
-        invariants_1 = get_daikon_invariants(target_datasets[0])
-        invariants_2 = get_daikon_invariants(target_datasets[1])
-
-        # Conversion categorical to numeric to satisfy Daikon invariants (like policyType > discarded)
-        for dataset in target_datasets:
-            for attr in attributes_map:
-                if attr in dataset and attributes_map[attr] == 'categorical':
-                    mapping = {item: i for i, item in enumerate(sorted(dataset[attr].unique()))}
-                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
-                elif attr in dataset and attributes_map[attr] == 'boolean':
-                    unique_values = (sorted(dataset[attr].unique().astype(str)))
-                    mapping = {}
-                    for i, item in enumerate(unique_values):
-                        if item == 'True':
-                            mapping[True] = i
-                        elif item == 'False':
-                            mapping[False] = i
-                        else:
-                            mapping['?'] = i
-                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
-
-        if len(invariants_1) > 0:
-            conj_expr_1 = build_conj_expr(target_datasets[0], target_datasets[1], invariants_1)
-        else:
-            conj_expr_1 = None
-        if len(invariants_2) > 0:
-            conj_expr_2 = build_conj_expr(target_datasets[0], target_datasets[1], invariants_2)
-        else:
-            conj_expr_2 = None
-
-        print(conj_expr_1, conj_expr_2)
+    # Discovering branching conditions with Daikon - comment these three lines to go back to decision tree + pruning
+    rules = discovering_branching_conditions(dataset, attributes_map)
+    print(rules)
     continue
 
     dt = DecisionTree(attributes_map)
