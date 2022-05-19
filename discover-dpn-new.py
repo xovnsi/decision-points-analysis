@@ -142,14 +142,14 @@ for trace in log:
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
 
-attributes_map = {'lifecycle.transition': 'categorical', 'expense': 'continuous',
+attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
                   'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
                   'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
                   'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
                   'lastSent': 'categorical'}
 
-attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-                  'communication': 'categorical', 'discarded': 'boolean'}
+#attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+#                  'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
 

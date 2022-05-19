@@ -388,7 +388,7 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
                             places.append((out_arc.target.name, out_arc_inn.target.name))
                         places = get_all_dp_from_event_to_sink(out_arc_inn.target, loops, places)
                 # if anything changes, means that the cycle stopped: remove the last tuple appended
-                if len(places) == places_length_before and len(places) > 0:
+                if len(places) == places_length_before and (out_arc.target.name, out_arc_inn.target.name) in places:
                     places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
 
@@ -396,50 +396,47 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
 def discovering_branching_conditions(dataset, attributes_map) -> dict:
     """ Alternative method for discovering branching conditions, using Daikon invariant detector
 
-    For the moment it uses the existing version of Daikon, since it supports csv files (after a conversion).
+    It uses the existing version of Daikon, since it supports csv files (after a conversion).
     It only supports binary decision points. It returns a dictionary containing the discovered rule for each branch.
     Method taken from "Discovering Branching Conditions from Business Process Execution Logs" by Massimiliano de Leoni,
-    Marlon Dumas, and Luciano Garcia-Banuelos.
+    Marlon Dumas, and Luciano Garcia-Banuelos. In particular, only the CD+IG+LV approach is implemented.
     """
 
-    dataset = dataset.fillna('?')
+    # TODO now I'm using only continuous variables, since it seems that Daikon works better with them
+    # Keeping only continuous variables (and the target column) and discarding rows with missing values
+    feature_names = [c for c in dataset.columns if c != 'target']
+    dataset = dataset.drop(columns=[a for a in feature_names if attributes_map[a] != 'continuous']).dropna()
+
+    # Enriching the dataset with latent variables (all combinations of variables using +, -, *, /)
+    feature_names = [c for c in dataset.columns if c != 'target']
+    for c1 in feature_names:
+        for c2 in feature_names:
+            if c2 != c1:
+                dataset[c1 + '_plus_' + c2] = dataset[c1] + dataset[c2]
+                dataset[c1 + '_minus_' + c2] = dataset[c1] - dataset[c2]
+                dataset[c1 + '_times_' + c2] = dataset[c1] * dataset[c2]
+                if 0 not in dataset[c2]:    # to avoid division by zero
+                    dataset[c1 + '_div_by_' + c2] = dataset[c1] / dataset[c2]
+
+    # Splitting the dataset according to the target value
     gb = dataset.groupby('target')
     target_datasets = [x for _, x in gb]
 
+    # This check is done because this approach only works with binary decision points, and we do not have only those
     if len(target_datasets) == 2:
+        # Extracting the invariants using Daikon
         invariants_1 = _get_daikon_invariants(target_datasets[0])
         invariants_2 = _get_daikon_invariants(target_datasets[1])
 
-        # Conversion categorical to numeric to satisfy Daikon invariants (like policyType > discarded)
-        # I.e. the values in the column "policyType" which can be "normal" or "premium" are converted to 0 and 1 resp.
-        # Dictionary "contains_bool_na" contains, for each dataset, the names of the boolean attributes which contains
-        # missing values ('?'). If present, the conversion will put '?' to 0, 'False' to 1 and 'True' to 2.
-        contains_bool_na = {0: [], 1: []}
-        for d, dataset in enumerate(target_datasets):
-            for attr in attributes_map:
-                if attr in dataset and attributes_map[attr] == 'categorical':
-                    mapping = {item: i for i, item in enumerate(sorted(dataset[attr].unique()))}
-                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
-                elif attr in dataset and attributes_map[attr] == 'boolean':
-                    unique_values = (sorted(dataset[attr].unique().astype(str)))
-                    mapping = {}
-                    for i, item in enumerate(unique_values):
-                        if item == 'True':
-                            mapping[True] = i
-                        elif item == 'False':
-                            mapping[False] = i
-                        else:
-                            mapping['?'] = i
-                            contains_bool_na[d].append(attr)
-                    dataset[attr] = dataset[attr].apply(lambda x: mapping[x])
-
         # Building the conjunctive expression for each branch of the decision point
-        # TODO the paper also talks about other two approaches (disjunctive conditions and latent variables)
-        conj_expr_1 = _build_conj_expr(target_datasets[0], target_datasets[1], invariants_1, contains_bool_na)
-        conj_expr_2 = _build_conj_expr(target_datasets[0], target_datasets[1], invariants_2, contains_bool_na)
+        conj_expr_1 = _build_conj_expr(target_datasets[0], target_datasets[1], invariants_1)
+        conj_expr_2 = _build_conj_expr(target_datasets[0], target_datasets[1], invariants_2)
 
         # Adjusting the conditions to ensure that one is the negation of the other
-        conj_expr_1, conj_expr_2 = _adjust_conditions(target_datasets[0], target_datasets[1], conj_expr_1, conj_expr_2, contains_bool_na)
+        conj_expr_1, conj_expr_2 = _adjust_conditions(target_datasets[0], target_datasets[1], conj_expr_1, conj_expr_2)
+
+        # Rewriting the operands for the latent variables (i.e. '_plus_' becomes '+' etc.)
+        conj_expr_1, conj_expr_2 = _clean_latent_variables(conj_expr_1, conj_expr_2)
 
         return {list(gb.groups.keys())[0]: conj_expr_1, list(gb.groups.keys())[1]: conj_expr_2}
 
@@ -454,7 +451,7 @@ def _get_daikon_invariants(dataset) -> list:
 
     dataset.drop(columns=['target']).to_csv(path_or_buf='dataset.csv', index=False)
     subprocess.run(['perl', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
-    subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '-o', 'invariants.inv',
+    subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '--nohierarchy', '-o', 'invariants.inv',
                     '--no_text_output', '--noversion', 'dataset.dtrace', 'dataset.decls'])
     inv = subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.PrintInvariants',
                           'invariants.inv'], capture_output=True, text=True)
@@ -472,7 +469,7 @@ def _get_daikon_invariants(dataset) -> list:
     return invariants
 
 
-def _build_conj_expr(set_1, set_2, invariants, contains_bool_na) -> str | None:
+def _build_conj_expr(set_1, set_2, invariants) -> str | None:
     """ Builds a conjunctive expression starting from the invariants found.
 
     The resulting conjunctive expression is built using a greedy approach. The first atom selected is the one with the
@@ -486,7 +483,7 @@ def _build_conj_expr(set_1, set_2, invariants, contains_bool_na) -> str | None:
     else:
         atom_information_gains = []
         for inv in invariants:
-            atom_information_gains.append((inv, _compute_information_gain(set_1, set_2, [inv], contains_bool_na)))
+            atom_information_gains.append((inv, _compute_information_gain(set_1, set_2, [inv])))
 
         element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
         resulting_expr = [element_with_max_gain[0]]
@@ -495,7 +492,7 @@ def _build_conj_expr(set_1, set_2, invariants, contains_bool_na) -> str | None:
         while len(atom_information_gains) > 0:
             element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
             new_predicate = resulting_expr + [element_with_max_gain[0]]
-            if _compute_information_gain(set_1, set_2, new_predicate, contains_bool_na) > _compute_information_gain(set_1, set_2, resulting_expr, contains_bool_na):
+            if _compute_information_gain(set_1, set_2, new_predicate) > _compute_information_gain(set_1, set_2, resulting_expr):
                 resulting_expr.append(element_with_max_gain[0])
             atom_information_gains.remove(element_with_max_gain)
 
@@ -515,26 +512,10 @@ def _compute_entropy(set_1, set_2) -> float:
         return - (fraction_1 * math.log2(fraction_1)) - (fraction_2 * math.log2(fraction_2))
 
 
-def _compute_information_gain(set_1, set_2, predicate, contains_bool_na) -> float:
-    """ Computes the information gain of predicate given the two sets of observation instances.
-
-    The additional attribute "contains_bool_na" is used to correctly convert the atoms of the predicate which contain
-    True or False equalities when there are missing values in the set(s) of observation instances.
-    """
+def _compute_information_gain(set_1, set_2, predicate) -> float:
+    """ Computes the information gain of predicate given the two sets of observation instances. """
 
     predicate_1, predicate_2 = predicate.copy(), predicate.copy()
-
-    for i in range(len(predicate_1)):
-        if len(contains_bool_na[0]) > 0:
-            if any(a in predicate_1[i] for a in contains_bool_na[0]):
-                predicate_1[i] = predicate_1[i].replace('?', '0').replace('"False"', '1').replace('"True"', '2')
-        predicate_1[i] = predicate_1[i].replace('"False"', '0').replace('"True"', '1')
-
-    for i in range(len(predicate_2)):
-        if len(contains_bool_na[0]) > 0:
-            if any(a in predicate_2[i] for a in contains_bool_na[1]):
-                predicate_2[i] = predicate_2[i].replace('?', '0').replace('"False"', '1').replace('"True"', '2')
-        predicate_2[i] = predicate_2[i].replace('"False"', '0').replace('"True"', '1')
 
     predicate_1 = ' & '.join(predicate_1)
     predicate_2 = ' & '.join(predicate_2)
@@ -557,26 +538,62 @@ def _compute_information_gain(set_1, set_2, predicate, contains_bool_na) -> floa
     return _compute_entropy(set_1, set_2) - fraction_1 - fraction_2
 
 
-def _adjust_conditions(set_1, set_2, conj_expr_1, conj_expr_2, contains_bool_na) -> (str, str):
+def _adjust_conditions(set_1, set_2, conj_expr_1, conj_expr_2) -> (str, str):
     """ Adjusts the two conjunctive expression so that one is the negation of the other.
 
     If one of them is empty, then it is set to the negation of the other. If they are both non-empty, then the one with
     the lower information gain is set to the negation of the other.
     """
 
-    if conj_expr_1 is None:
-        conj_expr_1 = 'not (' + conj_expr_2 + ')'
-    elif conj_expr_2 is None:
-        conj_expr_2 = 'not (' + conj_expr_1 + ')'
+    if conj_expr_1 is None and conj_expr_2 is not None:
+        conj_expr_1 = _negate_expr(conj_expr_2)
+    elif conj_expr_1 is not None and conj_expr_2 is None:
+        conj_expr_2 = _negate_expr(conj_expr_1)
+    elif conj_expr_1 is None and conj_expr_2 is None:
+        return 'None', 'None'
     else:
         expr_1_list = conj_expr_1.split(' && ')
         expr_2_list = conj_expr_2.split(' && ')
-        info_gain_expr_1 = _compute_information_gain(set_1, set_2, expr_1_list, contains_bool_na)
-        info_gain_expr_2 = _compute_information_gain(set_1, set_2, expr_2_list, contains_bool_na)
+        info_gain_expr_1 = _compute_information_gain(set_1, set_2, expr_1_list)
+        info_gain_expr_2 = _compute_information_gain(set_1, set_2, expr_2_list)
 
         if info_gain_expr_1 > info_gain_expr_2:
-            conj_expr_2 = 'not (' + conj_expr_1 + ')'
+            conj_expr_2 = _negate_expr(conj_expr_1)
         else:
-            conj_expr_1 = 'not (' + conj_expr_2 + ')'
+            conj_expr_1 = _negate_expr(conj_expr_2)
 
     return conj_expr_1, conj_expr_2
+
+
+def _negate_expr(expr) -> str:
+    """ Returns the negation of an expression.
+
+    If the expression contains multiple atoms in conjunction, it places 'not' before the original expression.
+    Otherwise, it negates the operand of the expression.
+    """
+
+    if ' && ' in expr:
+        return 'not (' + expr + ')'
+    else:
+        ops = [' == ', ' != ', ' > ',  ' < ', ' >= ', ' <= ']
+        neg_ops = [' != ', ' == ', ' <= ', ' >= ', ' < ', ' > ']
+
+        for i, o in enumerate(ops):
+            if o in expr:
+                split = expr.split(o)
+                return neg_ops[i].join(split)
+
+
+def _clean_latent_variables(expr1, expr2) -> (str, str):
+    """ Rewrites the dummy names for latent variables using the corresponding operands. """
+
+    expr_list = [expr1, expr2]
+    ops = ['_plus_', '_minus_', '_times_', '_div_by_']
+    ops_symb = [' + ', ' - ', ' * ', ' / ']
+    for i, e in enumerate(expr_list):
+        for j, o in enumerate(ops):
+            if o in e:
+                e = e.replace(o, ops_symb[j])
+        expr_list[i] = e
+
+    return expr_list
