@@ -148,8 +148,8 @@ attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous'
                   'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
                   'lastSent': 'categorical'}
 
-#attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-#                  'communication': 'categorical', 'discarded': 'boolean'}
+attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+                  'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
 
@@ -164,8 +164,9 @@ for decision_point in decision_points_data.keys():
     dataset.columns = dataset.columns.str.replace(':', '_')
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
-    # Discovering branching conditions with Daikon - comment these three lines to go back to decision tree + pruning
+    # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
     rules = discovering_branching_conditions(dataset, attributes_map)
+    rules = {k: rules[k].replace('_', ':') for k in rules}
     print(rules)
     continue
 
