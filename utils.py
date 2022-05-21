@@ -409,14 +409,17 @@ def discovering_branching_conditions(dataset, attributes_map) -> dict:
 
     # Enriching the dataset with latent variables (all combinations of variables using +, -, *, /)
     feature_names = [c for c in dataset.columns if c != 'target']
-    for c1 in feature_names:
-        for c2 in feature_names:
-            if c2 != c1:
-                dataset[c1 + '_plus_' + c2] = dataset[c1] + dataset[c2]
-                dataset[c1 + '_minus_' + c2] = dataset[c1] - dataset[c2]
-                dataset[c1 + '_times_' + c2] = dataset[c1] * dataset[c2]
-                if 0 not in dataset[c2]:    # to avoid division by zero
-                    dataset[c1 + '_div_by_' + c2] = dataset[c1] / dataset[c2]
+    for i, c1 in enumerate(feature_names):
+        # Non-commutative operations are computed also switching the operands
+        for c2 in feature_names[i+1:]:
+            dataset[c1 + '_plus_' + c2] = dataset[c1] + dataset[c2]
+            dataset[c1 + '_minus_' + c2] = dataset[c1] - dataset[c2]
+            dataset[c2 + '_minus_' + c1] = dataset[c2] - dataset[c1]
+            dataset[c1 + '_times_' + c2] = dataset[c1] * dataset[c2]
+            if 0 not in dataset[c2]:    # to avoid division by zero
+                dataset[c1 + '_div_by_' + c2] = dataset[c1] / dataset[c2]
+            if 0 not in dataset[c1]:    # to avoid division by zero
+                dataset[c2 + '_div_by_' + c1] = dataset[c2] / dataset[c1]
 
     # Splitting the dataset according to the target value
     gb = dataset.groupby('target')
@@ -452,7 +455,7 @@ def _get_daikon_invariants(dataset) -> list:
     dataset.drop(columns=['target']).to_csv(path_or_buf='dataset.csv', index=False)
     subprocess.run(['perl', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
     subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '--nohierarchy', '-o', 'invariants.inv',
-                    '--no_text_output', '--noversion', 'dataset.dtrace', 'dataset.decls'])
+                    '--no_text_output', '--noversion', '--omit_from_output', 'r', 'dataset.dtrace', 'dataset.decls'])
     inv = subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.PrintInvariants',
                           'invariants.inv'], capture_output=True, text=True)
     invariants = []
