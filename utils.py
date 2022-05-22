@@ -440,13 +440,14 @@ def discovering_branching_conditions(dataset, attributes_map) -> dict:
         invariants_list.append(_get_daikon_invariants(td))
 
     # Removing the wrongly reported invariants (the ones comparing continuous and non-continuous variables, or
-    # categorical and boolean variables)
+    # categorical and boolean variables, or categorical and categorical variables, or boolean and boolean variables)
     for i, invariants in enumerate(invariants_list):
         invariants_to_remove = set()
         for inv in invariants:
-            if ((any(y in inv for y in feature_names_cont) and any(z in inv for z in feature_names_cat)) or
-                    (any(y in inv for y in feature_names_cont) and any(z in inv for z in feature_names_bool)) or
-                    (any(y in inv for y in feature_names_cat) and any(z in inv for z in feature_names_bool))):
+            if ((any(a in inv for a in feature_names_cont) and any(b in inv for b in feature_names_cat)) or
+                    (any(c in inv for c in feature_names_cont) and any(d in inv for d in feature_names_bool)) or
+                    (any(e in inv for e in feature_names_cat) and any(f in inv for f in feature_names_bool)) or
+                    (sum(g in inv for g in feature_names_cat) > 1) or (sum(g in inv for g in feature_names_bool) > 1)):
                 invariants_to_remove.add(inv)
         invariants_list[i] = list(set(invariants) - invariants_to_remove)
 
