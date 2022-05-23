@@ -18,13 +18,10 @@ def discovering_branching_conditions(dataset, attributes_map) -> dict:
 
     # Saving continuous variables and non-continuous variables names
     feature_names_cont = [c for c in dataset.columns if c != 'target' and attributes_map[c] == 'continuous']
-    feature_names_cat = [c for c in dataset.columns if c != 'target' and attributes_map[c] == 'categorical']
-    feature_names_bool = [c for c in dataset.columns if c != 'target' and attributes_map[c] == 'boolean']
+    feature_names_not_cont = [c for c in dataset.columns if c != 'target' and attributes_map[c] != 'continuous']
 
     # Dropping missing values for continuous variables and filling the other missing values with '?'
     dataset = dataset.dropna(subset=feature_names_cont).fillna('?')
-    # for col in feature_names_not_cont:
-    #    dataset[col] = dataset[col].astype(pd.StringDtype())
 
     # Enriching the dataset with latent variables (all combinations of variables using +, -, *, /)
     for i, c1 in enumerate(feature_names_cont):
@@ -48,34 +45,27 @@ def discovering_branching_conditions(dataset, attributes_map) -> dict:
     target_datasets = [x for _, x in gb]
 
     # Extracting the invariants using Daikon
-    invariants_list = []
-    for td in target_datasets:
-        invariants_list.append(_get_daikon_invariants(td))
+    invariants_list = [_get_daikon_invariants(td) for td in target_datasets]
 
     # Removing the wrongly reported invariants (the ones comparing continuous and non-continuous variables, or
     # categorical and boolean variables, or categorical and categorical variables, or boolean and boolean variables)
     for i, invariants in enumerate(invariants_list):
         invariants_to_remove = set()
         for inv in invariants:
-            if ((any(a in inv for a in feature_names_cont) and any(b in inv for b in feature_names_cat)) or
-                    (any(c in inv for c in feature_names_cont) and any(d in inv for d in feature_names_bool)) or
-                    (any(e in inv for e in feature_names_cat) and any(f in inv for f in feature_names_bool)) or
-                    (sum(g in inv for g in feature_names_cat) > 1) or (sum(g in inv for g in feature_names_bool) > 1)):
+            if ((any(a in inv for a in feature_names_cont) and any(b in inv for b in feature_names_not_cont)) or
+                    (sum(c in inv for c in feature_names_not_cont) > 1)):
                 invariants_to_remove.add(inv)
         invariants_list[i] = list(set(invariants) - invariants_to_remove)
 
     # Building the conjunctive expression for each branch of the decision point
-    conj_expressions = []
-    for invariants in invariants_list:
-        conj_expressions.append(_build_conj_expr(target_datasets, invariants))
+    conj_expressions = [_build_conj_expr(target_datasets, invariants) for invariants in invariants_list]
 
     # If the decision point is binary, adjusting the expressions to ensure that one is the negation of the other
     if len(target_datasets) == 2:
         conj_expressions = _adjust_conditions(target_datasets, conj_expressions)
 
     # Rewriting the operands for the latent variables (i.e. '_plus_' becomes '+' etc.)
-    for i, ce in enumerate(conj_expressions):
-        conj_expressions[i] = _clean_latent_variables(ce)
+    conj_expressions = list(map(_clean_latent_variables, conj_expressions))
 
     return dict(zip(list(gb.groups.keys()), conj_expressions))
 
@@ -120,38 +110,21 @@ def _build_conj_expr(sets, invariants) -> str | None:
     if len(invariants) == 0:
         return None
     else:
-        atom_information_gains = []
-        for inv in invariants:
-            atom_information_gains.append((inv, _compute_information_gain(sets, [inv])))
+        atom_information_gains = [(inv, _compute_information_gain(sets, [inv])) for inv in invariants]
 
-        element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
+        # TODO tie-breaking: if two atoms have the same IG, take the one which comes last alphabetically
+        element_with_max_gain = max(atom_information_gains, key=itemgetter(1, 0))
         resulting_expr = [element_with_max_gain[0]]
         atom_information_gains.remove(element_with_max_gain)
 
         while len(atom_information_gains) > 0:
-            element_with_max_gain = max(atom_information_gains, key=itemgetter(1))
+            element_with_max_gain = max(atom_information_gains, key=itemgetter(1, 0))
             new_predicate = resulting_expr + [element_with_max_gain[0]]
             if _compute_information_gain(sets, new_predicate) > _compute_information_gain(sets, resulting_expr):
                 resulting_expr.append(element_with_max_gain[0])
             atom_information_gains.remove(element_with_max_gain)
 
         return ' && '.join(resulting_expr)
-
-
-def _compute_entropy(sets) -> float:
-    """ Computes the entropy of the sets of observation instances """
-
-    if any(len(s) == 0 for s in sets):
-        return 0
-    else:
-        fractions = []
-        total_size = sum(len(s) for s in sets)
-        for s in sets:
-            fractions.append(len(s) / total_size)
-        terms = []
-        for f in fractions:
-            terms.append(- f * math.log2(f))
-        return sum(terms)
 
 
 def _compute_information_gain(sets, predicate) -> float:
@@ -171,14 +144,26 @@ def _compute_information_gain(sets, predicate) -> float:
     return _compute_entropy(sets) - term_1 - term_2
 
 
-def _adjust_conditions(sets, conj_exprs) -> list:
+def _compute_entropy(sets) -> float:
+    """ Computes the entropy of the sets of observation instances """
+
+    if any(len(s) == 0 for s in sets):
+        return 0
+    else:
+        total_size = sum(len(s) for s in sets)
+        fractions = [len(s) / total_size for s in sets]
+        terms = [- f * math.log2(f) for f in fractions]
+        return sum(terms)
+
+
+def _adjust_conditions(sets, conj_expressions) -> list:
     """ Adjusts the two conjunctive expression so that one is the negation of the other.
 
     If one of them is empty, then it is set to the negation of the other. If they are both non-empty, then the one with
     the lower information gain is set to the negation of the other.
     """
 
-    conj_expr_1, conj_expr_2 = conj_exprs
+    conj_expr_1, conj_expr_2 = conj_expressions
 
     if conj_expr_1 is not None and conj_expr_2 is not None:
         expr_1_list = conj_expr_1.split(' && ')
@@ -209,22 +194,19 @@ def _negate_expr(expr) -> str:
     if ' && ' in expr:
         return 'not (' + expr + ')'
     else:
-        ops = [' == ', ' != ', ' > ',  ' < ', ' >= ', ' <= ']
-        neg_ops = [' != ', ' == ', ' <= ', ' >= ', ' < ', ' > ']
-
-        for i, o in enumerate(ops):
+        ops_neg = {' == ': ' != ', ' != ': ' == ', ' > ': ' <= ', ' < ': ' >= ', ' >= ': ' < ', ' <= ': ' > '}
+        for o in ops_neg:
             if o in expr:
                 split = expr.split(o)
-                return neg_ops[i].join(split)
+                return ops_neg[o].join(split)
 
 
 def _clean_latent_variables(conj_expr) -> str:
     """ Rewrites the dummy names for latent variables using the corresponding operands. """
 
-    ops = ['_plus_', '_minus_', '_times_', '_div_by_']
-    ops_symb = [' + ', ' - ', ' * ', ' / ']
-    for j, o in enumerate(ops):
+    ops_sym = {'_plus_': ' + ', '_minus_': ' - ', '_times_': ' * ', '_div_by_': ' / '}
+    for o in ops_sym:
         if o in conj_expr:
-            conj_expr = conj_expr.replace(o, ops_symb[j])
+            conj_expr = conj_expr.replace(o, ops_sym[o])
 
     return conj_expr
