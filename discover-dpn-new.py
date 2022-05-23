@@ -16,7 +16,7 @@ from utils import get_next_not_silent, get_map_place_to_events, get_place_from_e
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
 from utils import extract_rules, get_map_transitions_events
 from utils import get_map_events_transitions, update_dp_list, get_all_dp_from_event_to_sink
-from utils import discovering_branching_conditions
+from daikon_utils import discovering_branching_conditions
 from DecisionTree import DecisionTree
 from Loops import Loop
 
@@ -142,14 +142,15 @@ for trace in log:
             decision_points_data[place_from_event[0]]['target'].append(place_from_event[1])
 
 
-attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
-                  'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
-                  'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
-                  'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
-                  'lastSent': 'categorical'}
-
-attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-                  'communication': 'categorical', 'discarded': 'boolean'}
+if 'roadtraffic' in net_name:
+    attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
+                      'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
+                      'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+                      'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
+                      'lastSent': 'categorical'}
+else:
+    attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+                      'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
 
@@ -157,7 +158,8 @@ for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
 
-    # TODO this float conversion of the dataset should be done once at the beginning (not also in fit, for example)
+    # TODO this float conversion of the dataset should be done only once at the beginning
+    # TODO also it would be good to replace missing values with '?' only once at the beginning here
     for attr in attributes_map:
         if attributes_map[attr] == 'continuous':
             dataset[attr] = dataset[attr].astype(float)
