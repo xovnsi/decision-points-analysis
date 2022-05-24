@@ -1,6 +1,9 @@
 import pandas as pd
 from sklearn.tree import export_text
 
+from DecisionTree import DecisionTree
+from decision_tree_utils import extract_rules_from_leaf
+
 
 def print_matrix(matrix, row_names, col_names):
     row_cols_name = "   "
@@ -385,3 +388,67 @@ def get_all_dp_from_event_to_sink(event, loops, places) -> list:
                 if len(places) == places_length_before and (out_arc.target.name, out_arc_inn.target.name) in places:
                     places.remove((out_arc.target.name, out_arc_inn.target.name))
     return places
+
+
+def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rules):
+    """ Discovers overlapping rules, if any.
+
+    Given the fitted decision tree, extracts the training set instances that have been wrongly classified, i.e., for
+    each leaf node, all those instances whose target is different from the leaf label. Then, it fits a new decision tree
+    on those instances, builds a rules dictionary as before (disjunctions of conjunctions) and puts the resulting rules
+    in disjunction with the original rules, according to the target value.
+    Method taken by "Decision Mining Revisited - Discovering Overlapping Rules" by Felix Mannhardt, Massimiliano de
+    Leoni, Hajo A. Reijers, Wil M.P. van der Aalst (2016).
+    """
+
+    leaf_nodes = base_tree.get_leaves_nodes()
+    leaf_nodes_with_wrong_instances = [ln for ln in leaf_nodes if len(ln.get_class_names()) > 1]
+
+    for leaf_node in leaf_nodes_with_wrong_instances:
+        vertical_rules = extract_rules_from_leaf(leaf_node)
+
+        vertical_rules_query = ""
+        for r in vertical_rules:
+            r_attr, r_comp, r_value = r.split(' ')
+            vertical_rules_query += '(' + r_attr
+            if r_comp == '=':
+                vertical_rules_query += ' == '
+            else:
+                vertical_rules_query += ' ' + r_comp + ' '
+            try:
+                float(r_value)
+                vertical_rules_query += r_value
+            except ValueError:
+                if r_value == 'True' or r_value == 'False':
+                    vertical_rules_query += r_value
+                else:
+                    vertical_rules_query += '"' + r_value + '"'
+            vertical_rules_query += ' | ' + r_attr + ' == "?")'
+            if r != vertical_rules[-1]:
+                vertical_rules_query += ' & '
+
+        leaf_instances = dataset.query(vertical_rules_query)
+        # TODO what about missing values? Sometimes a leaf has two class names but leaf_instances contains only one
+        # target value, because the wrong instances have missing values for the query so they do not even show up.
+        # For now I add to the query a "or attr == ?" to include also those results in leaf_instances?
+        # Note that this "problem" is also in the rule pruning part (last method of class DecisionTree).
+        wrong_instances = leaf_instances[leaf_instances['target'] != leaf_node._label_class]
+
+        sub_tree = DecisionTree(attributes_map)
+        sub_tree.fit(wrong_instances)
+
+        sub_rules = {}
+        sub_leaf_nodes = sub_tree.get_leaves_nodes()
+        if len(sub_leaf_nodes) > 1:
+            for sub_leaf_node in sub_leaf_nodes:
+                new_rule = ' && '.join(vertical_rules + [extract_rules_from_leaf(sub_leaf_node)])
+                if sub_leaf_node._label_class not in sub_rules.keys():
+                    sub_rules[sub_leaf_node._label_class] = set()
+                sub_rules[sub_leaf_node._label_class].add(new_rule)
+            for sub_target_class in sub_rules.keys():
+                sub_rules[sub_target_class] = ' || '.join(sub_rules[sub_target_class])
+                original_rules[sub_target_class] += ' || ' + sub_rules[sub_target_class]
+        elif len(sub_leaf_nodes) == 1:
+            original_rules[sub_leaf_nodes[0]._label_class] += ' || ' + vertical_rules
+
+    return original_rules

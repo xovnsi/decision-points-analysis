@@ -4,7 +4,7 @@ import math
 from operator import itemgetter
 
 
-def discovering_branching_conditions(dataset, attributes_map) -> dict:
+def discover_branching_conditions(dataset, attributes_map) -> dict:
     """ Alternative method for discovering branching conditions, using Daikon invariant detector
 
     It uses the existing version of Daikon, since it supports csv files (after a conversion).

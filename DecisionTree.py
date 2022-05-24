@@ -403,34 +403,42 @@ class DecisionTree(object):
             query_other = ""
             for r in other_rules:
                 r_attr, r_comp, r_value = r.split(' ')
-                query_other += r_attr + ' '
+                query_other += '(' + r_attr
                 if r_comp == '=':
-                    query_other += '==' + ' '
+                    query_other += ' == '
                 else:
-                    query_other += r_comp + ' '
+                    query_other += ' ' + r_comp + ' '
                 try:
                     float(r_value)
                     query_other += r_value
                 except ValueError:
-                    query_other += '"' + r_value + '"'
+                    if r_value == 'True' or r_value == 'False':
+                        query_other += r_value
+                    else:
+                        query_other += '"' + r_value + '"'
+                query_other += ' | ' + r_attr + ' == "?")'
                 if r != other_rules[-1]:
-                    query_other += ' ' + '&' + ' '
+                    query_other += ' & '
             examples_satisfy_other = data_in.query(query_other)
         else:
             examples_satisfy_other = data_in.copy()
 
         # Create a query with the excluded rule
         rule_attr, rule_comp, rule_value = rule.split(' ')
-        query_rule = rule_attr + ' '
+        query_rule = '(' + rule_attr
         if rule_comp == '=':
-            query_rule += '==' + ' '
+            query_rule += ' == '
         else:
-            query_rule += rule_comp + ' '
+            query_rule += ' ' + rule_comp + ' '
         try:
             float(rule_value)
             query_rule += rule_value
         except ValueError:
-            query_rule += '"' + rule_value + '"'
+            if rule_value == 'True' or rule_value == 'False':
+                query_rule += rule_value
+            else:
+                query_rule += '"' + rule_value + '"'
+        query_rule += ' | ' + rule_attr + ' == "?")'
 
         # Get the examples in the training set that satisfy the excluded rule
         examples_satisfy_other_and_rule = examples_satisfy_other.query(query_rule)

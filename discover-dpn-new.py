@@ -16,7 +16,8 @@ from utils import get_next_not_silent, get_map_place_to_events, get_place_from_e
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
 from utils import extract_rules, get_map_transitions_events
 from utils import get_map_events_transitions, update_dp_list, get_all_dp_from_event_to_sink
-from daikon_utils import discovering_branching_conditions
+from daikon_utils import discover_branching_conditions
+from utils import discover_overlapping_rules
 from DecisionTree import DecisionTree
 from Loops import Loop
 
@@ -167,10 +168,10 @@ for decision_point in decision_points_data.keys():
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
     # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
-    rules = discovering_branching_conditions(dataset, attributes_map)
-    rules = {k: rules[k].replace('_', ':') for k in rules}
-    print(rules)
-    continue
+    #rules = discover_branching_conditions(dataset, attributes_map)
+    #rules = {k: rules[k].replace('_', ':') for k in rules}
+    #print(rules)
+    #continue
 
     dt = DecisionTree(attributes_map)
     dt.fit(dataset)
@@ -178,8 +179,10 @@ for decision_point in decision_points_data.keys():
     if not len(dt.get_nodes()) == 1:
         y_pred = dt.predict(dataset.drop(columns=['target']))
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+        #dataset = dataset.fillna('?')  #TODO if na in cont variables, this converts that column dtype to object -> queries like "paymentAmount > 100" do not work anymore
         rules = dt.extract_rules(dataset)
         rules = {k: rules[k].replace('_', ':') for k in rules}
+        rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
         print(rules)
 
 toc = time()
