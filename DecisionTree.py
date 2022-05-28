@@ -345,6 +345,7 @@ class DecisionTree(object):
 
             if empty_rule:
                 # TODO maybe increase more each time? This is precise but it may take long since the cap is 1
+                keep_rule = list()
                 p_threshold = round(p_threshold + 0.01, 2)
             elif len(rules.values()) != len(set(rules.values())):
                 keep_rule.extend([r for r in set(rules.values()) if list(rules.values()).count(r) > 1])
@@ -395,6 +396,7 @@ class DecisionTree(object):
         Given a rule from the list of rules from the root to the leaf node, the other rules from that list, the leaf
         class and the training set, creates a 2x2 table containing the number of training examples that satisfy the
         other rules divided according to the satisfaction of the excluded rule and the belonging to target class.
+        Missing values are not taken into account.
         """
 
         # Create a query string with all the rules in "other_rules" in conjunction (if there are other rules)
@@ -403,20 +405,15 @@ class DecisionTree(object):
             query_other = ""
             for r in other_rules:
                 r_attr, r_comp, r_value = r.split(' ')
-                query_other += '(' + r_attr
+                query_other += r_attr
                 if r_comp == '=':
                     query_other += ' == '
                 else:
                     query_other += ' ' + r_comp + ' '
-                try:
-                    float(r_value)
+                if data_in.dtypes[r_attr] in ['float64', 'bool']:
                     query_other += r_value
-                except ValueError:
-                    if r_value == 'True' or r_value == 'False':
-                        query_other += r_value
-                    else:
-                        query_other += '"' + r_value + '"'
-                query_other += ' | ' + r_attr + ' == "?")'
+                else:
+                    query_other += '"' + r_value + '"'
                 if r != other_rules[-1]:
                     query_other += ' & '
             examples_satisfy_other = data_in.query(query_other)
@@ -425,20 +422,15 @@ class DecisionTree(object):
 
         # Create a query with the excluded rule
         rule_attr, rule_comp, rule_value = rule.split(' ')
-        query_rule = '(' + rule_attr
+        query_rule = rule_attr
         if rule_comp == '=':
             query_rule += ' == '
         else:
             query_rule += ' ' + rule_comp + ' '
-        try:
-            float(rule_value)
+        if data_in.dtypes[rule_attr] in ['float64', 'bool']:
             query_rule += rule_value
-        except ValueError:
-            if rule_value == 'True' or rule_value == 'False':
-                query_rule += rule_value
-            else:
-                query_rule += '"' + rule_value + '"'
-        query_rule += ' | ' + rule_attr + ' == "?")'
+        else:
+            query_rule += '"' + rule_value + '"'
 
         # Get the examples in the training set that satisfy the excluded rule
         examples_satisfy_other_and_rule = examples_satisfy_other.query(query_rule)

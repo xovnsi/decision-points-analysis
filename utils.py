@@ -410,28 +410,21 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
         vertical_rules_query = ""
         for r in vertical_rules:
             r_attr, r_comp, r_value = r.split(' ')
-            vertical_rules_query += '(' + r_attr
+            vertical_rules_query += r_attr
             if r_comp == '=':
                 vertical_rules_query += ' == '
             else:
                 vertical_rules_query += ' ' + r_comp + ' '
-            try:
-                float(r_value)
+            if dataset.dtypes[r_attr] == 'float64' or dataset.dtypes[r_attr] == 'bool':
                 vertical_rules_query += r_value
-            except ValueError:
-                if r_value == 'True' or r_value == 'False':
-                    vertical_rules_query += r_value
-                else:
-                    vertical_rules_query += '"' + r_value + '"'
-            vertical_rules_query += ' | ' + r_attr + ' == "?")'
+            else:
+                vertical_rules_query += '"' + r_value + '"'
             if r != vertical_rules[-1]:
                 vertical_rules_query += ' & '
 
         leaf_instances = dataset.query(vertical_rules_query)
         # TODO what about missing values? Sometimes a leaf has two class names but leaf_instances contains only one
         # target value, because the wrong instances have missing values for the query so they do not even show up.
-        # For now I add to the query a "or attr == ?" to include also those results in leaf_instances?
-        # Note that this "problem" is also in the rule pruning part (last method of class DecisionTree).
         wrong_instances = leaf_instances[leaf_instances['target'] != leaf_node._label_class]
 
         sub_tree = DecisionTree(attributes_map)
@@ -448,7 +441,40 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
             for sub_target_class in sub_rules.keys():
                 sub_rules[sub_target_class] = ' || '.join(sub_rules[sub_target_class])
                 original_rules[sub_target_class] += ' || ' + sub_rules[sub_target_class]
-        elif len(sub_leaf_nodes) == 1:
-            original_rules[sub_leaf_nodes[0]._label_class] += ' || ' + vertical_rules
+        # Only root in sub_tree == all instances with same target (TODO check this)
+        elif len(wrong_instances) > 0:  # length 0 could happen since we do not consider missing values for now
+            original_rules[wrong_instances['target'].unique()[0]] += ' || ' + ' && '.join(vertical_rules)
 
     return original_rules
+
+
+def compress_many_valued_attributes(rules, attributes_map):
+    """ Rewrites the final rules dictionary to compress disjunctions of many-valued categorical attributes equalities
+
+    For example, a series of atoms "org:resource = 10 || org:resource = 144 || org:resource = 68 || org:resource = 43 ||
+    org:resource == 632" is rewritten as "org:resource one of [10, 144, 68, 43, 632]"
+    """
+
+    for target_class in rules.keys():
+        atoms = rules[target_class].split(' || ')
+        atoms_to_remove = dict()
+        cat_atoms_same_attr = dict()
+        for atom in atoms:
+            if ' && ' not in atom:
+                a_attr, a_comp, a_value = atom.split(' ')
+                if a_comp == '=' and attributes_map[a_attr] == 'categorical':
+                    if a_attr not in cat_atoms_same_attr.keys():
+                        cat_atoms_same_attr[a_attr] = list()
+                        atoms_to_remove[a_attr] = list()
+                    cat_atoms_same_attr[a_attr].append(a_value)
+                    atoms_to_remove[a_attr].append(atom)
+
+        compressed_rules = list()
+        for attr in cat_atoms_same_attr:
+            if len(cat_atoms_same_attr[attr]) > 1:
+                compressed_rules.append(attr + ' one of [' + ', '.join(sorted(cat_atoms_same_attr[attr])) + ']')
+                atoms = [a for a in atoms if a not in atoms_to_remove[attr]]
+
+        rules[target_class] = ' || '.join(atoms + compressed_rules)
+
+    return rules

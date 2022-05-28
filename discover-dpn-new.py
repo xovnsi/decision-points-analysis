@@ -17,7 +17,7 @@ from utils import get_attributes_from_event, get_feature_names, update_places_ma
 from utils import extract_rules, get_map_transitions_events
 from utils import get_map_events_transitions, update_dp_list, get_all_dp_from_event_to_sink
 from daikon_utils import discover_branching_conditions
-from utils import discover_overlapping_rules
+from utils import discover_overlapping_rules, compress_many_valued_attributes
 from DecisionTree import DecisionTree
 from Loops import Loop
 
@@ -159,13 +159,21 @@ for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
 
-    # TODO this float conversion of the dataset should be done only once at the beginning
-    # TODO also it would be good to replace missing values with '?' only once at the beginning here
-    for attr in attributes_map:
-        if attributes_map[attr] == 'continuous':
-            dataset[attr] = dataset[attr].astype(float)
+    # Replacing ':' with '_' both in the dataset columns and in the attributes map since ':' creates problems
     dataset.columns = dataset.columns.str.replace(':', '_')
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
+
+    # TODO this conversion of the dataset should be done only once here: check if it is done in other places
+    # TODO After this conversion, one could ignore attributes_map and use dataset.dtypes unless fillna('?') since this
+    # method converts the type of columns with missing values to object.
+    for attr in dataset.columns:
+        if attr != 'target':
+            if attributes_map[attr] == 'continuous':
+                dataset[attr] = dataset[attr].astype(float)
+            elif attributes_map[attr] == 'boolean':
+                dataset[attr] = dataset[attr].astype(bool)
+            elif attributes_map[attr] == 'categorical':
+                dataset[attr] = dataset[attr].astype(pd.StringDtype())
 
     # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
     #rules = discover_branching_conditions(dataset, attributes_map)
@@ -179,10 +187,10 @@ for decision_point in decision_points_data.keys():
     if not len(dt.get_nodes()) == 1:
         y_pred = dt.predict(dataset.drop(columns=['target']))
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-        #dataset = dataset.fillna('?')  #TODO if na in cont variables, this converts that column dtype to object -> queries like "paymentAmount > 100" do not work anymore
         rules = dt.extract_rules(dataset)
-        rules = {k: rules[k].replace('_', ':') for k in rules}
         rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
+        rules = compress_many_valued_attributes(rules, attributes_map)
+        rules = {k: rules[k].replace('_', ':') for k in rules}
         print(rules)
 
 toc = time()
