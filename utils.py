@@ -430,9 +430,9 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
         sub_tree = DecisionTree(attributes_map)
         sub_tree.fit(wrong_instances)
 
-        sub_rules = {}
         sub_leaf_nodes = sub_tree.get_leaves_nodes()
         if len(sub_leaf_nodes) > 1:
+            sub_rules = {}
             for sub_leaf_node in sub_leaf_nodes:
                 new_rule = ' && '.join(vertical_rules + [extract_rules_from_leaf(sub_leaf_node)])
                 if sub_leaf_node._label_class not in sub_rules.keys():

@@ -164,7 +164,7 @@ for decision_point in decision_points_data.keys():
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
     # TODO this conversion of the dataset should be done only once here: check if it is done in other places
-    # TODO After this conversion, one could ignore attributes_map and use dataset.dtypes unless fillna('?') since this
+    # After this conversion, one could ignore attributes_map and use dataset.dtypes unless fillna('?') since this
     # method converts the type of columns with missing values to object.
     for attr in dataset.columns:
         if attr != 'target':
@@ -176,7 +176,7 @@ for decision_point in decision_points_data.keys():
                 dataset[attr] = dataset[attr].astype(pd.StringDtype())
 
     # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
-    #rules = discover_branching_conditions(dataset, attributes_map)
+    #rules = discover_branching_conditions(dataset)
     #rules = {k: rules[k].replace('_', ':') for k in rules}
     #print(rules)
     #continue

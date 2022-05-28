@@ -4,24 +4,25 @@ import math
 from operator import itemgetter
 
 
-def discover_branching_conditions(dataset, attributes_map) -> dict:
+def discover_branching_conditions(dataset) -> dict:
     """ Alternative method for discovering branching conditions, using Daikon invariant detector
 
     It uses the existing version of Daikon, since it supports csv files (after a conversion).
     It returns a dictionary containing the discovered rule for each branch.
     Method taken from "Discovering Branching Conditions from Business Process Execution Logs" by Massimiliano de Leoni,
-    Marlon Dumas, and Luciano Garcia-Banuelos. In particular, only the CD+IG+LV approach is implemented.
+    Marlon Dumas, and Luciano Garcia-Banuelos (2013). In particular, only the CD+IG+LV approach is implemented.
     Modified in order to support not only binary decision points. If binary, the two resulting rules are modified so
     that the one with the lower information gain is the negation of the other.
     Also, invariants that do not make sense are not considered.
     """
 
     # Saving continuous variables and non-continuous variables names
-    feature_names_cont = [c for c in dataset.columns if c != 'target' and attributes_map[c] == 'continuous']
-    feature_names_not_cont = [c for c in dataset.columns if c != 'target' and attributes_map[c] != 'continuous']
+    feature_names_cont = [c for c in dataset.columns if c != 'target' and dataset.dtypes[c] == 'float64']
+    feature_names_not_cont = [c for c in dataset.columns if c != 'target' and dataset.dtypes[c] != 'float64']
 
-    # Dropping missing values for continuous variables and filling the other missing values with '?'
-    dataset = dataset.dropna(subset=feature_names_cont).fillna('?')
+    # Dropping missing values for continuous variables
+    dataset = dataset.copy(deep=True)
+    dataset = dataset.dropna(subset=feature_names_cont)
 
     # Enriching the dataset with latent variables (all combinations of variables using +, -, *, /)
     for i, c1 in enumerate(feature_names_cont):
