@@ -164,8 +164,6 @@ for decision_point in decision_points_data.keys():
     attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
     # TODO this conversion of the dataset should be done only once here: check if it is done in other places
-    # After this conversion, one could ignore attributes_map and use dataset.dtypes unless fillna('?') since this
-    # method converts the type of columns with missing values to object.
     for attr in dataset.columns:
         if attr != 'target':
             if attributes_map[attr] == 'continuous':

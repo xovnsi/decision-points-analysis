@@ -423,8 +423,8 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
                 vertical_rules_query += ' & '
 
         leaf_instances = dataset.query(vertical_rules_query)
-        # TODO what about missing values? Sometimes a leaf has two class names but leaf_instances contains only one
-        # target value, because the wrong instances have missing values for the query so they do not even show up.
+        # TODO not considering missing values for now, so wrong_instances could be empty
+        # This happens because all the wrongly classified instances have missing values for the query attribute(s)
         wrong_instances = leaf_instances[leaf_instances['target'] != leaf_node._label_class]
 
         sub_tree = DecisionTree(attributes_map)
@@ -441,9 +441,13 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
             for sub_target_class in sub_rules.keys():
                 sub_rules[sub_target_class] = ' || '.join(sub_rules[sub_target_class])
                 original_rules[sub_target_class] += ' || ' + sub_rules[sub_target_class]
-        # Only root in sub_tree == all instances with same target (TODO check this)
+        # Only root in sub_tree = could not find a suitable split of the root node -> most frequent target is chosen
         elif len(wrong_instances) > 0:  # length 0 could happen since we do not consider missing values for now
-            original_rules[wrong_instances['target'].unique()[0]] += ' || ' + ' && '.join(vertical_rules)
+            sub_target_class = wrong_instances['target'].mode()
+            if sub_target_class not in original_rules.keys():
+                original_rules[sub_target_class] = ' && '.join(vertical_rules)
+            else:
+                original_rules[sub_target_class] += ' || ' + ' && '.join(vertical_rules)
 
     return original_rules
 
