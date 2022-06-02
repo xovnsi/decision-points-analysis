@@ -1,5 +1,6 @@
 from loop_utils import get_in_place_loop, get_out_place_loop
 from loop_utils import get_loop_not_silent, get_input_near_source
+from utils import check_if_skip
 
 
 class Loop(object):
@@ -20,6 +21,33 @@ class Loop(object):
     def set_inactive(self):
         """ Sets the loop inactive """
         self.active = False
+
+    def set_complete_net_input(self, last_collapsed_left):
+        self.input_places_complete = self.input_places.copy() 
+        for node in last_collapsed_left.keys():
+            if self.is_vertex_input_loop(node):
+                self.input_places_complete.remove(node)
+                self.input_places_complete.append(last_collapsed_left[node])
+
+    def set_complete_net_output(self, last_collapsed_right):
+        self.output_places_complete = self.output_places.copy()
+        for node in last_collapsed_right.keys():
+            if self.is_vertex_output_loop(node):
+                self.output_places_complete.remove(node)
+                self.output_places_complete.append(last_collapsed_right[node])
+
+    def set_complete_net_loop_nodes(self, sim_map):
+        self.complete_net_nodes = self.vertex.copy()
+        for node in sim_map.keys():
+            if self.is_vertex_in_loop(node):
+                self.complete_net_nodes.remove(node)
+                self.complete_net_nodes.extend(list(sim_map[node]))
+
+    def set_complete_net_loop_events(self, events_trans_map):
+        self.complete_net_events = list()
+        for node in self.complete_net_nodes:
+            if node in events_trans_map.keys():
+                self.complete_net_events.append(events_trans_map[node])
 
     def is_active(self) -> bool:
         """ Returns if the loop is active """
@@ -53,9 +81,33 @@ class Loop(object):
             is_output_loop = True
         return is_output_loop
 
+    def is_input_node_complete_net(self, node) -> bool:
+        """ Returns if a node is an input node of the loop """
+        is_input_loop = False
+        if node in self.input_places_complete:
+            is_input_loop = True
+        return is_input_loop
+
+    def is_output_node_complete_net(self, node) -> bool:
+        """ Returns if a node is an input node of the loop """
+        is_output_loop = False
+        if node in self.output_places_complete:
+            is_output_loop = True
+        return is_output_loop
+
+    def is_node_in_loop_complete_net(self, node):
+        is_in_loop = False
+        if node in self.complete_net_nodes:
+            is_in_loop = True
+        return is_in_loop
+
     def set_nearest_input(self, net, loops):
         """ Sets the nearest input to the net source """
         self.nearest = get_input_near_source(net, self.input_places.copy(), loops)
+
+    def set_nearest_input_complete_net(self, net, loops):
+        """ Sets the nearest input to the net source """
+        self.nearest_complete_net = get_input_near_source(net, self.input_places_complete.copy(), loops)
 
     def set_dp_forward_order_transition(self, net):
         """ Sets the forward path not silent transitions
@@ -63,6 +115,7 @@ class Loop(object):
         For every decision point sets the not silent transitions reachable from the decision point
         to the nearest input node of the loop
         """
+        #breakpoint()
         dp_forward = dict()
         places = [place.name for place in net.places]
         for vertex in self.vertex:
@@ -93,10 +146,10 @@ class Loop(object):
         recursively the next not silent.
         """
         # first stop condition
-        if place.name == 'sink':
+        #breakpoint()
+        if place.name == 'sink' or not place.name in self.vertex:
             return not_silent
-        # TODO verify also that they are coming from the same node
-        is_input_a_skip = len(place.in_arcs) == 2 and len([arc.source.name for arc in place.in_arcs if arc.source.label is None]) == 1
+        is_input_a_skip = check_if_skip(place)
         if (len(place.in_arcs) > 1 and not (is_input_a_skip or self.is_vertex_input_loop(place.name))) or self.is_vertex_nearest_input(place.name):
             return not_silent
         out_arcs_label = [arc.target.label for arc in place.out_arcs]
@@ -157,7 +210,7 @@ class Loop(object):
         # first stop condition
         if place.name == 'sink':
             return not_silent
-        is_input_a_skip = len(place.in_arcs) == 2 and len([arc.source.name for arc in place.in_arcs if arc.source.label is None]) == 1
+        is_input_a_skip = check_if_skip(place)
         # second stop condition
         if (len(place.in_arcs) > 1 and not (is_input_a_skip or self.is_vertex_input_loop(place.name))) or place.name == end_place: 
             return not_silent
@@ -233,11 +286,11 @@ class Loop(object):
         """ Check if a transition is reachable from another one without passing from the input node """
         for out_arc in start_trans.out_arcs:
             # stops if reaches the net sink or the nearest input node to the net source
-            if out_arc.target.name == "sink" or out_arc.target.name == self.nearest:
+            if out_arc.target.name == "sink" or out_arc.target.name == self.nearest_complete_net:
                 return reachable
             else:
                 for out_arc_inn in out_arc.target.out_arcs:
-                    if out_arc_inn.target.name in self.vertex:
+                    if out_arc_inn.target.name in self.complete_net_nodes:
                         #  recursive part if is silent 
                         if out_arc_inn.target.label is None:
                             reachable = self.check_if_reachable(out_arc_inn.target, end_trans, reachable)

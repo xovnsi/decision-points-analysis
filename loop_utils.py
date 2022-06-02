@@ -1,4 +1,11 @@
 import numpy as np
+from itertools import combinations
+from utils import check_if_reducible, get_previous_same_type, get_previous
+from pm4py.objects.petri_net.utils.petri_utils import remove_arc, remove_transition, remove_place, add_arc_from_to
+from pm4py.objects.petri_net.obj import PetriNet
+from pm4py.visualization.petri_net import visualizer as pn_visualizer
+from pm4py.objects.petri_net.obj import Marking
+import copy
 
 def get_in_place_loop(net, vertex_in_loops) -> list:
     """ Gets the name of places that are input of a loop
@@ -8,6 +15,7 @@ def get_in_place_loop(net, vertex_in_loops) -> list:
     arc is coming from a transition outside the loop and the place of that transition is also outside (nested loops).
     """
     # initialize
+    #breakpoint()
     in_places = list()
     for place in net.places:
         if place.name in vertex_in_loops:
@@ -129,20 +137,207 @@ def get_vertex_names_from_c_matrix(c_matrix, row_names, columns_names) -> set:
                 vertex_in_loop.add(col)
     return sorted(vertex_in_loop)
 
+def simplify_net(net):
+    #breakpoint()
+    im = Marking()
+    fm = Marking()
+    for place in net.places:
+        if place.name == 'source':
+            source = place
+        elif place.name == 'sink':
+            sink = place
+    im[source] = 1
+    fm[sink] = 1
+#    gviz = pn_visualizer.apply(net, im, fm)
+#    pn_visualizer.view(gviz)
+    #nodes = net.places.union(net.transitions)
+    simplified = True
+    simplify_map = dict()
+    last_collapsed_left = dict()
+    last_collapsed_right = dict()
+    parallel_branches = dict()
+    cont_new_place = 1
+    cont_new_trans = 1
+    #breakpoint()
+    while simplified:
+        #breakpoint()
+        nodes = net.places.union(net.transitions).copy()
+        im = Marking()
+        fm = Marking()
+        for place in net.places:
+            if place.name == 'source':
+                source = place
+            elif place.name == 'sink':
+                sink = place
+        im[source] = 1
+        fm[sink] = 1
+       # gviz = pn_visualizer.apply(net, im, fm)
+       # pn_visualizer.view(gviz)
+        already_reduced = list()
+        for i, node in enumerate(nodes):
+            #breakpoint()
+            if i == 0:
+                simplified = False
+                #print("set simplified to false")
+            reducible = check_if_reducible(node)
+            if reducible: 
+                # check if already reduced in the same for loop
+#                for simp_node in simplify_map.keys():
+#                    if node.name in simplify_map[simp_node]:
+#                        already_reduced = True
+                if node.name in already_reduced:
+                    continue
+                if isinstance(node, PetriNet.Place):
+                    #breakpoint()
+#                    if node.name == 'p_14' or node.name == 'p_15':
+#                        breakpoint()
+                    previous_place = get_previous_same_type(node)
+                    if previous_place.name in already_reduced:
+                        continue
+                    new_place = PetriNet.Place('p_simp_{}'.format(cont_new_place))
+                    net.places.add(new_place)
+                    cont_new_place += 1
+                    simplify_map[new_place.name] = set()
+                    if node.name in simplify_map.keys():
+                        simplify_map[new_place.name] = simplify_map[new_place.name].union(simplify_map[node.name])
+                        last_collapsed_right[new_place.name] = last_collapsed_right[node.name]
+                        del simplify_map[node.name]
+                        del last_collapsed_left[node.name]
+                        del last_collapsed_right[node.name]
+                    else:
+                        simplify_map[new_place.name].add(node.name)
+                        last_collapsed_right[new_place.name] = node.name
+#\                   simplify_map[new_place.name].add(node.name)
+#                    if previous_place.name == 'p_15' or previous_place.name == 'p_14':
+#                        breakpoint()
+#                    already_reduced = False
+#                    for simp_node in simplify_map.keys():
+#                        if previous_place.name in simplify_map[simp_node]:
+#                            already_reduced = True
+                    if previous_place is None:
+                        raise Exception("Can't reduce a {}".format(node))
+                    if previous_place.name in simplify_map.keys():
+                        simplify_map[new_place.name] = simplify_map[new_place.name].union(simplify_map[previous_place.name])
+                        last_collapsed_left[new_place.name] = last_collapsed_left[previous_place.name]
+                        del simplify_map[previous_place.name]
+                        del last_collapsed_left[previous_place.name]
+                        del last_collapsed_right[previous_place.name]
+                    else:
+                        simplify_map[new_place.name].add(previous_place.name)
+                        last_collapsed_left[new_place.name] = previous_place.name
+#                    simplify_map[new_place.name].add(previous_place.name)
+                    #breakpoint()
+                    nodes_to_remove = node.in_arcs.copy()
+                    for arc in nodes_to_remove:
+                        if arc.source.name in simplify_map.keys():
+                            simplify_map[new_place.name] = simplify_map[new_place.name].union(simplify_map[arc.source.name])
+                            del simplify_map[arc.source.name]
+                            del last_collapsed_left[arc.source.name]
+                            del last_collapsed_right[arc.source.name]
+                        else:
+                            simplify_map[new_place.name].add(arc.source.name)
+#                        simplify_map[new_place.name].add(arc.source.name)
+                        remove_transition(net, arc.source) 
+                    #previous_trans = get_previous(previous_place)
+                    #if previous_trans is None:
+                    #    raise Exception("Can't reduce a {}".format(node))
+                    nodes_to_add = previous_place.in_arcs.copy()
+                    for in_arc in nodes_to_add:
+                        add_arc_from_to(in_arc.source, new_place, net)
+                    nodes_to_add = previous_place.out_arcs.copy()
+                    for out_arc in nodes_to_add:
+                        if not out_arc.target in nodes_to_remove:
+                            add_arc_from_to(new_place, out_arc.target, net)
+                    nodes_to_add = node.out_arcs.copy()
+                    for out_arc in nodes_to_add:
+                        add_arc_from_to(new_place, out_arc.target, net)
+                    #breakpoint()
+                    remove_place(net, node)
+                    remove_place(net, previous_place)
+                    already_reduced.extend([node.name, previous_place.name])
+                elif isinstance(node, PetriNet.Transition):
+                    #breakpoint()
+                    previous_trans = get_previous_same_type(node)
+                    if previous_trans.name in already_reduced:
+                        continue
+                    new_trans = PetriNet.Transition('trans_simp_{}'.format(cont_new_trans),
+                            'label_simp_{}'.format(cont_new_trans))
+                    net.transitions.add(new_trans)
+                    cont_new_trans += 1
+                    simplify_map[new_trans.name] = set()
+                    if node.name in simplify_map.keys():
+                        breakpoint()
+                        simplify_map[new_trans.name] = simplify_map[new_trans.name].union(simplify_map[node.name])
+                        last_collapsed_right[new_trans.name] = last_collapsed_right[node.name]
+                        del simplify_map[node.name]
+                        del last_collapsed_left[node.name]
+                        del last_collapsed_right[node.name]
+                    else:
+                        simplify_map[new_trans.name].add(node.name)
+                        last_collapsed_right[new_trans.name] = node.name
+#                    simplify_map[new_trans.name].add(node.name)
+                    if previous_trans is None:
+                        raise Exception("Can't reduce a {}".format(node))
+                    if previous_trans.name in simplify_map.keys():
+                        simplify_map[new_trans.name] = simplify_map[new_trans.name].union(simplify_map[previous_trans.name])
+                        last_collapsed_left[new_trans.name] = last_collapsed_left[previous_trans.name]
+                        del simplify_map[previous_trans.name]
+                        del last_collapsed_left[previous_trans.name]
+                        del last_collapsed_right[node.name]
+                        # track parallelism in the net
+                        trans_name = last_collapsed_right[previous_trans.name]
+                    else:
+                        simplify_map[new_trans.name].add(previous_trans.name)
+                        last_collapsed_left[new_trans.name] = previous_trans.name
+                        trans_name = previous_trans.name
+                    parallel_branches[trans_name] = dict()
+#                    simplify_map[new_trans.name].add(previous_trans.name)
+                    nodes_to_remove = node.in_arcs.copy()
+                    for i, arc in enumerate(nodes_to_remove):
+                        if arc.source.name in simplify_map.keys():
+                            simplify_map[new_trans.name] = simplify_map[new_trans.name].union(simplify_map[arc.source.name])
+                            parallel_branches[trans_name]['branch{}'.format(i+1)] = simplify_map[arc.source.name]
+                            del simplify_map[arc.source.name]
+                            del last_collapsed_left[arc.source.name]
+                            del last_collapsed_right[arc.source.name]
+                        else:
+                            simplify_map[new_trans.name].add(arc.source.name)
+                            parallel_branches[trans_name]['branch{}'.format(i+1)] = arc.source.name
+#                        simplify_map[new_trans.name].add(arc.source.name)
+                        remove_place(net, arc.source) 
+                    #previous_place = get_previous(previous_trans)
+                    #if previous_place is None:
+                    #    raise Exception("Can't reduce a {}".format(node))
+                    nodes_to_add = previous_trans.in_arcs.copy()
+                    for in_arc in nodes_to_add:
+                        add_arc_from_to(in_arc.source, new_trans, net)
+                    nodes_to_add = node.out_arcs.copy()
+                    for out_arc in nodes_to_add:
+                        add_arc_from_to(new_trans, out_arc.target, net)
+                    remove_transition(net, node)
+                    remove_transition(net, previous_trans)
+                    already_reduced.extend([node.name, previous_trans.name])
+                simplified = True
+                #gviz = pn_visualizer.apply(net, im, fm)
+                #pn_visualizer.view(gviz)
+    return net, simplify_map, last_collapsed_left, last_collapsed_right, parallel_branches
+
 def detect_loops(net) -> set:
     """ Detects loops in a Petri Net
 
-    Given a Petri Net in the implementation of Pm4Py library, the code look for every 
+    Given a Petri Net in the implementation of Pm4Py library, the code looks for every 
     place/transition belonging to a loop of whatever length from the minimum to the maximum. 
     The algorithm used for loop detection is taken from - Davidrajuh: `Detecting Existence of
     cycle in Petri Nets'. Advances in Intelligent Systems and Computing (2017)
     """
+    places_list = list(net.places)
+    trans_list = list(net.transitions)
     # get list of transitions and places names in the net
-    places_names = [place.name for place in list(net.places)]
-    trans_names = [tran.name for tran in list(net.transitions)]
+    places_names = [place.name for place in places_list]
+    trans_names = [tran.name for tran in trans_list]
     # compute input and output adjacency matrix (input and output considering transitions)
-    in_adj = get_input_adjacency_matrix(list(net.places), list(net.transitions))
-    out_adj = get_output_adjacency_matrix(list(net.places), list(net.transitions))
+    in_adj = get_input_adjacency_matrix(places_list, trans_list)
+    out_adj = get_output_adjacency_matrix(places_list, trans_list)
     # initialize adjacency matrix quadrants, cycle counter and output set
     old_quadrant_1 = np.zeros((len(trans_names), len(trans_names)))
     old_quadrant_2 = out_adj
@@ -196,7 +391,6 @@ def detect_loops(net) -> set:
         old_quadrant_2 = new_quadrant_2
         old_quadrant_3 = new_quadrant_3
         old_quadrant_4 = new_quadrant_4
-
         if len(vert_loop) > 0:
             found_multiple_loops = False
             vert_loops_discriminated = discriminate_loops(net, vert_loop)
@@ -221,26 +415,40 @@ def discriminate_loops(net, vertex_in_loop) -> list:
     Given a list of vertices discovered at a certain loop cycle by the loop detection algorithm, 
     discriminate vertices of belonging to different loops (i.e. not directly connected)
     """
+    net = copy.deepcopy(net)
+    vertex_in_loop = copy.deepcopy(vertex_in_loop)
     vertex_set = set(vertex_in_loop) 
     vertex_list = list()
+    already_allocated = list()
+    #breakpoint()
     while len(vertex_set) > 0:
-        first_element_name = list(vertex_set)[0]
-        # check if the vertex is a place or a transition (pm4py calls place as 'p_1')
-        if ("p_" in first_element_name and not ("skip" in first_element_name or "init" in first_element_name)) or "source" in first_element_name or "sink" in first_element_name:
-            first_element = [place for place in net.places if place.name == first_element_name][0]
+#        first_element_name = list(vertex_set)[0]
+#        # check if the vertex is a place or a transition (pm4py calls place as 'p_1')
+#        if ("p_" in first_element_name and not ("skip" in first_element_name or "init" in first_element_name)) or "source" in first_element_name or "sink" in first_element_name:
+#            first_element = [place for place in net.places if place.name == first_element_name][0]
+#        else:
+#            first_element = [trans for trans in net.transitions if trans.name == first_element_name][0]
+        # select a place as first element if some remains
+        #breakpoint()
+        places_in_loop = [copy.deepcopy(place) for place in net.places if place.name in vertex_set]
+        if len(places_in_loop) > 0:
+            first_element = places_in_loop[0]
         else:
-            first_element = [trans for trans in net.transitions if trans.name == first_element_name][0]
+            first_element_name = list(vertex_set)[0]
+            first_element = [copy.deepcopy(trans) for trans in net.transitions if trans.name == first_element_name][0]
         # get all the adjacent vertices that are inside the loop
-        vertex = search_adjacent_loop_vertex(first_element, [], vertex_in_loop)
+        vertex, end_loop = search_adjacent_loop_vertex(first_element, [], vertex_in_loop, first_element, already_allocated, False)
         vertex = [vert.name for vert in vertex]
         vertex.sort()
+        #breakpoint()
         vertex_list.append(vertex)
+        already_allocated.extend(vertex)
         vertex_loop_set = set(vertex)
-        # exclude the vertices found, the remaining are part of another loop
+        # exclude the vrtices found, the remaining are part of another loop
         vertex_set = vertex_set.difference(vertex_loop_set)
     return vertex_list
 
-def search_adjacent_loop_vertex(vertex, vertex_in_loop, total_vertex_in_loop) -> list:
+def search_adjacent_loop_vertex(vertex, vertex_in_loop, total_vertex_in_loop, start_element, already_allocated, end_one_loop) -> list:
     """ Returns the list of adjacent vertices belonging to the same loop
 
     Given a vertex and all the vertices belonging to a loop, returns all the vertices that are
@@ -248,13 +456,23 @@ def search_adjacent_loop_vertex(vertex, vertex_in_loop, total_vertex_in_loop) ->
     """
     vertex_in_loop.append(vertex)
     # stops if the vertex is an output vertex of the loop
-    if vertex_in_loop[0] in vertex.out_arcs:
-        return vertex_in_loop
+    target_nodes = [out_arc.target for out_arc in vertex.out_arcs]
+    if start_element in target_nodes:
+        end_one_loop = True
+        return vertex_in_loop, end_one_loop
     else:
         for out_arc in vertex.out_arcs:
-            if out_arc.target.name in total_vertex_in_loop and not out_arc.target in vertex_in_loop:
-                search_adjacent_loop_vertex(out_arc.target, vertex_in_loop, total_vertex_in_loop)
-    return vertex_in_loop
+            if not end_one_loop:
+                if out_arc.target in vertex_in_loop and out_arc.target != start_element:
+                    #breakpoint()
+                    vertex_in_loop.remove(vertex)
+                else:
+                    if out_arc.target.name in total_vertex_in_loop and not out_arc.target in vertex_in_loop:# and not out_arc.target.name in already_allocated:
+                        vertex_in_loop, end_one_loop = search_adjacent_loop_vertex(out_arc.target, vertex_in_loop, total_vertex_in_loop, start_element, already_allocated, end_one_loop)
+                    elif out_arc.target.name in total_vertex_in_loop and not out_arc.target in vertex_in_loop:
+                        vertex_in_loop.append(out_arc.target)
+                        end_one_loop = True
+    return vertex_in_loop, end_one_loop
     
 def delete_composite_loops(vertex_in_loop) -> dict:
     """ Delete loops that are composed by others already detected
@@ -264,14 +482,67 @@ def delete_composite_loops(vertex_in_loop) -> dict:
     checks if a loop of minor length is completely contained in a longer one. Longer loops
     containing shorter ones are discarded
     """
+    #breakpoint()
+#    for loop_length in vertex_in_loop.keys():
+#        for sequence in vertex_in_loop[loop_length]:
+#            for loop_length_inner in vertex_in_loop.keys():
+#                if not loop_length_inner == loop_length:
+#                    for inner_sequence in vertex_in_loop[loop_length_inner]:
+#                        if len(set(sequence).difference(inner_sequence)) == 0:
+#                            vertex_in_loop[loop_length_inner].remove(inner_sequence)
+#    new_vertex_in_loop = dict((key, value) for key, value in vertex_in_loop.items() if value)
+    new_vertex_in_loop = dict()
+    unique_loops = list()
+    unique_lengths = list()
     for loop_length in vertex_in_loop.keys():
         for sequence in vertex_in_loop[loop_length]:
-            for loop_length_inner in vertex_in_loop.keys():
-                if not loop_length_inner == loop_length:
-                    for inner_sequence in vertex_in_loop[loop_length_inner]:
-                        if len(set(sequence).difference(inner_sequence)) == 0:
-                            vertex_in_loop[loop_length_inner].remove(inner_sequence)
-    new_vertex_in_loop = dict((key, value) for key, value in vertex_in_loop.items() if value)
+            duplicate_sequence = False
+            combined_loop = False
+            sequence_set = set(sequence)
+            if len(unique_loops) == 0:
+                unique_loops = [sequence]
+                unique_lengths = [loop_length]
+            else:
+                for cont_seq in range(len(unique_loops)):
+                    sequence_combinations = combinations(unique_loops, cont_seq+1)
+                    seq_set = set()
+                    #breakpoint()
+                    for comb in sequence_combinations:
+                        #breakpoint()
+                        seq_set_unique_comb = [seq_set.union(prova) for prova in comb][0]
+                        if seq_set_unique_comb == sequence_set:
+                            # if the combinations are only of the 'first order' must be a duplicate
+                            if cont_seq + 1 == 1:
+                                duplicate_sequence = True
+                                combined_loop = False
+                                break
+                            else:
+                                duplicate_sequence = False
+                                combined_loop = True
+                                comb_selected = comb
+                                break
+                    if duplicate_sequence or combined_loop: 
+                        break
+#                for unique_sequence in unique_loops:
+#                    if len(sequence) == len(unique_sequence) and len(sequence_set.difference(set(unique_sequence))) == 0:
+#                        duplicate_sequence = True
+#                        break
+                #breakpoint()
+                if duplicate_sequence: 
+                    break
+                elif combined_loop:
+                    #breakpoint()
+                    for seq_comb in comb_selected:
+                        idx_list = [idx for idx, seq in enumerate(unique_loops) if seq == sequence][0]
+                        del unique_loops[idx_list]
+                        del unique_lengths[idx_list]
+                else:
+                    unique_loops.append(sequence)
+                    unique_lengths.append(loop_length)
+    #breakpoint()
+    new_vertex_in_loop = {key: [] for key in unique_lengths}
+    for i, loop_length in enumerate(unique_lengths):
+        new_vertex_in_loop[loop_length].append(unique_loops[i])
     return new_vertex_in_loop
 
 def count_length_from_source(place, input_places, count, loops, lengths, initial_input_places) -> int:
@@ -314,4 +585,3 @@ def count_length_from_source(place, input_places, count, loops, lengths, initial
                         count += 1
                         lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
     return lengths
-

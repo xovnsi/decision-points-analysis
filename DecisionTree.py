@@ -73,7 +73,6 @@ class DecisionTree(object):
 
     def predict(self, data_in, distribution=False):
         """ Starting from the root, predicts the class corresponding to the features contained in "data_in" """
-        data_in = data_in.fillna('?')
         attribute = self._root_node.get_attribute().split(":")[0]
         preds = list()
         # data_in is a pandas DataFrame
@@ -265,13 +264,15 @@ class DecisionTree(object):
         attr_type = self._attributes_map[attr_name]
         # if continuous type the split is binary given by th threshold
         if attr_type == 'continuous':
-            data_in = data_in[data_in[attr_name] != '?']
-            split_left = data_in[data_in[attr_name] <= threshold]
+            data_in_unknown = data_in[data_in[attr_name] != '?'].copy()
+            data_in_unknown.loc[:, attr_name] = data_in_unknown[attr_name].astype(float).copy()
+            #breakpoint()
+            split_left = data_in_unknown[data_in_unknown[attr_name] <= threshold].copy()
             # pandas function to count the occurnces of the different value of target
             values_count = split_left['target'].value_counts()
             # errors given by the difference between the sum of all occurrences and the most frequent
             errors_left = values_count.sum() - values_count.max()
-            split_right = data_in[data_in[attr_name] > threshold]
+            split_right = data_in_unknown[data_in_unknown[attr_name] > threshold].copy()
             values_count = split_right['target'].value_counts()
             errors_right = values_count.sum() - values_count.max()
             total_child_error = errors_left + errors_right
@@ -279,7 +280,7 @@ class DecisionTree(object):
         else:
             total_child_error = 0
             for attr_value in data_in[attr_name].unique():
-                split = data_in[data_in[attr_name] == attr_value]
+                split = data_in[data_in[attr_name] == attr_value].copy()
                 values_count = split['target'].value_counts()
                 total_child_error += values_count.sum() - values_count.max()
         return total_child_error
