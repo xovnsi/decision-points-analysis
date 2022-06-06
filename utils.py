@@ -56,9 +56,60 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches) -> 
             # check if the last activity is reacahble from the previous one (if not it means that the loop is active) 
             reachability[loop.name] = loop.check_if_reachable(previous_act, current_act.name, False)
     dp_dict = dict()
-    dp_dict, _, _ = get_dp_to_previous_event(previous_act_name, current_act, loops, loops_selected, dp_dict, reachability, dict())
+    dp_dict = new_get_dp_to_previous_event(previous_act_name, current_act, loops, dp_dict, reachability)
 
     return dp_dict
+
+
+def new_get_dp_to_previous_event(previous, current, loops, decision_points, reachability) -> dict:
+    # current is an activity, we look at its incoming arcs. Note that in_arc.source is a place
+    for in_arc in current.in_arcs:
+        inner_in_arcs_names = [inner_in_arc.source.name for inner_in_arc in in_arc.source.in_arcs if inner_in_arc.source.label is not None]
+        inv_act_names = [inner_in_arc for inner_in_arc in in_arc.source.in_arcs if inner_in_arc.source.label is None]
+        # base case: the target activity (previous) is one of the activities immediately before the current one
+        if previous in inner_in_arcs_names:
+            if len(in_arc.source.out_arcs) > 1:
+                if in_arc.source.name in decision_points.keys():
+                    decision_points[in_arc.source.name].add(current.name)
+                else:
+                    decision_points[in_arc.source.name] = {current.name}
+        # otherwise, if there is at least one invisible activity, follow every path with an invisible activity
+        elif len(inv_act_names) > 0:
+            for inner_in_arc in inv_act_names:
+                # for each of them, check: according to if we need to stay in the loop or not and where the inv act is
+                # taking us (inside or outside the loop), then recurse on that inv act or not
+                current_loop = [loop for loop in loops if current in loop.events]
+                previous_loop = [loop for loop in loops if previous in loop.events]
+                # if we are in a loop and the place is a loop input, check reachability and previous_loop to know where to go
+                if current_loop and current_loop[0].is_input_node_complete_net(in_arc.source.name):
+                    if current_loop == previous_loop and not reachability[current_loop] and inner_in_arc.source in previous_loop[0].vertex:
+                        if len(in_arc.source.out_arcs) > 1:
+                            if in_arc.source.name in decision_points.keys():
+                                decision_points[in_arc.source.name].add(current.name)
+                            else:
+                                decision_points[in_arc.source.name] = {current.name}
+                        decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
+                    elif current_loop != previous_loop and inner_in_arc.source not in current_loop[0].vertex:
+                        if len(in_arc.source.out_arcs) > 1:
+                            if in_arc.source.name in decision_points.keys():
+                                decision_points[in_arc.source.name].add(current.name)
+                            else:
+                                decision_points[in_arc.source.name] = {current.name}
+                        decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
+                # otherwise, it means that we are not in a loop, or we are in a loop but the place is not an input one, so we just recurse
+                else:
+                    if len(in_arc.source.out_arcs) > 1:
+                        if in_arc.source.name in decision_points.keys():
+                            decision_points[in_arc.source.name].add(current.name)
+                        else:
+                            decision_points[in_arc.source.name] = {current.name}
+                    decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
+        else:
+            # no invisible activities and no target activity found
+            continue
+
+    return decision_points
+
 
 def get_dp_to_previous_event(previous, current, loops, common_loops, decision_points, reachability, passed_inv_act) -> [dict, bool, bool]:
     """ Recursively explores the net and saves the decision points encountered with the targets.
