@@ -6,6 +6,8 @@ from pm4py.objects.petri_net.obj import PetriNet
 from DecisionTree import DecisionTree
 from decision_tree_utils import extract_rules_from_leaf
 
+from operator import attrgetter
+
 
 def are_activities_parallel(first_activity, second_activity, parallel_branches) -> bool:
     """ Check if two activities are parallel in the net. 
@@ -78,44 +80,29 @@ def new_get_dp_to_previous_event(previous, current, loops, decision_points, reac
             for inner_in_arc in inv_act_names:
                 # for each of them, check: according to if we need to stay in the loop or not and where the inv act is
                 # taking us (inside or outside the loop), then recurse on that inv act or not
-                current_loop = [loop for loop in loops if current.name in loop.complete_net_nodes]
-                previous_loop = [loop for loop in loops if previous in loop.complete_net_nodes]
+                # in case the current activity is inside multiple loops (loop in loop) take the smaller one
+                current_loop = min([loop for loop in loops if current.name in loop.complete_net_nodes], key=lambda loop: len(loop.complete_net_nodes))
                 place_inv_out_arcs = [inv_act for inv_act in in_arc.source.out_arcs if inv_act.target.label is None]
-                for c_loop in current_loop:
-                    # if we are in a loop and the place is a loop input, check reachability and previous_loop to know where to go
-                    if c_loop.is_input_node_complete_net(in_arc.source.name):
-                        if c_loop in reachability and not reachability[c_loop] and inner_in_arc.source.name in c_loop.complete_net_nodes:
-                            if len(in_arc.source.out_arcs) > 1:
-                                if in_arc.source.name in decision_points.keys():
-                                    decision_points[in_arc.source.name].add(current.name)
-                                else:
-                                    decision_points[in_arc.source.name] = {current.name}
-                            if place_inv_out_arcs:
-                                decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
-                        elif inner_in_arc.source.name not in c_loop.complete_net_nodes and place_inv_out_arcs:
-                            if len(in_arc.source.out_arcs) > 1:
-                                if in_arc.source.name in decision_points.keys():
-                                    decision_points[in_arc.source.name].add(current.name)
-                                else:
-                                    decision_points[in_arc.source.name] = {current.name}
-                            if place_inv_out_arcs:
-                                decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
-                    elif any([loop.is_input_node_complete_net(in_arc.source.name) for loop in [lp for lp in current_loop if lp != c_loop]]) and place_inv_out_arcs:
+                # if we are in a loop and the place is a loop input, check reachability and previous_loop to know where to go
+                # if reachability, we need to recurse on the arcs that stay inside the loop, otherwise on the other ones
+                if current_loop and current_loop.is_input_node_complete_net(in_arc.source.name):
+                    if current_loop in reachability and not reachability[current_loop] and inner_in_arc.source.name in current_loop.complete_net_nodes:
                         if len(in_arc.source.out_arcs) > 1:
                             if in_arc.source.name in decision_points.keys():
                                 decision_points[in_arc.source.name].add(current.name)
                             else:
                                 decision_points[in_arc.source.name] = {current.name}
                         decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
-                    else:
+                    elif inner_in_arc.source.name not in current_loop.complete_net_nodes:# and 'init_loop_' not in inner_in_arc.source.name:
                         if len(in_arc.source.out_arcs) > 1:
                             if in_arc.source.name in decision_points.keys():
                                 decision_points[in_arc.source.name].add(current.name)
                             else:
                                 decision_points[in_arc.source.name] = {current.name}
-                        decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
+                        if place_inv_out_arcs:
+                            decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
                 # otherwise, it means that we are not in a loop, or we are in a loop but the place is not an input one, so we just recurse
-                if not current_loop:
+                else:
                     if len(in_arc.source.out_arcs) > 1:
                         if in_arc.source.name in decision_points.keys():
                             decision_points[in_arc.source.name].add(current.name)
@@ -123,7 +110,7 @@ def new_get_dp_to_previous_event(previous, current, loops, decision_points, reac
                             decision_points[in_arc.source.name] = {current.name}
                     decision_points = new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
         else:
-            # no invisible activities and no target activity found
+            # no invisible activities and no target activity found - remove this branch or keep it for extensions
             continue
 
     return decision_points
