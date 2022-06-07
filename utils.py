@@ -23,15 +23,16 @@ def are_activities_parallel(first_activity, second_activity, parallel_branches) 
                             are_parallel = True
     return are_parallel
 
-def get_decision_points_and_targets(sequence, loops, net, parallel_branches) -> dict: 
-    """ Returns a dictionsy containing decision points and their targets.
+
+def get_decision_points_and_targets(sequence, loops, net, parallel_branches, stored_dicts) -> [dict, dict]:
+    """ Returns a dictionary containing decision points and their targets.
 
     Starting from the last activity in the sequence, the algorithm selects the previous not 
     parallel activity. Exploring the net backward, it returns all the decision points with their targets
     encountered on the path leading to the last activity in the sequence.
     """
+
     # search the first not parallel activity before the last in the sequence
-    #breakpoint()
     current_act_name = sequence[-1]
     previous_sequence = sequence[:-1]
     previous_sequence.reverse()
@@ -46,21 +47,24 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches) -> 
     if previous_act_name is None:
         raise Exception("Can't find the previous not parallel activity")
     # keep the transition objects
-    #breakpoint()
     current_act = [trans for trans in net.transitions if trans.name == current_act_name][0]
     previous_act = [trans for trans in net.transitions if trans.name == previous_act_name][0]
-    loops_selected = list()
     reachability = dict()
     # check if the two activities are contained in the same loop and save it if exists
     for loop in loops:
-        if loop.is_node_in_loop_complete_net(current_act.name) and loop.is_node_in_loop_complete_net(previous):
-            loops_selected.append(loop)
-            # check if the last activity is reacahble from the previous one (if not it means that the loop is active) 
+        if loop.is_node_in_loop_complete_net(current_act_name) and loop.is_node_in_loop_complete_net(previous_act_name):
+            # check if the last activity is reachable from the previous one (if not it means that the loop is active)
             reachability[loop.name] = loop.check_if_reachable(previous_act, current_act.name, False)
-    dp_dict = dict()
-    dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act, loops, dp_dict, reachability)
 
-    return dp_dict
+    # Extracting the decision points between previous and current activities, if not already computed
+    prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
+    if prev_curr_key not in stored_dicts.keys():
+        dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act, loops, dict(), reachability)
+        stored_dicts[' ,'.join([previous_act_name, current_act_name])] = dp_dict
+    else:
+        dp_dict = stored_dicts[prev_curr_key]
+
+    return dp_dict, stored_dicts
 
 
 def _new_get_dp_to_previous_event(previous, current, loops, decision_points, reachability) -> [dict, bool]:

@@ -148,6 +148,7 @@ for place in net.places:
 
 #breakpoint()
 event_attr = dict()
+stored_dicts = dict()
 
 # Scanning the log to get the data
 print('Extracting training data from Event Log')
@@ -164,7 +165,7 @@ for variant in tqdm(variants):
         events_sequence.append(event_name)
         dp_dict = dict()
         if len(transitions_sequence) > 1:
-            dp_dict = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches)
+            dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches, stored_dicts)
         old_keys = list(dp_dict.keys()).copy()
         for dp in old_keys:
             if len(dp_dict[dp]) == 0:
@@ -243,18 +244,17 @@ for variant in tqdm(variants):
                             decision_points_data[place_from_event][a].append(event_attr[a][0])
                     decision_points_data[place_from_event]['target'].append(target_act)
 
-#breakpoint()
-attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
-                  'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
-                  'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
-                  'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
-                  'lastSent': 'categorical', 'matricola': 'categorical'}
-
-#attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-#                  'communication': 'categorical', 'discarded': 'boolean'}
+if 'road' in net_name:
+    attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
+                      'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
+                      'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+                      'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
+                      'lastSent': 'categorical', 'matricola': 'categorical'}
+else:
+    attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+                      'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
-
 for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
