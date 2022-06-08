@@ -60,6 +60,17 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
     if prev_curr_key not in stored_dicts.keys():
         dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act, loops, dict(), reachability)
+        print("\nPrevious event: {}".format(previous_act.label))
+        print("Current event: {}".format(current_act.label))
+        print("DPs")
+        events_trans_map = get_map_events_transitions(net)
+        for key in dp_dict.keys():
+            print(" - {}".format(key))
+            for inn_key in dp_dict[key]:
+                if inn_key in events_trans_map.keys():
+                    print("   - {}".format(events_trans_map[inn_key]))
+                else:
+                    print("   - {}".format(inn_key))
         stored_dicts[' ,'.join([previous_act_name, current_act_name])] = dp_dict
     else:
         dp_dict = stored_dicts[prev_curr_key]
@@ -87,22 +98,23 @@ def _new_get_dp_to_previous_event(previous, current, loops, decision_points, rea
            then simply recurse on that inner arc. Indeed, we are inside a loop, so we keep going backwards.
         3) If we are not in any loop, then simply recurse on the inner arc.
 
-    If and when the algorithm reaches the target activity backwards ('previous'), then it sets 'previous_found' to True.
+    If and when the algorithm reaches the target activity backwards ('previous'), then it sets 'target_found' to True.
     Instead, if the algorithm cannot go backwards anymore, since there are no invisible transition to follow, then the
-    variable 'previous_found' is left to False.
+    variable 'target_found' is left to False.
     Being a recursive algorithm, when each instance returns, the above instance checks if 'previous_found' is True or
     False. If it is True, it means that the followed path reached the target activity and so it appends eventual
-    decision points to the dictionary.
+    decision points to the dictionary. Additionally, it sets 'target_found' to True to signal to the above instance that
+    the target has been found on that path and therefore decision points need to be added to the dictionary.
     """
 
-    previous_found = False
+    target_found = False
     for in_arc in current.in_arcs:
         inner_in_arcs_names = [inner_in_arc.source.name for inner_in_arc in in_arc.source.in_arcs if inner_in_arc.source.label is not None]
         inv_act_names = [inner_in_arc for inner_in_arc in in_arc.source.in_arcs if inner_in_arc.source.label is None]
         # Base case: the target activity (previous) is one of the activities immediately before the current one
         if previous in inner_in_arcs_names:
-            previous_found = True
-            decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
+            target_found = True
+            decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
         # Recursive case: if there is at least one invisible activity backwards, follow every one of those paths
         elif len(inv_act_names) > 0:
             # Extracting the loop(s) we are currently in. There can be more than one in case of nested loops
@@ -115,20 +127,24 @@ def _new_get_dp_to_previous_event(previous, current, loops, decision_points, rea
                         if loop.name in reachability and not reachability[loop.name] and loop.is_node_in_loop_complete_net(inner_in_arc.source.name):
                             decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
                             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
+                            target_found = True if previous_found else target_found
                         # Case 1b - Previous activity reachable: exit current loop
                         elif (loop.name not in reachability or reachability[loop.name]) and not loop.is_node_in_loop_complete_net(inner_in_arc.source.name):
                             decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
                             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
+                            target_found = True if previous_found else target_found
                     # Case 2 - Not loop input: recurse
                     else:
                         decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
                         decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
+                        target_found = True if previous_found else target_found
                 # Case 3 - No loop: recurse
                 if not current_loops:
                     decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability)
                     decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
+                    target_found = True if previous_found else target_found
 
-    return decision_points, previous_found
+    return decision_points, target_found
 
 
 def _add_dp_target(decision_points, dp, target, previous_found):
