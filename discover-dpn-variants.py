@@ -246,7 +246,7 @@ for variant in tqdm(variants):
                             decision_points_data[place_from_event][a].append(event_attr[a][0])
                     decision_points_data[place_from_event]['target'].append(target_act)
 
-if 'road' in net_name:
+if 'road' in net_name or 'Road' in net_name:
     attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
                       'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
                       'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
