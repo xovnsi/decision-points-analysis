@@ -108,12 +108,15 @@ class Loop(object):
     def set_nearest_input_complete_net(self, sim_net, sim_map):
         """ Sets the nearest loop input to the net source """
 
-        source = [place for place in sim_net.places if place.name == 'source'][0]
-        lengths = dict()
-        for input_place in self.input_places_complete:
-            lengths[input_place] = count_length_from_source(source, sim_map, input_place, list())
+        if len(self.input_places_complete) > 1:
+            source = [place for place in sim_net.places if place.name == 'source'][0]
+            lengths = dict()
+            for input_place in self.input_places_complete:
+                lengths[input_place] = count_length_from_source(source, sim_map, input_place, list())
 
-        self.nearest_complete_net = min(lengths, key=lengths.get)
+            self.nearest_complete_net = min(lengths, key=lengths.get)
+        else:
+            self.nearest_complete_net = self.input_places_complete[0]
 
     def set_dp_forward_order_transition(self, net):
         """ Sets the forward path not silent transitions
