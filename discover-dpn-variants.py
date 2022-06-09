@@ -16,7 +16,7 @@ from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from loop_utils import detect_loops, get_in_place_loop, get_out_place_loop
-from loop_utils import simplify_net, delete_composite_loops, get_input_near_source
+from loop_utils import simplify_net, delete_composite_loops
 from utils import get_next_not_silent, get_map_place_to_events, get_place_from_event, compress_many_valued_attributes, \
     discover_overlapping_rules
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
@@ -136,7 +136,7 @@ while not not_joinable:
         not_joinable = True
             
 for loop in loops:
-    loop.set_nearest_input_complete_net(sim_net, loops)
+    loop.set_nearest_input_complete_net(sim_net, sim_map)
 
 tic = time()
 

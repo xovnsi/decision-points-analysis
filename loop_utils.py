@@ -65,29 +65,47 @@ def get_loop_not_silent(net, vertex_in_loop) -> list:
             not_silent.append(trans.name)
     return not_silent
 
-def get_input_near_source(net, input_places, loops) -> str:
-    """ Returns the nearest input node of a loop to the source of the net
 
-    Given the set of places inputs of a loop , the net and a list of loops objects,
-    keeps only the with the shortest path starting from the source place
+def count_length_from_source(place, sim_map, input_place, passed_places) -> int:
+    """ Counts the number of places between the source and the given loop input place
+
+    Given a starting place (the source, initially), the mapping between the original net places and the simplified net
+    places, the loop input place, and a list of passed places (initially empty), it recurse on the net arcs until it
+    finds the given loop input place. At that point, the counter is set to 1, and it is incremented going backwards
+    through the method instances. That place is also added to the 'passed_places' list to avoid looping.
+
+    TODO implementing this below is tricky (too many cases). Can we ignore this? We are just choosing an input place...
+    Paths are analyzed in a certain order by default. If the input place is found following a certain path, the method
+    returns with the length found. However, it may happen that another unexplored path to the input place is shorter,
+    but never analyzed.
     """
-    # if there are more than one input place
-    if len(input_places) > 1:
-        source = [place for place in net.places if place.name == 'source'][0]
-        count = 0
-        lengths = dict()
-        lengths = count_length_from_source(source, input_places, count, loops, lengths, input_places.copy())
-        count = -1
-        for input_place in lengths:
-            if count == -1:
-                nearest = input_place
-                count = lengths[input_place]
-            elif lengths[input_place] < count:
-                nearest = input_place
-                count = lengths[input_place]
-    else:
-        nearest = input_places[0]
-    return nearest
+
+    out_arcs_inn = {inner_out_arc for out_arc in place.out_arcs for inner_out_arc in out_arc.target.out_arcs}
+    out_arcs_inn_target_names = {inner_out_arc.target.name for inner_out_arc in out_arcs_inn}
+
+    # The set above contains places from the simplified net. Here, it keeps the ones that are also part of the original
+    # net; otherwise, it "expands" them, taking all the places from the original net contained in the places of the
+    # simplified net.
+    complete_net_target_names = set()
+    for sim_place in out_arcs_inn_target_names:
+        if sim_place in sim_map:
+            complete_net_target_names.update(sim_map[sim_place])
+        else:
+            complete_net_target_names.add(sim_place)
+
+    # Base case: the input place is found
+    if input_place in complete_net_target_names:
+        return 1
+    # Recursive case: keep going (unless the target place has already been visited)
+    for inner_out_arc in out_arcs_inn:
+        if inner_out_arc.target.name not in passed_places:
+            passed_places.append(inner_out_arc.target.name)
+            count = count_length_from_source(inner_out_arc.target, sim_map, input_place, passed_places)
+            if count > 0:
+                return count + 1
+
+    return 0
+
 
 def get_input_adjacency_matrix(places_list, transitions_list) -> np.ndarray:
     """ Computes the input adjacency matrix
@@ -544,44 +562,3 @@ def delete_composite_loops(vertex_in_loop) -> dict:
     for i, loop_length in enumerate(unique_lengths):
         new_vertex_in_loop[loop_length].append(unique_loops[i])
     return new_vertex_in_loop
-
-def count_length_from_source(place, input_places, count, loops, lengths, initial_input_places) -> int:
-    """ Counts the number of vertices between an input place of a loop and the source of the net
-
-    Given a place and a list of input places names recursively add one to the count until the place 
-    has been reached starting from the net source or the sink has been found.
-    """
-    # if the place is inside the initial set but not in the actual one, it has been removed thus the cycle ends
-    if not place.name in input_places and place.name in initial_input_places:
-        return lengths
-    for out_arc in place.out_arcs:
-        for out_arc_inn in out_arc.target.out_arcs:
-            if not len(input_places) == 0:
-                # if the sink has been reached ends immediately
-                if out_arc_inn.target.name == 'sink':
-                    return lengths
-                if out_arc_inn.target.name in input_places:
-                    count += 1
-                    lengths[out_arc_inn.target.name] = count
-                    input_places.remove(out_arc_inn.target.name)
-                    # if there is only one input place, ends immediately
-                    if len(input_places) == 0:
-                        return lengths
-                    # recurse
-                    else:
-                        lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
-                else:
-                    loop_name = 'None'
-                    not_in_loop = False
-                    # check if in loop
-                    for loop in loops:
-                        # TODO check if this condition is right
-                        if loop.is_vertex_output_loop(out_arc_inn.target) and not loop.is_vertex_output_loop(out_arc_inn.source):
-                            count += 1
-                            lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
-                        else:
-                            not_in_loop = True
-                    if not_in_loop:
-                        count += 1
-                        lengths = count_length_from_source(out_arc_inn.target, input_places, count, loops, lengths, initial_input_places)
-    return lengths
