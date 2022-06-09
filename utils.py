@@ -155,7 +155,6 @@ def _new_get_dp_to_previous_event(previous, current, loops, decision_points, rea
 
 def _add_dp_target(decision_points, dp, target, previous_found):
     """ Adds the decision point and its target activity to the 'decision_points' dictionary.
-
     Given the 'decision_points' dictionary, the place 'dp' (in_arc.source) and the target activity name (current.name),
     adds the target activity name to the set of targets related to the decision point. If not presents, adds the
     decision point to the dictionary keys first.
@@ -171,15 +170,18 @@ def _add_dp_target(decision_points, dp, target, previous_found):
 
 def get_dp_to_previous_event(previous, current, loops, common_loops, decision_points, reachability, passed_inv_act) -> [dict, bool, bool]:
     """ Recursively explores the net and saves the decision points encountered with the targets.
-    
+
     The backward recursion is allowed only if there is an invisbile activity and the target activity has not been reached.
-    When a loop input is encountered, if the two activities are in the same loop and the 'current' is reachable from 
+    When a loop input is encountered, if the two activities are in the same loop and the 'current' is reachable from
     the 'previous' the algorithm stops. If the two activities are not in the same loop, the algorithm chooses to exit from the loop
     otherwise if the two activities are in the same loop but 'current' is not reachable from 'previous' the algorithm chooses to remain in the
     loop (i.e. it goes back)
     """
+    #print(current.in_arcs)
     #breakpoint()
     for in_arc in current.in_arcs:
+        #print(in_arc)
+        #breakpoint()
         # setting previous_reached to False because we want to explore ALL the possible paths
         previous_reached = False
         not_found = False
@@ -240,7 +242,7 @@ def get_dp_to_previous_event(previous, current, loops, common_loops, decision_po
                             passed_inv_act[inner_in_arc.source.name] = {'previous_reached': previous_reached, 'not_found': not_found}
                             if not_found:
                                 if in_arc.source.name in decision_points.keys():
-                                    if current.name in decision_points[in_arc.source.name] and current.label is None: 
+                                    if current.name in decision_points[in_arc.source.name] and current.label is None:
                                         decision_points[in_arc.source.name].remove(current.name)
                         elif inner_in_arc.source.name == previous:
                             previous_reached = True
@@ -252,12 +254,14 @@ def get_dp_to_previous_event(previous, current, loops, common_loops, decision_po
                                     decision_points[in_arc.source.name] = {current.name}
                         elif inner_in_arc.source.name in passed_inv_act.keys():
                             if passed_inv_act[inner_in_arc.source.name]['previous_reached']:
+                                # TODO previous_reached = True?
                                 if len(in_arc.source.out_arcs) > 1:
                                     if in_arc.source.name in decision_points.keys():
                                         # using set ecause it is possible to pass multiple time through the same decision point
                                         decision_points[in_arc.source.name].add(current.name)
                                     else:
                                         decision_points[in_arc.source.name] = {current.name}
+                                previous_reached = True
                             elif passed_inv_act[inner_in_arc.source.name]['not_found']:
                                 not_found = True
                         elif not inner_in_arc.source.label is None:
@@ -292,14 +296,14 @@ def get_dp_to_previous_event(previous, current, loops, common_loops, decision_po
                 # TODO check not found for each loop separately
                 # TODO check this condition
                 if not_found:
-                    #if current.name in decision_points[in_arc.source.name]: 
+                    #if current.name in decision_points[in_arc.source.name]:
                     #    decision_points[in_arc.source.name].remove(current.name)
                     continue
             # if i finished to check inner arcs and there is at least one previous reached: previous_reached is TRue
             for inner_in_arc in in_arc.source.in_arcs:
                 if inner_in_arc.source.name in passed_inv_act.keys():
                     if passed_inv_act[inner_in_arc.source.name]['previous_reached']:
-                        previouse_reched = True
+                        previous_reached = True
                         not_found = False
         # if previous in the inputs, stop
         elif previous in inner_in_arcs_names:
@@ -313,13 +317,16 @@ def get_dp_to_previous_event(previous, current, loops, common_loops, decision_po
         else:
             not_found = True
             if in_arc.source.name in decision_points.keys():
-                if current.name in decision_points[in_arc.source.name] and current.label is None: 
+                if current.name in decision_points[in_arc.source.name] and current.label is None:
                     decision_points[in_arc.source.name].remove(current.name)
-                
+        # stop if we find the target in one of the places going into a transition (they are parallel branches)
+        if previous_reached:
+            break
+
     for in_arc in current.in_arcs:
         if in_arc.source.name in passed_inv_act.keys():
             if passed_inv_act[in_arc.source.name]['previous_reached']:
-                previouse_reched = True
+                previous_reached = True
                 not_found = False
     return decision_points, not_found, previous_reached
 
@@ -341,7 +348,7 @@ def get_map_place_to_events(net, loops) -> dict:
     """ Gets a mapping of decision point and their target transitions
 
     Given a Petri Net in the implementation of Pm4Py library and the loops inside,
-    computes the target transtion for every decision point 
+    computes the target transtion for every decision point
     (i.e. a place with more than one out arcs). If a target is a silent transition,
     the next not silent transitions are taken as added targets, following rules regarding loops if present.
     """
@@ -349,7 +356,7 @@ def get_map_place_to_events(net, loops) -> dict:
     places = dict()
     for place in net.places:
         if len(place.out_arcs) >= 2:
-            # dictionary containing for every decision point target categories 
+            # dictionary containing for every decision point target categories
             places[place.name] = dict()
             # loop for out arcs
             for arc in place.out_arcs:
@@ -388,8 +395,8 @@ def get_next_not_silent(place, not_silent, loops, start_places, loop_name_start)
 
     Given a place and a list of not silent transition (i.e. without label) computes
     the next not silent transitions in order to correctly characterize the path through
-    the considered place. The algorithm stops in presence of a joint-node (if not in a loop) 
-    or when all of the output transitions are not silent. If at least one transition is 
+    the considered place. The algorithm stops in presence of a joint-node (if not in a loop)
+    or when all of the output transitions are not silent. If at least one transition is
     silent, the algorithm computes recursively the next not silent.
     """
     # first stop condition: joint node
@@ -436,11 +443,11 @@ def get_next_not_silent(place, not_silent, loops, start_places, loop_name_start)
 def get_place_from_event(places_map, event, dp_list) -> list:
     """ Returns the places that are decision points of a certain transition
 
-    Given the dictionary mapping every decision point with its reference event(s), 
+    Given the dictionary mapping every decision point with its reference event(s),
     returns the list of decision point referred to the input event
     """
 
-    places = list() 
+    places = list()
     for place in dp_list:
         for trans in places_map[place].keys():
             if event in places_map[place][trans]:
@@ -471,12 +478,12 @@ def extract_rules(dt, feature_names) -> dict:
 
     Given a sklearn decision tree object and the name of the features used, interprets
     the output text of export_text (sklearn function) in order to give the user a more
-    human readable version of the rules defining the decision tree behavior. The output 
+    human readable version of the rules defining the decision tree behavior. The output
     is a dictionary using as key the target class (leaves) of the decision tree.
     """
     text_rules = export_text(dt)
     for feature_name in feature_names.keys():
-            text_rules = text_rules.replace(feature_names[feature_name], feature_name) 
+            text_rules = text_rules.replace(feature_names[feature_name], feature_name)
     text_rules = text_rules.split('\n')[:-1]
     extracted_rules = dict()
     one_complete_pass = ""
@@ -543,7 +550,7 @@ def get_map_events_transitions(net) -> dict:
 def check_if_reachable_without_loops(loops, start_trans, end_trans, reachable) -> bool:
     """ Check if a transition is reachable from another one without using loops
 
-    Given a list of Loop ojects, recursively check if a transition is reachable from another one without looping 
+    Given a list of Loop ojects, recursively check if a transition is reachable from another one without looping
     and using only invisible transitions. This means that if a place is an output place for a loop, the algorithm
     chooses to follow the path exiting the loop
     """
@@ -579,11 +586,11 @@ def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_
     """ Updates the map of transitions related to a decision point in case a loop is active
 
     Given an event sequence, checks if there are active loops (i.e. the sequence is reproducible only
-    passing two times from an input place. In case of acitve loops, in what part of the loop is located the current activity 
+    passing two times from an input place. In case of acitve loops, in what part of the loop is located the current activity
     and assigns to the decision points the transitions that identify if the path passed through that decision point.
     For example if a loop is:
            -   A    -           -   B    -
-    dp0 - |          | - dp1 - |          | - dp2 - 
+    dp0 - |          | - dp1 - |          | - dp2 -
     |       - silent -           - silent -        |
     |                                              |
     ------------------- silent --------------------
@@ -597,7 +604,7 @@ def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_
         loop.check_if_loop_is_active(net, transition_sequence)
         if loop.is_active():
             # update the dictionary only if the loop is actually "looping°
-            # (i.e. the number of cycle is growing) -> because a decision point can be 
+            # (i.e. the number of cycle is growing) -> because a decision point can be
             # chosen only one time per cycle
             loop.count_number_of_loops(net, transition_sequence.copy())
             if number_of_loops[loop.name] < loop.number_of_loops:
@@ -611,7 +618,7 @@ def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_
                         if loop.is_vertex_in_loop(trans):
                             if trans in loop.dp_forward[dp].keys():
                                 if event_sequence[-1] in loop.dp_forward[dp][trans]:
-                                    # update only if the decision point is connected to an invisible activity 
+                                    # update only if the decision point is connected to an invisible activity
                                     # (i.e. related to a set of activities not just one)
                                     if isinstance(places_map[dp][trans], set):
                                         places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
@@ -625,13 +632,13 @@ def update_places_map_dp_list_if_looping(net, dp_list, places_map, loops, event_
                         if loop.is_vertex_in_loop(trans):
                             if trans in loop.dp_backward[dp].keys():
                                 if event_sequence[-1] in loop.dp_backward[dp][trans]:
-                                    # update only if the decision point is connected to an invisible activity 
+                                    # update only if the decision point is connected to an invisible activity
                                     # (i.e. related to a set of activities not just one)
                                     if isinstance(places_map[dp][trans], set):
                                         places_map[dp][trans] = places_map[dp][trans].difference(loop.events)
                                         places_map[dp][trans] = places_map[dp][trans].union(loop_reachable[dp][trans])
     return places_map, dp_list
-        
+
 def update_dp_list(places_from_event, dp_list) -> list:
     """ Updates the list of decision points if related with the event
 
@@ -647,7 +654,7 @@ def get_all_dp_from_event_to_sink(event, loops, places, act_inv_already_seen) ->
     """ Returns all the decision points from the event to the sink, passing through invisible transitions
 
     Given an event, recursively explore the net collecting decision points and related invisible transitions
-    that need to be passed in order to reach the sink place. If a loop is encountered, the algorithm choose to 
+    that need to be passed in order to reach the sink place. If a loop is encountered, the algorithm choose to
     exit at the first output seen.
     """
     #breakpoint()
@@ -689,10 +696,10 @@ def get_all_dp_from_event_to_sink(event, loops, places, act_inv_already_seen) ->
                                     if out_arc_inn.target.name in places[out_arc.target.name]:
                                         places[out_arc.target.name].remove(out_arc_inn.target.name)
     return places
-    
+
 def check_if_skip(place) -> bool:
     """ Checks if a place is a 'skip'
-    
+
     A place is a 'skip' if has N input arcs of which only one is an invisible activity and all
     are coming from the same place
     """
