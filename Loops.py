@@ -113,7 +113,7 @@ class Loop(object):
         for input_place in self.input_places_complete:
             lengths[input_place] = count_length_from_source(source, sim_map, input_place, list())
 
-        self.nearest = min(lengths, key=lengths.get)
+        self.nearest_complete_net = min(lengths, key=lengths.get)
 
     def set_dp_forward_order_transition(self, net):
         """ Sets the forward path not silent transitions
