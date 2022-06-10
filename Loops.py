@@ -1,4 +1,4 @@
-from loop_utils import get_in_place_loop, get_out_place_loop, count_length_from_source
+from loop_utils import get_in_place_loop, get_out_place_loop, count_lengths_from_source
 from loop_utils import get_loop_not_silent
 from utils import check_if_skip
 
@@ -111,9 +111,8 @@ class Loop(object):
         if len(self.input_places_complete) > 1:
             source = [place for place in sim_net.places if place.name == 'source'][0]
             lengths = dict()
-            for input_place in self.input_places_complete:
-                lengths[input_place] = count_length_from_source(source, sim_map, input_place, list())
-
+            for input_place_name in self.input_places_complete:
+                lengths[input_place_name] = count_lengths_from_source(source, input_place_name, sim_map)
             self.nearest_complete_net = min(lengths, key=lengths.get)
         else:
             self.nearest_complete_net = self.input_places_complete[0]

@@ -66,45 +66,40 @@ def get_loop_not_silent(net, vertex_in_loop) -> list:
     return not_silent
 
 
-def count_length_from_source(place, sim_map, input_place, passed_places) -> int:
-    """ Counts the number of places between the source and the given loop input place
+def count_lengths_from_source(current, input_place_name, sim_map, passed_places=None, lengths=None, count=0):
+    """ Counts the number of places between the source and the given loop input place.
 
-    Given a starting place (the source, initially), the mapping between the original net places and the simplified net
-    places, the loop input place, and a list of passed places (initially empty), it recurse on the net arcs until it
-    finds the given loop input place. At that point, the counter is set to 1, and it is incremented going backwards
-    through the method instances. That place is also added to the 'passed_places' list to avoid looping.
-
-    TODO implementing this below is tricky (too many cases). Can we ignore this? We are just choosing an input place...
-    Paths are analyzed in a certain order by default. If the input place is found following a certain path, the method
-    returns with the length found. However, it may happen that another unexplored path to the input place is shorter,
-    but never analyzed.
+    Given a starting place (the source, initially), the loop input place and the mapping between the original net places
+    and the simplified net places, extracts all the next places (the ones reachable in 'one step') and iterates the
+    process on each of them:
+        1) If the place is the loop input, or if the place 'contains' the loop input, then adds the counter to the
+           'lengths' set.
+        2) Otherwise, if the place has not been traversed yet in the current path, adds it and recurse.
+    The counter is incremented every time the function is recursively called, so when it is added to the 'length' set,
+    it represents how many places have been traversed from the source to the loop input place.
+    Length is a set because it stores all the possible lengths from the source to the input place, since the algorithm
+    follows every possible path. Indeed, the first followed path may not be the shortest one: in that case, it would be
+    wrong to stop at the first occurrence of the loop input place.
+    Of course, the only exception is related to looping paths. If the algorithm is following a specific path, and it
+    reaches a place already met in that path, it does not continue on that path (but it keeps analyzing the other ones).
+    This justifies the presence of the 'passed_places' set.
     """
 
-    out_arcs_inn = {inner_out_arc for out_arc in place.out_arcs for inner_out_arc in out_arc.target.out_arcs}
-    out_arcs_inn_target_names = {inner_out_arc.target.name for inner_out_arc in out_arcs_inn}
+    if passed_places is None:
+        passed_places = set()
+    if lengths is None:
+        lengths = set()
+    inner_out_places = {inner_out_arc.target for out_arc in current.out_arcs for inner_out_arc in out_arc.target.out_arcs}
 
-    # The set above contains places from the simplified net. Here, it keeps the ones that are also part of the original
-    # net; otherwise, it "expands" them, taking all the places from the original net contained in the places of the
-    # simplified net.
-    complete_net_target_names = set()
-    for sim_place in out_arcs_inn_target_names:
-        if sim_place in sim_map:
-            complete_net_target_names.update(sim_map[sim_place])
-        else:
-            complete_net_target_names.add(sim_place)
+    for inner_out_place in inner_out_places:
+        if inner_out_place.name == input_place_name or (inner_out_place.name in sim_map and input_place_name in sim_map[inner_out_place.name]):
+            lengths.add(count+1)
+        elif inner_out_place not in passed_places:
+            passed_places.add(inner_out_place)
+            count_lengths_from_source(inner_out_place, input_place_name, sim_map, passed_places, lengths, count+1)
+            passed_places.remove(inner_out_place)
 
-    # Base case: the input place is found
-    if input_place in complete_net_target_names:
-        return 1
-    # Recursive case: keep going (unless the target place has already been visited)
-    for inner_out_arc in out_arcs_inn:
-        if inner_out_arc.target.name not in passed_places:
-            passed_places.append(inner_out_arc.target.name)
-            count = count_length_from_source(inner_out_arc.target, sim_map, input_place, passed_places)
-            if count > 0:
-                return count + 1
-
-    return 0
+    return lengths
 
 
 def get_input_adjacency_matrix(places_list, transitions_list) -> np.ndarray:
