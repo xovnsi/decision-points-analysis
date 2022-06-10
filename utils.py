@@ -47,6 +47,7 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     # keep the transition objects
     current_act = [trans for trans in net.transitions if trans.name == current_act_name][0]
     previous_act = [trans for trans in net.transitions if trans.name == previous_act_name][0]
+    # TODO reachability becomes useless if _new_get_dp_to_previous_event is used (and also loops)
     reachability = dict()
     # check if the two activities are contained in the same loop and save it if exists
     for loop in loops:
@@ -57,7 +58,8 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     # Extracting the decision points between previous and current activities, if not already computed
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
     if prev_curr_key not in stored_dicts.keys():
-        dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act, loops, dict(), reachability, list())
+        dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
+        # TODO this is just for debugging
         print("\nPrevious event: {}".format(previous_act.label))
         print("Current event: {}".format(current_act.label))
         print("DPs")
@@ -76,68 +78,78 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     return dp_dict, stored_dicts
 
 
-def _new_get_dp_to_previous_event(previous, current, loops, decision_points, reachability, passed_inn_arcs) -> [dict, bool]:
+def _new_get_dp_to_previous_event(previous, current, decision_points=None, passed_inn_arcs=None) -> [dict, bool]:
     """ Extracts all the decision points that are traversed between two activities (previous and current), reporting the
     decision(s) that has been taken for each of them.
 
-    Starting from the 'current' activity, the algorithm proceeds backwards on each incoming arc (in_arc). It also saves
+    Starting from the 'current' activity, the algorithm proceeds backwards on each incoming arc (in_arc). Then, it saves
     the so-called 'inner_arcs', which are the arcs between the previous place (in_arc.source) and its previous
     activities (in_arc.source.in_arcs).
-    If the 'previous' activity is immediately before the previous place (so it is connected to one of the inner_arcs),
-    then the algorithm stops exploring that path, since it reached the target transition ('previous').
-    Otherwise, it evaluates each of the invisible activities in 'inner_arcs', and decides whether to follow them or not.
-    More precisely, for each of these invisible backward path, there can be different cases:
-        1) If the current activity is in a loop, and the current place (in_arc.source) is an input node for it:
-            1a) If we need to stay in the loop (reachability[loop.name] is False) and the inner arc keeps us inside the
-                loop, then recurse on that inner arc.
-            1b) Otherwise, if we need to exit the current loop and the inner arc brings us outside the loop, then
-                recurse on that inner arc.
-        2) If the current activity is in a loop, but the current place (in_arc.source) is NOT an input node for it,
-           then simply recurse on that inner arc. Indeed, we are inside a loop, so we keep going backwards.
-        3) If we are not in any loop, then simply recurse on the inner arc.
-    Inside cases 1) and 2) an additional list 'passed_inn_arcs' is used to avoid duplicate recursion. Indeed, there is a
-    for cycle over the loops in which the 'current' activity is. Using this additional list, it is guaranteed that the
-    recursion on each inner arc is done at most once, and not once for loop.
-    If and when the algorithm reaches the target activity backwards ('previous'), then it sets 'target_found' to True.
-    Instead, if the algorithm cannot go backwards anymore, since there are no invisible transition to follow, then the
-    variable 'target_found' is left to False.
-    Being a recursive algorithm, when each instance returns, the above instance checks if 'previous_found' is True or
-    False. If it is True, it means that the followed path reached the target activity and so it appends eventual
-    decision points to the dictionary. Additionally, it sets 'target_found' to True to signal to the above instance that
-    the target has been found on that path and therefore decision points need to be added to the dictionary.
+    If the 'previous' activity is immediately before the previous place (so it is the source of one of the inner_arcs),
+    then the algorithm set a boolean variable 'target_found' to True to signal that the target has been found, and it
+    adds the corresponding decision point (in_arc.source) to the dictionary.
+    In any case, all the other backward paths containing an invisible activity are explored recursively.
+    Every time an 'inner_arc' is traversed for exploration, it is added to the 'passed_inn_arcs' list, to avoid looping
+    endlessly. Indeed, before a new recursion on an 'inner_arc', the algorithm checks if it is present in that list:
+        1) If it is not present, it simply goes on with the recursion, since it means that the specific path has not
+           been explored yet.
+        2) Otherwise, it means that the current recursive call has already passed through that 'inner_arc' and so it
+           must stop the recursion. This also means that the path followed a loop, and so the decision points
+           encountered along that path must be added to the dictionary, since the target activity ('previous') can be
+           reached through that loop.
+    Note that decision points are then added to the dictionary in a forward way: whenever the recursion cannot go on (no
+    more invisible activities backward) it returns also signalling the 'target_found' value. This is True if the current
+    path found the target activity (or an already explored 'inner_arc' during the same path, as explained before). The
+    returned value is then put in disjunction with the current value of 'target_found' in case the target activity has
+    been found by the actual instance and not by the recursive one.
+
+    It returns a 'decision_points' dictionary which contains, for each decision point on every possible path between
+    the 'current' activity and the 'previous' activity, the target value(s) to be followed.
     """
 
+    if passed_inn_arcs is None:
+        passed_inn_arcs = list()
+    if decision_points is None:
+        decision_points = dict()
     target_found = False
     for in_arc in current.in_arcs:
-        inner_in_arcs_names = [inner_in_arc.source.name for inner_in_arc in in_arc.source.in_arcs if inner_in_arc.source.label is not None]
-        inv_act_names = [inner_in_arc for inner_in_arc in in_arc.source.in_arcs if inner_in_arc.source.label is None]
+        # Preparing the lists containing inner_arcs towards invisible and non-invisible transitions
+        inner_inv_acts, inner_in_arcs_names = list(), list()
+        for inner_in_arc in in_arc.source.in_arcs:
+            if inner_in_arc.source.label is None:
+                inner_inv_acts.append(inner_in_arc)
+            else:
+                inner_in_arcs_names.append(inner_in_arc.source.name)
+
         # Base case: the target activity (previous) is one of the activities immediately before the current one
         if previous in inner_in_arcs_names:
             target_found = True
             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
-        # Recursive case: if there is at least one invisible activity backwards, follow every one of those paths
-        for inner_in_arc in inv_act_names:
+        # Recursive case: follow every invisible activity backward
+        for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
                 passed_inn_arcs.append(inner_in_arc)
-                decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source, loops, decision_points, reachability, passed_inn_arcs)
-                passed_inn_arcs.remove(inner_in_arc)
+                decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source,
+                                                                                decision_points, passed_inn_arcs)
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
-                target_found = True if previous_found else target_found
+                passed_inn_arcs.remove(inner_in_arc)
+                target_found = target_found or previous_found
             else:
                 target_found = True
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
-                return decision_points, target_found
 
     return decision_points, target_found
 
 
 def _add_dp_target(decision_points, dp, target, previous_found):
     """ Adds the decision point and its target activity to the 'decision_points' dictionary.
+
     Given the 'decision_points' dictionary, the place 'dp' (in_arc.source) and the target activity name (current.name),
     adds the target activity name to the set of targets related to the decision point. If not presents, adds the
     decision point to the dictionary keys first.
     This is done if the place is an actual decision point, and if the boolean variable 'previous_found' is True.
     """
+
     if previous_found and len(dp.out_arcs) > 1:
         if dp.name in decision_points.keys():
             decision_points[dp.name].add(target)
