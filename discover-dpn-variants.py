@@ -56,6 +56,7 @@ for trace in log:
             else:
                 event_attributes[attribute] = [event[attribute]]
 net, im, fm = pm4py.discover_petri_net_inductive(log)
+sink_complete_net = [place for place in net.places if place.name == 'sink'][0]
 sim_net = copy.deepcopy(net)
 sim_net, sim_map, last_collapsed_left, last_collapsed_right, parallel_branches = simplify_net(sim_net)
 im_sim = Marking()
@@ -188,7 +189,7 @@ for variant in tqdm(variants):
     # Final update of the current trace (from last event to sink)
     transition = [trans for trans in net.transitions if trans.label == event_name][0]
 
-    places_from_event = get_all_dp_from_event_to_sink(transition, loops, dict(), set())
+    places_from_event = get_all_dp_from_event_to_sink(transition, sink_complete_net)
     dp_events_sequence['End'] = places_from_event
     transition_sequence = list()
     event_sequence = list()

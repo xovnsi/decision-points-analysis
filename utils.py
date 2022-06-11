@@ -640,52 +640,29 @@ def update_dp_list(places_from_event, dp_list) -> list:
             dp_list.remove(place)
     return dp_list
 
-def get_all_dp_from_event_to_sink(event, loops, places, act_inv_already_seen) -> list:
-    """ Returns all the decision points from the event to the sink, passing through invisible transitions
 
-    Given an event, recursively explore the net collecting decision points and related invisible transitions
-    that need to be passed in order to reach the sink place. If a loop is encountered, the algorithm choose to
-    exit at the first output seen.
+def get_all_dp_from_event_to_sink(transition, sink) -> dict:
+    """ Returns all the decision points in the path from the 'transition' activity to the sink of the Petri net, passing
+    only through invisible transitions.
+
+    Starting from the sink, extracts all the transitions connected to the sink (the ones immediately before the sink).
+    If 'transition' is one of them, there are no decision points to return, so it returns an empty dictionary.
+    Otherwise, for each invisible transition among them, it calls method '_new_get_dp_to_previous_event' to retrieve
+    all the decision points and related targets between 'transition' and the invisible transition currently considered.
+    Discovered decision points for all the backward paths are put in the same 'decision_points' dictionary.
     """
-    #breakpoint()
-    for out_arc in event.out_arcs:
-        if out_arc.target.name == 'sink':
-           return places
-        else:
-            #is_output = False
-#            for loop in loops:
-#                if loop.is_vertex_output_loop(out_arc.target.name):
-#                    is_output = True
-#                    loop_selected = loop
-            for out_arc_inn in out_arc.target.out_arcs:
-                places_length_before = sum([len(places[place]) for place in places.keys()])
-                # if invisible transition
-                for loop in loops:
-                    if (not loop.is_output_node_complete_net(out_arc.target.name) and loop.is_node_in_loop_complete_net(out_arc_inn.target.name)) or (loop.is_output_node_complete_net(out_arc.target.name) and not loop.is_node_in_loop_complete_net(out_arc_inn.target.name)):
-                        if out_arc_inn.target.label is None and not out_arc_inn.target.name in act_inv_already_seen:
-                    # if it is a decision point append to the list and recurse
-#                    if len(out_arc.target.out_arcs) > 1:
-#                        places.append((out_arc.target.name, out_arc_inn.target.name))
-                    # if is not an output of the considered loop
-                        #if loop.is_vertex_output_loop(out_arc.target.name):
-                            act_inv_already_seen.add(out_arc_inn.target.name)
-                            if len(out_arc.target.out_arcs) > 1:
-                                if not out_arc.target.name in places.keys():
-                                    places[out_arc.target.name] = {out_arc_inn.target.name}
-                                else:
-                                    places[out_arc.target.name].add(out_arc_inn.target.name)
-                                #places.append((out_arc.target.name, out_arc_inn.target.name))
-                            #is_output = True
-                            #loop_selected = loop
-                        #if not is_output or (is_output and not loop_selected.is_vertex_in_loop(out_arc_inn.target.name)):
-                            places = get_all_dp_from_event_to_sink(out_arc_inn.target, loops, places, act_inv_already_seen)
-                # if anything changes, means that the cycle stopped: remove the last tuple appended
-                            total_number_items = sum([len(places[place]) for place in places.keys()])
-                            if total_number_items == places_length_before and total_number_items > 0:
-                                if out_arc.target.name in places.keys():
-                                    if out_arc_inn.target.name in places[out_arc.target.name]:
-                                        places[out_arc.target.name].remove(out_arc_inn.target.name)
-    return places
+
+    sink_in_acts = [in_arc.source for in_arc in sink.in_arcs]
+    if transition in sink_in_acts:
+        return dict()
+    else:
+        decision_points = dict()
+
+        for sink_in_act in sink_in_acts:
+            if sink_in_act.label is None:
+                decision_points, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
+        return decision_points
+
 
 def check_if_skip(place) -> bool:
     """ Checks if a place is a 'skip'
