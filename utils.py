@@ -107,19 +107,19 @@ def _new_get_dp_to_previous_event(previous, current, decision_points=None, passe
     the 'current' activity and the 'previous' activity, the target value(s) to be followed.
     """
 
-    if passed_inn_arcs is None:
-        passed_inn_arcs = list()
     if decision_points is None:
         decision_points = dict()
+    if passed_inn_arcs is None:
+        passed_inn_arcs = set()
     target_found = False
     for in_arc in current.in_arcs:
         # Preparing the lists containing inner_arcs towards invisible and non-invisible transitions
-        inner_inv_acts, inner_in_arcs_names = list(), list()
+        inner_inv_acts, inner_in_arcs_names = set(), set()
         for inner_in_arc in in_arc.source.in_arcs:
             if inner_in_arc.source.label is None:
-                inner_inv_acts.append(inner_in_arc)
+                inner_inv_acts.add(inner_in_arc)
             else:
-                inner_in_arcs_names.append(inner_in_arc.source.name)
+                inner_in_arcs_names.add(inner_in_arc.source.name)
 
         # Base case: the target activity (previous) is one of the activities immediately before the current one
         if previous in inner_in_arcs_names:
@@ -128,7 +128,7 @@ def _new_get_dp_to_previous_event(previous, current, decision_points=None, passe
         # Recursive case: follow every invisible activity backward
         for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
-                passed_inn_arcs.append(inner_in_arc)
+                passed_inn_arcs.add(inner_in_arc)
                 decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source,
                                                                                 decision_points, passed_inn_arcs)
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
