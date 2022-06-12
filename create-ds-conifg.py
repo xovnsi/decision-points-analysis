@@ -41,7 +41,7 @@ def analyse_ds(_log):
     max_val = None
     for value in unique_values.keys():
         if len(unique_values[value]) > max_len:
-            max_len = len(unique_values[value])
+            max_len = len(unique_values[value]) 
             max_val = value
     for value in unique_values.keys():
         old_values = list(copy.copy(unique_values[value]))
@@ -56,7 +56,7 @@ def analyse_ds(_log):
 
     return df_trace, df, unique_values, unique_values_trace
 
-def save_json(dict_conf, data_dir='data'):
+def save_json(dict_conf, data_dir='dt-attributes'):
     json_string = json.dumps(dict_conf)
     #breakpoint()
     file_name = '{}.attr'.format(st.session_state.uploaded_file.split('log-')[1].split('.xes')[0])
@@ -67,7 +67,7 @@ def create_dict(st_session_state):
     dict_conf = dict()
     #breakpoint()
     for name in st_session_state:
-        if 'e_' in name or 't_' in name:
+        if ('e_' in name or 't_' in name) and name.split('_')[1] not in ['trace', 'event']:
             dict_conf[name.split('_')[1]] = st.session_state[name]
     return dict_conf
 

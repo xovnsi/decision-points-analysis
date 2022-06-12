@@ -7,6 +7,7 @@ import copy
 import pandas as pd
 import argcomplete, argparse
 import copy
+import json
 #from sklearn.tree import DecisionTreeClassifier, export_text
 from pm4py.objects.petri_net.obj import Marking
 from sklearn import metrics
@@ -34,12 +35,20 @@ argcomplete.autocomplete(parser)
 # parse arguments
 args = parser.parse_args()
 net_name = args.net_name
-
-try:
-    #net, initial_marking, final_marking = pnml_importer.apply("models/{}.pnml".format(net_name))
-    net, im, fm = pnml_importer.apply("models/{}.pnml".format(net_name))
-except:
-    print("Model not found")
+'''
+attributes_map_file = f"{net_name}.attr"
+if attributes_map_file in os.listdir('dt-attributes'):
+    with open(os.path.join('dt-attributes', attributes_map_file), 'r') as f:
+        json_string = json.load(f)
+        attributes_map = json.loads(json_string)
+else:
+    raise FileNotFoundError('Create a configuration file for the decision tree before fitting it.')
+'''
+#try:
+#    #net, initial_marking, final_marking = pnml_importer.apply("models/{}.pnml".format(net_name))
+#    net, im, fm = pnml_importer.apply("models/{}.pnml".format(net_name))
+#except:
+#    print("Model not found")
 log = xes_importer.apply('data/log-{}.xes'.format(net_name))
 trace_attributes = dict()
 event_attributes = dict()
