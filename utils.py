@@ -780,7 +780,7 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
         if len(sub_leaf_nodes) > 1:
             sub_rules = {}
             for sub_leaf_node in sub_leaf_nodes:
-                new_rule = ' && '.join(vertical_rules + [extract_rules_from_leaf(sub_leaf_node)])
+                new_rule = ' && '.join(vertical_rules + extract_rules_from_leaf(sub_leaf_node))
                 if sub_leaf_node._label_class not in sub_rules.keys():
                     sub_rules[sub_leaf_node._label_class] = set()
                 sub_rules[sub_leaf_node._label_class].add(new_rule)
@@ -798,33 +798,72 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
     return original_rules
 
 
-def compress_many_valued_attributes(rules, attributes_map):
-    """ Rewrites the final rules dictionary to compress disjunctions of many-valued categorical attributes equalities
+def shorten_rules_manually(rules, attributes_map):
+    """ Rewrites the final rules dictionary to compress many-valued categorical attributes equalities and continuous
+    attributes inequalities.
 
-    For example, a series of atoms "org:resource = 10 || org:resource = 144 || org:resource = 68 || org:resource = 43 ||
-    org:resource == 632" is rewritten as "org:resource one of [10, 144, 68, 43, 632]"
+    For example, the series "org:resource = 10 && org:resource = 144 && org:resource = 68" is rewritten as "org:resource
+    one of [10, 68, 144]".
+    The series "paymentAmount > 21.0 && paymentAmount <= 37.0 && paymentAmount <= 200.0 && amount > 84.0 && amount <=
+    138.0 && amount > 39.35" is rewritten as "paymentAmount > 21.0 && paymentAmount <= 37.0 && amount <= 138.0 && amount
+    84.0"
     """
 
     for target_class in rules.keys():
-        atoms = rules[target_class].split(' || ')
-        atoms_to_remove = dict()
-        cat_atoms_same_attr = dict()
-        for atom in atoms:
-            if ' && ' not in atom:
-                a_attr, a_comp, a_value = atom.split(' ')
-                if a_comp == '=' and attributes_map[a_attr] == 'categorical':
+        or_atoms = rules[target_class].split(' || ')
+        new_target_rule = list()
+
+        for or_atom in or_atoms:
+            and_atoms = or_atom.split(' && ')
+            cat_atoms_same_attr = dict()
+            cont_atoms_same_attr_less, cont_atoms_same_attr_greater = dict(), dict()
+            cont_comp_less_equal, cont_comp_greater_equal = dict(), dict()
+            new_or_atom = list()
+
+            for and_atom in and_atoms:
+                a_attr, a_comp, a_value = and_atom.split(' ')
+                # Storing information for many-values categorical attributes equalities
+                if attributes_map[a_attr] == 'categorical' and a_comp == '=':
                     if a_attr not in cat_atoms_same_attr.keys():
                         cat_atoms_same_attr[a_attr] = list()
-                        atoms_to_remove[a_attr] = list()
                     cat_atoms_same_attr[a_attr].append(a_value)
-                    atoms_to_remove[a_attr].append(atom)
+                # Storing information for continuous attributes inequalities (min/max value for each attribute and also
+                # if the inequality is strict or not)
+                elif attributes_map[a_attr] == 'continuous':
+                    if a_comp in ['<', '<=']:
+                        if a_attr not in cont_atoms_same_attr_less.keys() or float(a_value) <= float(cont_atoms_same_attr_less[a_attr]):
+                            cont_atoms_same_attr_less[a_attr] = a_value
+                            cont_comp_less_equal[a_attr] = True if a_comp == '<=' else False
+                    elif a_comp in ['>', '>=']:
+                        if a_attr not in cont_atoms_same_attr_greater.keys() or float(a_value) >= float(cont_atoms_same_attr_greater[a_attr]):
+                            cont_atoms_same_attr_greater[a_attr] = a_value
+                            cont_comp_greater_equal[a_attr] = True if a_comp == '>=' else False
+                else:
+                    new_or_atom.append(and_atom)
 
-        compressed_rules = list()
-        for attr in cat_atoms_same_attr:
-            if len(cat_atoms_same_attr[attr]) > 1:
-                compressed_rules.append(attr + ' one of [' + ', '.join(sorted(cat_atoms_same_attr[attr])) + ']')
-                atoms = [a for a in atoms if a not in atoms_to_remove[attr]]
+            # Compressing many-values categorical attributes equalities
+            for attr in cat_atoms_same_attr.keys():
+                if len(cat_atoms_same_attr[attr]) > 1:
+                    new_or_atom.append(attr + ' one of [' + ', '.join(sorted(cat_atoms_same_attr[attr])) + ']')
+                else:
+                    new_or_atom.append(attr + ' = ' + cat_atoms_same_attr[attr][0])
 
-        rules[target_class] = ' || '.join(atoms + compressed_rules)
+            # Compressing continuous attributes inequalities (< / <= and then > / >=)
+            for attr in cont_atoms_same_attr_less.keys():
+                min_value = cont_atoms_same_attr_less[attr]
+                comp = ' <= ' if cont_comp_less_equal[attr] else ' < '
+                new_or_atom.append(attr + comp + min_value)
 
+            for attr in cont_atoms_same_attr_greater.keys():
+                max_value = cont_atoms_same_attr_greater[attr]
+                comp = ' >= ' if cont_comp_greater_equal[attr] else ' > '
+                new_or_atom.append(attr + comp + max_value)
+
+            # Or-atom analyzed: putting its new and-atoms in conjunction
+            new_target_rule.append(' && ' .join(new_or_atom))
+
+        # Rule for a target class analyzed: putting its new or-atoms in disjunction
+        rules[target_class] = ' || '.join(new_target_rule)
+
+    # Rules for all target classes analyzed: returning the new rules dictionary
     return rules

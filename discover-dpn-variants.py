@@ -18,7 +18,7 @@ from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from loop_utils import detect_loops, get_in_place_loop, get_out_place_loop
 from loop_utils import simplify_net, delete_composite_loops
-from utils import get_next_not_silent, get_map_place_to_events, get_place_from_event, compress_many_valued_attributes, \
+from utils import get_next_not_silent, get_map_place_to_events, get_place_from_event, shorten_rules_manually, \
     discover_overlapping_rules
 from utils import get_attributes_from_event, get_feature_names, update_places_map_dp_list_if_looping
 from utils import extract_rules, get_map_transitions_events, get_decision_points_and_targets
@@ -299,7 +299,7 @@ for decision_point in decision_points_data.keys():
         print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
         rules = dt.extract_rules(dataset)
         rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
-        rules = compress_many_valued_attributes(rules, attributes_map)
+        rules = shorten_rules_manually(rules, attributes_map)
         rules = {k: rules[k].replace('_', ':') for k in rules}
         print(rules)
 
