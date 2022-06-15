@@ -113,7 +113,8 @@ class Loop(object):
             lengths = dict()
             for input_place_name in self.input_places_complete:
                 lengths[input_place_name] = count_lengths_from_source(source, input_place_name, sim_map)
-            self.nearest_complete_net = min(lengths, key=lengths.get)
+            min_length = min(len(lengths[k]) for k in lengths)
+            self.nearest_complete_net = [k for k, l in lengths.items() if len(l) == min_length][0]
         else:
             self.nearest_complete_net = self.input_places_complete[0]
 

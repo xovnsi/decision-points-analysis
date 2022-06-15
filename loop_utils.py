@@ -96,7 +96,7 @@ def count_lengths_from_source(current, input_place_name, sim_map, passed_places=
             lengths.add(count+1)
         elif inner_out_place not in passed_places:
             passed_places.add(inner_out_place)
-            count_lengths_from_source(inner_out_place, input_place_name, sim_map, passed_places, lengths, count+1)
+            lengths = count_lengths_from_source(inner_out_place, input_place_name, sim_map, passed_places, lengths, count+1)
             passed_places.remove(inner_out_place)
 
     return lengths
