@@ -267,6 +267,7 @@ else:
                       'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
+f = open('road_fines_complete_shortest_path.txt', 'w')
 for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
@@ -293,16 +294,32 @@ for decision_point in decision_points_data.keys():
 
     dt = DecisionTree(attributes_map)
     dt.fit(dataset)
+    print("Training complete. Starting rule extraction and simplification.")
 
     if not len(dt.get_nodes()) == 1:
-        y_pred = dt.predict(dataset.drop(columns=['target']))
-        print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-        rules = dt.extract_rules(dataset)
-        rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
-        rules = shorten_rules_manually(rules, attributes_map)
+        #y_pred = dt.predict(dataset.drop(columns=['target']))
+        #print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+        og_rules = dt.extract_rules(dataset)
+        rules = shorten_rules_manually(og_rules, attributes_map)
         rules = {k: rules[k].replace('_', ':') for k in rules}
+        o_rules = discover_overlapping_rules(dt, dataset, attributes_map, og_rules)
+        o_rules = shorten_rules_manually(o_rules, attributes_map)
+        o_rules = {k: o_rules[k].replace('_', ':') for k in o_rules}
+
+        f.write('\n' + decision_point + '\n')
+        f.write('Dataset size: ' + str(len(dataset)) + '\n')
+        lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
+        f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
+        f.write('Rules:\n')
+        for k in rules:
+            f.write(k + ': ' + rules[k] + '\n')
+        f.write('Rules with overlapping rules:\n')
+        for k in o_rules:
+            f.write(k + ': ' + o_rules[k] + '\n')
+
         print(rules)
 
+f.close()
 toc = time()
 print("Total time: {}".format(toc-tic))
 

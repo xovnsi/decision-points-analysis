@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import pandas as pd
 from sklearn.tree import export_text
@@ -58,7 +60,21 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     # Extracting the decision points between previous and current activities, if not already computed
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
     if prev_curr_key not in stored_dicts.keys():
-        dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
+        #dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
+
+        # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
+        paths = get_all_paths(previous_act_name, current_act)
+        min_length_value = min(len(paths[k]) for k in paths)
+        min_length_path = [l for k, l in paths.items() if len(l) == min_length_value][0]
+        dp_dict = dict(min_length_path)
+        old_keys = list(dp_dict.keys()).copy()
+        for dp in old_keys:
+            if len(dp.out_arcs) < 2:
+                del dp_dict[dp]
+            else:
+                dp_dict[dp.name] = dp_dict.pop(dp)
+        # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
+
         # TODO this is just for debugging
         print("\nPrevious event: {}".format(previous_act.label))
         print("Current event: {}".format(current_act.label))
@@ -156,6 +172,46 @@ def _add_dp_target(decision_points, dp, target, previous_found):
         else:
             decision_points[dp.name] = {target}
     return decision_points
+
+
+def get_all_paths(previous, current, passed_places=None, passed_inn_arcs=None, paths=None):
+
+    if passed_places is None:
+        passed_places = dict()
+    if passed_inn_arcs is None:
+        passed_inn_arcs = set()
+    if paths is None:
+        paths = dict()
+
+    for in_arc in current.in_arcs:
+        # Preparing the lists containing inner_arcs towards invisible and non-invisible transitions
+        inner_inv_acts, inner_in_arcs_names = set(), set()
+        for inner_in_arc in in_arc.source.in_arcs:
+            if inner_in_arc.source.label is None:
+                inner_inv_acts.add(inner_in_arc)
+            else:
+                inner_in_arcs_names.add(inner_in_arc.source.name)
+
+        if in_arc.source not in passed_places.keys():
+            passed_places[in_arc.source] = set()
+        passed_places[in_arc.source].add(current.name)
+
+        # Base case: the target activity (previous) is one of the activities immediately before the current one
+        if previous in inner_in_arcs_names:
+            paths[len(paths)] = copy.deepcopy(passed_places)
+        else:
+            # Recursive case: follow every invisible activity backward
+            for inner_in_arc in inner_inv_acts:
+                if inner_in_arc not in passed_inn_arcs:
+                    passed_inn_arcs.add(inner_in_arc)
+                    paths = get_all_paths(previous, inner_in_arc.source, passed_places, passed_inn_arcs, paths)
+                    passed_inn_arcs.remove(inner_in_arc)
+
+        passed_places[in_arc.source].remove(current.name)
+        if len(passed_places[in_arc.source]) == 0:
+            del passed_places[in_arc.source]
+
+    return paths
 
 
 def get_dp_to_previous_event(previous, current, loops, common_loops, decision_points, reachability, passed_inv_act) -> [dict, bool, bool]:
@@ -660,7 +716,21 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
 
         for sink_in_act in sink_in_acts:
             if sink_in_act.label is None:
-                decision_points, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
+                #decision_points, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
+
+                # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
+                paths = get_all_paths(transition.name, sink_in_act)
+                min_length_value = min(len(paths[k]) for k in paths)
+                min_length_path = [l for k, l in paths.items() if len(l) == min_length_value][0]
+                decision_points = dict(min_length_path)
+                old_keys = list(decision_points.keys()).copy()
+                for dp in old_keys:
+                    if len(dp.out_arcs) < 2:
+                        del decision_points[dp]
+                    else:
+                        decision_points[dp.name] = decision_points.pop(dp)
+                # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
+
         return decision_points
 
 
@@ -747,6 +817,8 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
     Leoni, Hajo A. Reijers, Wil M.P. van der Aalst (2016).
     """
 
+    rules = copy.deepcopy(original_rules)
+
     leaf_nodes = base_tree.get_leaves_nodes()
     leaf_nodes_with_wrong_instances = [ln for ln in leaf_nodes if len(ln.get_class_names()) > 1]
 
@@ -786,19 +858,22 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
                 sub_rules[sub_leaf_node._label_class].add(new_rule)
             for sub_target_class in sub_rules.keys():
                 sub_rules[sub_target_class] = ' || '.join(sub_rules[sub_target_class])
-                original_rules[sub_target_class] += ' || ' + sub_rules[sub_target_class]
+                if sub_target_class not in rules.keys():
+                    rules[sub_target_class] = sub_rules[sub_target_class]
+                else:
+                    rules[sub_target_class] += ' || ' + sub_rules[sub_target_class]
         # Only root in sub_tree = could not find a suitable split of the root node -> most frequent target is chosen
         elif len(wrong_instances) > 0:  # length 0 could happen since we do not consider missing values for now
             sub_target_class = wrong_instances['target'].mode()[0]
-            if sub_target_class not in original_rules.keys():
-                original_rules[sub_target_class] = ' && '.join(vertical_rules)
+            if sub_target_class not in rules.keys():
+                rules[sub_target_class] = ' && '.join(vertical_rules)
             else:
-                original_rules[sub_target_class] += ' || ' + ' && '.join(vertical_rules)
+                rules[sub_target_class] += ' || ' + ' && '.join(vertical_rules)
 
-    return original_rules
+    return rules
 
 
-def shorten_rules_manually(rules, attributes_map):
+def shorten_rules_manually(original_rules, attributes_map):
     """ Rewrites the final rules dictionary to compress many-valued categorical attributes equalities and continuous
     attributes inequalities.
 
@@ -809,58 +884,83 @@ def shorten_rules_manually(rules, attributes_map):
     84.0"
     """
 
+    rules = copy.deepcopy(original_rules)
+
     for target_class in rules.keys():
         or_atoms = rules[target_class].split(' || ')
         new_target_rule = list()
+        cat_atoms_same_attr_noand = dict()
 
         for or_atom in or_atoms:
-            and_atoms = or_atom.split(' && ')
-            cat_atoms_same_attr = dict()
-            cont_atoms_same_attr_less, cont_atoms_same_attr_greater = dict(), dict()
-            cont_comp_less_equal, cont_comp_greater_equal = dict(), dict()
-            new_or_atom = list()
+            if ' && ' in or_atom:
+                and_atoms = or_atom.split(' && ')
+                cat_atoms_same_attr = dict()
+                cont_atoms_same_attr_less, cont_atoms_same_attr_greater = dict(), dict()
+                cont_comp_less_equal, cont_comp_greater_equal = dict(), dict()
+                new_or_atom = list()
 
-            for and_atom in and_atoms:
-                a_attr, a_comp, a_value = and_atom.split(' ')
+                for and_atom in and_atoms:
+                    a_attr, a_comp, a_value = and_atom.split(' ')
+                    # Storing information for many-values categorical attributes equalities
+                    if attributes_map[a_attr] == 'categorical' and a_comp == '=':
+                        if a_attr not in cat_atoms_same_attr.keys():
+                            cat_atoms_same_attr[a_attr] = list()
+                        cat_atoms_same_attr[a_attr].append(a_value)
+                    # Storing information for continuous attributes inequalities (min/max value for each attribute and
+                    # also if the inequality is strict or not)
+                    elif attributes_map[a_attr] == 'continuous':
+                        if a_comp in ['<', '<=']:
+                            if a_attr not in cont_atoms_same_attr_less.keys() or float(a_value) <= float(cont_atoms_same_attr_less[a_attr]):
+                                cont_atoms_same_attr_less[a_attr] = a_value
+                                cont_comp_less_equal[a_attr] = True if a_comp == '<=' else False
+                        elif a_comp in ['>', '>=']:
+                            if a_attr not in cont_atoms_same_attr_greater.keys() or float(a_value) >= float(cont_atoms_same_attr_greater[a_attr]):
+                                cont_atoms_same_attr_greater[a_attr] = a_value
+                                cont_comp_greater_equal[a_attr] = True if a_comp == '>=' else False
+                    else:
+                        new_or_atom.append(and_atom)
+
+                # Compressing many-values categorical attributes equalities
+                for attr in cat_atoms_same_attr.keys():
+                    if len(cat_atoms_same_attr[attr]) > 1:
+                        new_or_atom.append(attr + ' one of [' + ', '.join(sorted(cat_atoms_same_attr[attr])) + ']')
+                    else:
+                        new_or_atom.append(attr + ' = ' + cat_atoms_same_attr[attr][0])
+
+                # Compressing continuous attributes inequalities (< / <= and then > / >=)
+                for attr in cont_atoms_same_attr_less.keys():
+                    min_value = cont_atoms_same_attr_less[attr]
+                    comp = ' <= ' if cont_comp_less_equal[attr] else ' < '
+                    new_or_atom.append(attr + comp + min_value)
+
+                for attr in cont_atoms_same_attr_greater.keys():
+                    max_value = cont_atoms_same_attr_greater[attr]
+                    comp = ' >= ' if cont_comp_greater_equal[attr] else ' > '
+                    new_or_atom.append(attr + comp + max_value)
+
+                # Or-atom analyzed: putting its new and-atoms in conjunction
+                new_target_rule.append(' && ' .join(new_or_atom))
+
+            # If the or_atom does not have &&s inside (single atom), just simplify categorical attributes.
+            # For example, the series "org:resource = 10 || org:resource = 144 || org:resource = 68" is rewritten as
+            # "org:resource one of [10, 68, 144]".
+            # Here the values for each attribute are added to the 'cat_atoms_same_attr_noand' dictionary.
+            else:
+                a_attr, a_comp, a_value = or_atom.split(' ')
                 # Storing information for many-values categorical attributes equalities
                 if attributes_map[a_attr] == 'categorical' and a_comp == '=':
-                    if a_attr not in cat_atoms_same_attr.keys():
-                        cat_atoms_same_attr[a_attr] = list()
-                    cat_atoms_same_attr[a_attr].append(a_value)
-                # Storing information for continuous attributes inequalities (min/max value for each attribute and also
-                # if the inequality is strict or not)
-                elif attributes_map[a_attr] == 'continuous':
-                    if a_comp in ['<', '<=']:
-                        if a_attr not in cont_atoms_same_attr_less.keys() or float(a_value) <= float(cont_atoms_same_attr_less[a_attr]):
-                            cont_atoms_same_attr_less[a_attr] = a_value
-                            cont_comp_less_equal[a_attr] = True if a_comp == '<=' else False
-                    elif a_comp in ['>', '>=']:
-                        if a_attr not in cont_atoms_same_attr_greater.keys() or float(a_value) >= float(cont_atoms_same_attr_greater[a_attr]):
-                            cont_atoms_same_attr_greater[a_attr] = a_value
-                            cont_comp_greater_equal[a_attr] = True if a_comp == '>=' else False
+                    if a_attr not in cat_atoms_same_attr_noand.keys():
+                        cat_atoms_same_attr_noand[a_attr] = list()
+                    cat_atoms_same_attr_noand[a_attr].append(a_value)
                 else:
-                    new_or_atom.append(and_atom)
+                    new_target_rule.append(or_atom)
 
-            # Compressing many-values categorical attributes equalities
-            for attr in cat_atoms_same_attr.keys():
-                if len(cat_atoms_same_attr[attr]) > 1:
-                    new_or_atom.append(attr + ' one of [' + ', '.join(sorted(cat_atoms_same_attr[attr])) + ']')
-                else:
-                    new_or_atom.append(attr + ' = ' + cat_atoms_same_attr[attr][0])
-
-            # Compressing continuous attributes inequalities (< / <= and then > / >=)
-            for attr in cont_atoms_same_attr_less.keys():
-                min_value = cont_atoms_same_attr_less[attr]
-                comp = ' <= ' if cont_comp_less_equal[attr] else ' < '
-                new_or_atom.append(attr + comp + min_value)
-
-            for attr in cont_atoms_same_attr_greater.keys():
-                max_value = cont_atoms_same_attr_greater[attr]
-                comp = ' >= ' if cont_comp_greater_equal[attr] else ' > '
-                new_or_atom.append(attr + comp + max_value)
-
-            # Or-atom analyzed: putting its new and-atoms in conjunction
-            new_target_rule.append(' && ' .join(new_or_atom))
+        # Compressing many-values categorical attributes equalities for the 'no &&s' case
+        for attr in cat_atoms_same_attr_noand.keys():
+            if len(cat_atoms_same_attr_noand[attr]) > 1:
+                new_target_rule.append(attr + ' one of [' + ', '.join(sorted(cat_atoms_same_attr_noand[attr])) + ']')
+            else:
+                new_target_rule.append(attr + ' = ' + cat_atoms_same_attr_noand[attr][0])
 
         # Rule for a target class analyzed: putting its new or-atoms in disjunction
         rules[target_class] = ' || '.join(new_target_rule)
