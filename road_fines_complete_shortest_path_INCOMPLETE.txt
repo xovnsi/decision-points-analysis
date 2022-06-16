@@ -29,3 +29,16 @@ skip_12: paymentAmount <= 70.0 && amount > 68.25 && totalPaymentAmount > 47.0 ||
 Rules with overlapping rules:
 tauSplit_13: amount <= 98.4 && paymentAmount > 70.0 || expense <= 24.78 && amount <= 68.25 && totalPaymentAmount > 47.16 || paymentAmount <= 16.6 || totalPaymentAmount > 210.0 || article = 158.0 && amount <= 68.25 && totalPaymentAmount > 47.16 || amount <= 47.0 || amount <= 798.0 || amount <= 68.25 && totalPaymentAmount > 50.32 || amount <= 52.0 && expense <= 24.78 && totalPaymentAmount > 47.0 || amount <= 143.0 && totalPaymentAmount > 110.0 || totalPaymentAmount <= 47.0 || paymentAmount <= 70.0 && amount > 68.25 && totalPaymentAmount > 47.0 && paymentAmount > 16.6 || amount > 798.0 && paymentAmount > 70.0 && totalPaymentAmount > 47.0 || totalPaymentAmount <= 210.0 && amount <= 319.5 && amount > 143.0 && paymentAmount > 70.0 && totalPaymentAmount > 47.0 || totalPaymentAmount <= 110.0 && amount <= 143.0 && amount > 98.4 && paymentAmount > 70.0 && totalPaymentAmount > 47.0
 skip_12: paymentAmount <= 70.0 && amount > 68.25 && totalPaymentAmount > 47.0 || totalPaymentAmount <= 110.0 && amount > 98.4 && totalPaymentAmount > 47.0 || totalPaymentAmount <= 47.16 && amount > 47.0 && totalPaymentAmount > 47.0 || amount > 798.0 && paymentAmount > 16.6 || totalPaymentAmount <= 50.32 && totalPaymentAmount > 47.0 || article = 157.0 && amount > 52.0 && totalPaymentAmount > 47.0 || totalPaymentAmount <= 210.0 && amount <= 319.5 && amount > 143.0 && totalPaymentAmount > 47.0 || totalPaymentAmount > 47.0 || article = 158.0 && expense <= 24.78 && amount <= 68.25 && totalPaymentAmount > 47.16 && paymentAmount > 16.6 || totalPaymentAmount <= 47.0 && paymentAmount > 16.6 || amount <= 143.0 && totalPaymentAmount > 110.0 && paymentAmount > 70.0 && amount > 68.25 || amount <= 798.0 && amount > 319.5 && paymentAmount > 70.0 && totalPaymentAmount > 47.0 || paymentAmount <= 16.6
+
+
+p_8
+Dataset size: 186331
+Rows without invisible activity as target: 186331
+Rules:
+skip_20: paymentAmount <= 39.0 && paymentAmount > 18.76 || paymentAmount <= 18.76 || totalPaymentAmount > 217.0 || paymentAmount > 39.0
+skip_19: paymentAmount > 39.0
+Rules with overlapping rules:
+skip_20: paymentAmount <= 39.0 && paymentAmount > 18.76 || paymentAmount <= 18.76 || totalPaymentAmount > 217.0 || paymentAmount > 39.0
+skip_19: paymentAmount > 39.0 || paymentAmount <= 39.0 && paymentAmount > 18.76 || dismissal = NIL && paymentAmount > 39.0 || article = 146.0 && dismissal = G && paymentAmount > 39.0 || dismissal = @ && paymentAmount > 39.0 || dismissal = D && paymentAmount > 39.0 || dismissal = # && paymentAmount > 39.0 || paymentAmount <= 18.76
+
+MANCANO P_9 E P_15 (CI METTE UN SACCO A SEMPLIFICARE LE REGOLE SU QUESTI).

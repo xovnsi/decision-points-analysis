@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import scipy.stats as stats
 from operator import itemgetter
+from tqdm import tqdm
 
 
 class DecisionTree(object):
@@ -316,7 +317,7 @@ class DecisionTree(object):
         keep_rule = set()
         while p_threshold <= 1.0:
             rules = dict()
-            for leaf_node in self.get_leaves_nodes():
+            for leaf_node in tqdm(self.get_leaves_nodes()):
                 vertical_rules = extract_rules_from_leaf(leaf_node)
 
                 # Simplify the list of rules, if possible (and if vertical_rules does not contain rules in keep_rule)

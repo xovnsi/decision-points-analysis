@@ -57,3 +57,32 @@ skip_4: org:resource = 537.0 && amount > 33.6 || org:resource one of [30.0, 31.0
 Rules with overlapping rules:
 init_loop_5: org:resource = 538.0 && expense <= 11.88 || org:resource one of [30.0, 550.0]
 skip_4: org:resource = 537.0 && amount > 33.6 || org:resource = 537.0 && amount <= 33.6 || org:resource one of [30.0, 31.0, 32.0, 35.0, 536.0, 538.0, 541.0, 550.0, 557.0, 559.0, 560.0, 837.0]
+
+
+p_10 - FAIL
+Dataset size: 85
+Rows without invisible activity as target: 84
+
+p_13 - FAIL
+Dataset size: 94
+Rows without invisible activity as target: 94
+
+p_6 - FAIL
+Dataset size: 101
+Rows without invisible activity as target: 101
+
+p_16 - FAIL
+Dataset size: 94
+Rows without invisible activity as target: 93
+
+p_15 - FAIL
+Dataset size: 94
+Rows without invisible activity as target: 93
+
+p_9 - FAIL
+Dataset size: 85
+Rows without invisible activity as target: 85
+
+p_14 - FAIL
+Dataset size: 94
+Rows without invisible activity as target: 93

@@ -1,0 +1,58 @@
+p_4
+Dataset size: 100
+Rows without invisible activity as target: 64
+Rules:
+84a49960-4f56-4491-8008-e0ffd1ae6bdb: totalPaymentAmount <= 0.0 && amount > 39.0
+skip_22: amount <= 39.0 || totalPaymentAmount > 0.0
+Rules with overlapping rules:
+84a49960-4f56-4491-8008-e0ffd1ae6bdb: totalPaymentAmount <= 0.0 && amount > 39.0
+skip_22: amount <= 39.0 || totalPaymentAmount > 0.0 || totalPaymentAmount <= 0.0 && amount > 39.0
+
+
+p_5 - FAIL
+Dataset size: 432
+Rows without invisible activity as target: 354
+
+p_10 - FAIL
+Dataset size: 355
+Rows without invisible activity as target: 354
+
+p_12 - FAIL
+Dataset size: 411
+Rows without invisible activity as target: 354
+
+p_13 - FAIL
+Dataset size: 708
+Rows without invisible activity as target: 708
+
+p_8 - FAIL
+Dataset size: 411
+Rows without invisible activity as target: 354
+
+p_17 - FAIL
+Dataset size: 412
+Rows without invisible activity as target: 354
+
+p_6 - FAIL
+Dataset size: 454
+Rows without invisible activity as target: 454
+
+p_16 - FAIL
+Dataset size: 355
+Rows without invisible activity as target: 354
+
+p_15 - FAIL
+Dataset size: 355
+Rows without invisible activity as target: 354
+
+p_7 - FAIL
+Dataset size: 708
+Rows without invisible activity as target: 708
+
+p_9 - FAIL
+Dataset size: 708
+Rows without invisible activity as target: 708
+
+p_14 - FAIL
+Dataset size: 355
+Rows without invisible activity as target: 354

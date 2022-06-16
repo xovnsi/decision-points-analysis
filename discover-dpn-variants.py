@@ -267,7 +267,7 @@ else:
                       'communication': 'categorical', 'discarded': 'boolean'}
 
 # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
-f = open('road_fines_complete_shortest_path.txt', 'w')
+f = open('road_complete_shortest_path_LONGONES.txt', 'w')
 for decision_point in decision_points_data.keys():
     print("\n", decision_point)
     dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
@@ -292,6 +292,9 @@ for decision_point in decision_points_data.keys():
     #print(rules)
     #continue
 
+    if decision_point not in ['p_15', 'p_9']:
+        continue
+
     dt = DecisionTree(attributes_map)
     dt.fit(dataset)
     print("Training complete. Starting rule extraction and simplification.")
@@ -306,7 +309,7 @@ for decision_point in decision_points_data.keys():
         o_rules = shorten_rules_manually(o_rules, attributes_map)
         o_rules = {k: o_rules[k].replace('_', ':') for k in o_rules}
 
-        f.write('\n' + decision_point + '\n')
+        f.write('\n' + decision_point + ' - SUCCESS\n')
         f.write('Dataset size: ' + str(len(dataset)) + '\n')
         lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
         f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
@@ -316,8 +319,12 @@ for decision_point in decision_points_data.keys():
         f.write('Rules with overlapping rules:\n')
         for k in o_rules:
             f.write(k + ': ' + o_rules[k] + '\n')
-
         print(rules)
+    else:
+        f.write('\n' + decision_point + ' - FAIL\n')
+        f.write('Dataset size: ' + str(len(dataset)) + '\n')
+        lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
+        f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
 
 f.close()
 toc = time()
