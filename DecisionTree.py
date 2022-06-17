@@ -6,10 +6,12 @@ import numpy as np
 import scipy.stats as stats
 from operator import itemgetter
 from tqdm import tqdm
+import multiprocessing
 
 
 class DecisionTree(object):
     """ Implements a decision tree with C4.5 algorithm """
+
     def __init__(self, attributes_map):
         self._nodes = set()
         self._root_node = None
@@ -317,22 +319,23 @@ class DecisionTree(object):
         keep_rule = set()
         while p_threshold <= 1.0:
             rules = dict()
-            for leaf_node in tqdm(self.get_leaves_nodes()):
-                vertical_rules = extract_rules_from_leaf(leaf_node)
 
-                # Simplify the list of rules, if possible (and if vertical_rules does not contain rules in keep_rule)
-                if not any([r in vertical_rules for r in keep_rule]):
-                    vertical_rules = self._simplify_rule(vertical_rules, leaf_node._label_class, p_threshold, data_in)
+            leaves = self.get_leaves_nodes()
+            inputs = [(leaf, keep_rule, p_threshold, data_in) for leaf in leaves]
+            print("Starting multiprocessing rules simplification on " + str(len(leaves)) + " leaves")
+            with multiprocessing.Pool() as pool:
+                result = list(tqdm(pool.imap(self._simplify_rule_multiprocess, inputs), total=len(leaves)))
 
+            for (vertical_rules, leaf_class) in result:
                 # Create the set corresponding to the target class in the rules dictionary, if not already present
-                if leaf_node._label_class not in rules.keys():
-                    rules[leaf_node._label_class] = set()
+                if leaf_class not in rules.keys():
+                    rules[leaf_class] = set()
 
                 # If the resulting list is composed by at least one rule, put them in conjunction and add the result to
                 # the dictionary of rules, at the corresponding class label
                 if len(vertical_rules) > 0:
                     vertical_rules = " && ".join(vertical_rules)
-                    rules[leaf_node._label_class].add(vertical_rules)
+                    rules[leaf_class].add(vertical_rules)
 
             # Put the rules for the same target class in disjunction. If there are no rules for some target class (they
             # have been pruned) then set the 'empty_rule' variable to True.
@@ -365,6 +368,16 @@ class DecisionTree(object):
                 break
 
         return rules
+
+    def _simplify_rule_multiprocess(self, input):
+        leaf_node, kr, p_threshold, data_in = input
+        vertical_rules = extract_rules_from_leaf(leaf_node)
+
+        # Simplify the list of rules, if possible (and if vertical_rules does not contain rules in keep_rule)
+        if not any([r in vertical_rules for r in kr]):
+            vertical_rules = self._simplify_rule(vertical_rules, leaf_node._label_class, p_threshold, data_in)
+
+        return vertical_rules, leaf_node._label_class
 
     def _simplify_rule(self, vertical_rules, leaf_class, p_threshold, data_in) -> list:
         """ Simplifies the list of rules from the root to a leaf node.
