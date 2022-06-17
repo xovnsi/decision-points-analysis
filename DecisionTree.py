@@ -322,7 +322,7 @@ class DecisionTree(object):
 
             leaves = self.get_leaves_nodes()
             inputs = [(leaf, keep_rule, p_threshold, data_in) for leaf in leaves]
-            print("Starting multiprocessing rules simplification on " + str(len(leaves)) + " leaves")
+            print("Starting multiprocessing rules pruning on {} leaves...".format(str(len(leaves))))
             with multiprocessing.Pool() as pool:
                 result = list(tqdm(pool.imap(self._simplify_rule_multiprocess, inputs), total=len(leaves)))
 

@@ -269,9 +269,9 @@ def main():
                           'communication': 'categorical', 'discarded': 'boolean'}
 
     # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
-    f = open('road_complete_shortest_path_LONGONES.txt', 'w')
+    file_name = 'road_fines_complete_normal.txt'
     for decision_point in decision_points_data.keys():
-        print("\n", decision_point)
+        print("\nDecision point: {}".format(decision_point))
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
 
         # Replacing ':' with '_' both in the dataset columns and in the attributes map since ':' creates problems
@@ -294,41 +294,44 @@ def main():
         #print(rules)
         #continue
 
-        if decision_point not in ['p_15', 'p_9']:
-            continue
-
+        print("Fitting a decision tree on the decision point's dataset...")
         dt = DecisionTree(attributes_map)
         dt.fit(dataset)
-        print("Training complete. Starting rule extraction and simplification.")
 
         if not len(dt.get_nodes()) == 1:
-            #y_pred = dt.predict(dataset.drop(columns=['target']))
-            #print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-            og_rules = dt.extract_rules(dataset)
-            rules = shorten_rules_manually(og_rules, attributes_map)
-            rules = {k: rules[k].replace('_', ':') for k in rules}
-            o_rules = discover_overlapping_rules(dt, dataset, attributes_map, og_rules)
-            o_rules = shorten_rules_manually(o_rules, attributes_map)
-            o_rules = {k: o_rules[k].replace('_', ':') for k in o_rules}
+            print("Training complete. Starting rule extraction and simplification.")
+            with open(file_name, 'a') as f:
+                f.write(decision_point + ' - SUCCESS\n')
+                f.write('Dataset size: ' + str(len(dataset)) + '\n')
+                lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
+                f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
 
-            f.write('\n' + decision_point + ' - SUCCESS\n')
-            f.write('Dataset size: ' + str(len(dataset)) + '\n')
-            lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-            f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
-            f.write('Rules:\n')
-            for k in rules:
-                f.write(k + ': ' + rules[k] + '\n')
-            f.write('Rules with overlapping rules:\n')
-            for k in o_rules:
-                f.write(k + ': ' + o_rules[k] + '\n')
+                #y_pred = dt.predict(dataset.drop(columns=['target']))
+                #print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+
+                og_rules = dt.extract_rules(dataset)
+                rules = shorten_rules_manually(og_rules, attributes_map)
+                rules = {k: rules[k].replace('_', ':') for k in rules}
+
+                o_rules = discover_overlapping_rules(dt, dataset, attributes_map, og_rules)
+                o_rules = shorten_rules_manually(o_rules, attributes_map)
+                o_rules = {k: o_rules[k].replace('_', ':') for k in o_rules}
+
+                f.write('Rules:\n')
+                for k in rules:
+                    f.write(k + ': ' + rules[k] + '\n')
+                f.write('Rules with overlapping rules:\n')
+                for k in o_rules:
+                    f.write(k + ': ' + o_rules[k] + '\n')
+                f.write('\n')
             print(rules)
         else:
-            f.write('\n' + decision_point + ' - FAIL\n')
-            f.write('Dataset size: ' + str(len(dataset)) + '\n')
-            lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-            f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
+            with open(file_name, 'a') as f:
+                f.write(decision_point + ' - FAIL\n')
+                f.write('Dataset size: ' + str(len(dataset)) + '\n')
+                lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
+                f.write('Rows without invisible activity as target: ' + str(lf) + '\n\n')
 
-    f.close()
     toc = time()
     print("Total time: {}".format(toc-tic))
 

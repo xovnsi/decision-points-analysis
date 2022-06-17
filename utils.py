@@ -60,9 +60,10 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     # Extracting the decision points between previous and current activities, if not already computed
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
     if prev_curr_key not in stored_dicts.keys():
-        #dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
+        dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
 
         # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
+        '''
         paths = get_all_paths(previous_act_name, current_act)
         min_length_value = min(len(paths[k]) for k in paths)
         min_length_path = [l for k, l in paths.items() if len(l) == min_length_value][0]
@@ -73,6 +74,7 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
                 del dp_dict[dp]
             else:
                 dp_dict[dp.name] = dp_dict.pop(dp)
+        '''
         # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
 
         # TODO this is just for debugging
@@ -716,9 +718,10 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
 
         for sink_in_act in sink_in_acts:
             if sink_in_act.label is None:
-                #decision_points, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
+                decision_points, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
 
                 # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
+                '''
                 paths = get_all_paths(transition.name, sink_in_act)
                 min_length_value = min(len(paths[k]) for k in paths)
                 min_length_path = [l for k, l in paths.items() if len(l) == min_length_value][0]
@@ -729,6 +732,7 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
                         del decision_points[dp]
                     else:
                         decision_points[dp.name] = decision_points.pop(dp)
+                '''
                 # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
 
         return decision_points
