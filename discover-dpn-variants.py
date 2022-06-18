@@ -269,7 +269,7 @@ def main():
                           'communication': 'categorical', 'discarded': 'boolean'}
 
     # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
-    file_name = 'road_fines_complete_normal.txt'
+    file_name = 'results.txt'
     for decision_point in decision_points_data.keys():
         print("\nDecision point: {}".format(decision_point))
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
@@ -278,7 +278,7 @@ def main():
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
-        # TODO this conversion of the dataset should be done only once here: check if it is done in other places
+        # TODO conversion of the dataset should be done only once at the beginning: check if it is done in other places
         for attr in dataset.columns:
             if attr != 'target':
                 if attributes_map[attr] == 'continuous':
@@ -289,51 +289,48 @@ def main():
                     dataset[attr] = dataset[attr].astype(pd.StringDtype())
 
         # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
-        #rules = discover_branching_conditions(dataset)
-        #rules = {k: rules[k].replace('_', ':') for k in rules}
-        #print(rules)
-        #continue
+        # rules = discover_branching_conditions(dataset)
+        # rules = {k: rules[k].replace('_', ':') for k in rules}
+        # print(rules)
+        # continue
 
         print("Fitting a decision tree on the decision point's dataset...")
         dt = DecisionTree(attributes_map)
         dt.fit(dataset)
 
         if not len(dt.get_nodes()) == 1:
-            print("Training complete. Starting rule extraction and simplification.")
+            print("Training complete. Extracting rules...")
             with open(file_name, 'a') as f:
-                f.write(decision_point + ' - SUCCESS\n')
-                f.write('Dataset size: ' + str(len(dataset)) + '\n')
+                f.write('{} - SUCCESS\n'.format(decision_point))
                 lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-                f.write('Rows without invisible activity as target: ' + str(lf) + '\n')
+                f.write('Rows with actual activity as target: {}/{}\n'.format(str(lf), str(len(dataset))))
 
-                #y_pred = dt.predict(dataset.drop(columns=['target']))
-                #print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+                # Predict (just to see the accuracy)
+                # y_pred = dt.predict(dataset.drop(columns=['target']))
+                # print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
 
-                og_rules = dt.extract_rules(dataset)
-                rules = shorten_rules_manually(og_rules, attributes_map)
+                rules = dt.extract_rules()
+
+                # Rule extraction with pruning and overlapping rules discovery
+                # rules = dt.extract_rules_with_pruning(dataset)
+                # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
+
+                rules = shorten_rules_manually(rules, attributes_map)
                 rules = {k: rules[k].replace('_', ':') for k in rules}
-
-                o_rules = discover_overlapping_rules(dt, dataset, attributes_map, og_rules)
-                o_rules = shorten_rules_manually(o_rules, attributes_map)
-                o_rules = {k: o_rules[k].replace('_', ':') for k in o_rules}
 
                 f.write('Rules:\n')
                 for k in rules:
-                    f.write(k + ': ' + rules[k] + '\n')
-                f.write('Rules with overlapping rules:\n')
-                for k in o_rules:
-                    f.write(k + ': ' + o_rules[k] + '\n')
+                    f.write('{}: {}\n'.format(k, rules[k]))
                 f.write('\n')
             print(rules)
         else:
             with open(file_name, 'a') as f:
-                f.write(decision_point + ' - FAIL\n')
-                f.write('Dataset size: ' + str(len(dataset)) + '\n')
+                f.write('{} - FAIL\n'.format(decision_point))
                 lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-                f.write('Rows without invisible activity as target: ' + str(lf) + '\n\n')
+                f.write('Rows with actual activity as target: {}/{}\n\n'.format(str(lf), str(len(dataset))))
 
     toc = time()
-    print("Total time: {}".format(toc-tic))
+    print("\nTotal time: {}".format(toc-tic))
 
 
 if __name__ == '__main__':

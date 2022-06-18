@@ -1,0 +1,42 @@
+p_15 - FAIL
+Rows with actual activity as target: 354/355
+
+p_7 - FAIL
+Rows with actual activity as target: 708/708
+
+p_9 - FAIL
+Rows with actual activity as target: 708/708
+
+p_14 - FAIL
+Rows with actual activity as target: 354/355
+
+p_5 - FAIL
+Rows with actual activity as target: 354/432
+
+p_10 - FAIL
+Rows with actual activity as target: 354/355
+
+p_4 - SUCCESS
+Rows with actual activity as target: 64/100
+Rules:
+e00adba1-852d-4aa3-977b-345683531b7c: totalPaymentAmount <= 0.0 && amount > 39.0
+skip_22: totalPaymentAmount > 0.0 || amount <= 39.0 && totalPaymentAmount <= 0.0
+
+p_12 - FAIL
+Rows with actual activity as target: 354/411
+
+p_13 - FAIL
+Rows with actual activity as target: 708/708
+
+p_8 - FAIL
+Rows with actual activity as target: 354/411
+
+p_17 - FAIL
+Rows with actual activity as target: 354/412
+
+p_6 - FAIL
+Rows with actual activity as target: 454/454
+
+p_16 - FAIL
+Rows with actual activity as target: 354/355
+

@@ -305,7 +305,30 @@ class DecisionTree(object):
     def get_nodes(self):
         return self._nodes
 
-    def extract_rules(self, data_in) -> dict:
+    def extract_rules(self) -> dict:
+        """ Extracts the rules from the tree, one for each target transition.
+
+        For each leaf node, puts in conjunction all the conditions in the path from the root to the leaf node.
+        Then, for each target class, put the conjunctive rules in disjunction.
+        """
+
+        rules = dict()
+        leaf_nodes = self.get_leaves_nodes()
+        for leaf_node in leaf_nodes:
+            vertical_rules = extract_rules_from_leaf(leaf_node)
+
+            vertical_rules = ' && '.join(vertical_rules)
+
+            if leaf_node._label_class not in rules.keys():
+                rules[leaf_node._label_class] = set()
+            rules[leaf_node._label_class].add(vertical_rules)
+
+        for target_class in rules.keys():
+            rules[target_class] = ' || '.join(rules[target_class])
+
+        return rules
+
+    def extract_rules_with_pruning(self, data_in) -> dict:
         """ Extracts the rules from the tree, one for each target transition.
 
         For each leaf node, takes the list of conditions from the root to the leaf, simplifies it if possible, and puts
