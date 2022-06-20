@@ -78,6 +78,7 @@ class DecisionTree(object):
     def predict(self, data_in, distribution=False):
         """ Starting from the root, predicts the class corresponding to the features contained in "data_in" """
         attribute = self._root_node.get_attribute().split(":")[0]
+        data_in = data_in.fillna('?')
         preds = list()
         # data_in is a pandas DataFrame
         for index, row in data_in.iterrows():
