@@ -98,23 +98,23 @@ petri_utils.add_arc_from_to(t_F, sink, net)
 petri_utils.add_arc_from_to(t_G, sink, net)
 
 # transitions properties
-t_B.properties[petri_properties.TRANS_GUARD] = 'is_present == True'
+t_B.properties[petri_properties.TRANS_GUARD] = 'is_present == False'
 t_B.properties[petri_properties.READ_VARIABLE] = ['is_present']
 t_B.properties[petri_properties.WRITE_VARIABLE] = []
 
-skip_1.properties[petri_properties.TRANS_GUARD] = 'is_present == False'
+skip_1.properties[petri_properties.TRANS_GUARD] = 'is_present == True'
 skip_1.properties[petri_properties.READ_VARIABLE] = ['is_present']
 skip_1.properties[petri_properties.WRITE_VARIABLE] = []
 
-t_C.properties[petri_properties.TRANS_GUARD] = 'skip_everything == False && amount > 400'
-t_C.properties[petri_properties.READ_VARIABLE] = ['skip_everything', 'amount']
+t_C.properties[petri_properties.TRANS_GUARD] = '(skip_everything == False && amount > 400) || loan_accepted == "recheck"'
+t_C.properties[petri_properties.READ_VARIABLE] = ['skip_everything', 'amount', 'loan_accepted']
 t_C.properties[petri_properties.WRITE_VARIABLE] = []
 
-skip_2.properties[petri_properties.TRANS_GUARD] = 'skip_everything == True || amount <= 400'
-skip_2.properties[petri_properties.READ_VARIABLE] = ['skip_everything', 'amount']
+skip_2.properties[petri_properties.TRANS_GUARD] = '(skip_everything == True || amount <= 400) && loan_accepted != "recheck"'
+skip_2.properties[petri_properties.READ_VARIABLE] = ['skip_everything', 'amount', 'loan_accepted']
 skip_2.properties[petri_properties.WRITE_VARIABLE] = []
 
-t_D.properties[petri_properties.TRANS_GUARD] = 'skip_everything == True && doc_is_updated == False'
+t_D.properties[petri_properties.TRANS_GUARD] = 'skip_everything == False && doc_is_updated == False'
 t_D.properties[petri_properties.READ_VARIABLE] = ['doc_is_updated', 'skip_everything']
 t_D.properties[petri_properties.WRITE_VARIABLE] = []
 

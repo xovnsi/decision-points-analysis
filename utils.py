@@ -502,23 +502,19 @@ def get_place_from_event(places_map, event, dp_list) -> list:
                 places.append((place, trans))
     return places
 
-def get_attributes_from_event(event) -> dict:
-    """ Return the attributes of an event
 
-    Given an attribute of an event in an event log, returns a dictionary
-    containing the attribute of an event, numeric if it is possible
+def get_attributes_from_event(event) -> dict:
+    """ Given an event from an event log, returns a dictionary containing the attributes values of the given event.
+
+    Each attribute is set as key of the dictionary, and its value is the actual value of the attribute in the event.
+    Attributes 'time:timestamp' and 'concept:name' are ignored and therefore not added to the dictionary.
     """
-    # TODO specify what are numeric/categorical attributes in order not to try every time (also maybe a code is not numeric)
-    # intialize
+
     attributes = dict()
     for attribute in event.keys():
-        if not isinstance(event[attribute], bool):
-            try:
-                attributes[attribute] = [float(event[attribute])]
-            except:
-                attributes[attribute] = [event[attribute]]
-        else:
-            attributes[attribute] = [event[attribute]]
+        if attribute not in ['time:timestamp', 'concept:name']:
+            attributes[attribute] = event[attribute]
+
     return attributes
 
 def extract_rules(dt, feature_names) -> dict:

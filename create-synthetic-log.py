@@ -80,6 +80,14 @@ def get_ex_cont(model_name):
         discarded = choice([True, False])
         ex_cont = {"amount": a[0], "policyType": policy_type, "status": status,
                 "communication": communication, "appeal": appeal, "discarded": discarded}
+    elif model_name == 'running-example-paper':
+        is_present = choice([True, False])
+        skip_everything = choice([True, False])
+        a = np.random.uniform(0, 1000, 1)
+        doc_is_updated = choice([True, False])
+        loan_accepted = choice(["yes", "no", "recheck"])
+        ex_cont = {"amount": a[0], "is_present": is_present, "skip_everything": skip_everything,
+                "doc_is_updated": doc_is_updated, "loan_accepted": loan_accepted}
     else:
         raise Exception("Model name not implemented.")
     
@@ -116,6 +124,7 @@ for i in tqdm(range(NO_TRACES)):
                     all_enabled_trans.discard(enabled)
         if len(all_enabled_trans) == 0:
             breakpoint()
+        #breakpoint()
         trans = choice(list(all_enabled_trans))
         #breakpoint()
         if "readVariable" in trans.properties:
@@ -127,6 +136,10 @@ for i in tqdm(range(NO_TRACES)):
         dm = dpn_semantics.execute(trans, net, dm, ex_cont)
         #breakpoint()
         if not trans.label is None:
+            if 'paper' in net_name:
+                if trans.name in ["trans_A"]:
+                    ex_cont["amount"] = copy.copy(ex_cont_total["amount"])
+                    ex_cont["skip_everything"] = copy.copy(ex_cont_total["skip_everything"])
             visited_elements.append(tuple([trans, ex_cont]))
         if 'loopB' in net_name:
             if trans.name in ["trans_S"]:
@@ -134,6 +147,12 @@ for i in tqdm(range(NO_TRACES)):
         elif 'loops' in net_name:
             if trans.name in ["trans_R"]:
                 ex_cont_total["appeal"] = False
+        if 'paper' in net_name:
+            #breakpoint()
+            if trans.name in ["skip_4"]:
+                ex_cont_total["loan_accepted"] = choice(['yes', 'no'])
+                ex_cont_total["skip_everything"] = False
+                ex_cont_total["doc_is_updated"] = True
 
     if dm == final_marking:
         verboseprint("Final marking reached!")
