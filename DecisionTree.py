@@ -169,6 +169,11 @@ class DecisionTree(object):
                 max_gain_ratio = select_max_gain_ratio.loc[max_gain_ratio_idx, 'gain_ratio']
                 max_gain_ratio_threshold = select_max_gain_ratio.loc[max_gain_ratio_idx, 'threshold']
                 split_attribute = select_max_gain_ratio.loc[max_gain_ratio_idx, 'attribute']
+            elif len(tests_examined[tests_examined['not_near_trivial_subset']]) != 0:
+                max_gain_ratio_idx = select_max_gain_ratio['gain_ratio'].idxmax()
+                max_gain_ratio = select_max_gain_ratio.loc[max_gain_ratio_idx, 'gain_ratio']
+                max_gain_ratio_threshold = select_max_gain_ratio.loc[max_gain_ratio_idx, 'threshold']
+                split_attribute = select_max_gain_ratio.loc[max_gain_ratio_idx, 'attribute']
             else:
                 max_gain_ratio = None
                 max_gain_ratio_threshold = None
@@ -190,7 +195,7 @@ class DecisionTree(object):
         # compute error predicting the most frequent class without splitting
         node_errors = data_in['target'].value_counts().sum() - data_in['target'].value_counts().max()
         # if split attribute does not exist then is a leaf 
-        if not split_attribute is None:
+        if split_attribute is not None and node.get_level() < self.max_depth:
             child_errors = self.compute_split_error(data_in[[split_attribute, 'target']], local_threshold)
             # if child errors are greater the actual error of the node than the split is useless
             if child_errors >= node_errors:
