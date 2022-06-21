@@ -12,9 +12,10 @@ import multiprocessing
 class DecisionTree(object):
     """ Implements a decision tree with C4.5 algorithm """
 
-    def __init__(self, attributes_map):
+    def __init__(self, attributes_map, max_depth=20):
         self._nodes = set()
         self._root_node = None
+        self.max_depth = max_depth
         # attributes map is a disctionary contianing the type of each attribute in the data.
         # Must be one of ['categorical', 'boolean', 'continuous']
         for attr_name in attributes_map.keys():
@@ -202,7 +203,7 @@ class DecisionTree(object):
                 else:
                 #breakpoint()
                     self.delete_node(node)
-                    node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
+                    node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label(), node.get_level())
                     self.add_node(node, parent_node)
             else:
                 # if the attribute with the greatest gain is continuous than the split is binary
@@ -212,7 +213,7 @@ class DecisionTree(object):
                     node.set_attribute('{}:{}'.format(split_attribute, threshold), 'continuous')
                     # create DecisionNode, recursion and add node
                     # Low split
-                    low_split_node = DecisionNode('{} <= {}'.format(split_attribute, float(threshold)))
+                    low_split_node = DecisionNode('{} <= {}'.format(split_attribute, float(threshold)), node.get_level())
                     self.add_node(low_split_node, node)
                     # the split is computed on the known data and then weighted on unknown ones
                     data_known = data_in[data_in[split_attribute] != '?']
@@ -225,7 +226,7 @@ class DecisionTree(object):
                     new_data_low = pd.concat([data_known[data_known[split_attribute] <= threshold], new_data_unknown], ignore_index=True)
                     self.split_node(low_split_node, new_data_low, data_total)
                     # High split
-                    high_split_node = DecisionNode('{} > {}'.format(split_attribute, float(threshold)))
+                    high_split_node = DecisionNode('{} > {}'.format(split_attribute, float(threshold)), node.get_level())
                     self.add_node(high_split_node, node)
                     weight_unknown = len(data_known[data_known[split_attribute] > threshold]) / len(data_known)
                     new_weight = (np.array([weight_unknown] * len(data_unknown)) * np.array(data_unknown['weight'].copy(deep=True))).tolist()
@@ -240,7 +241,7 @@ class DecisionTree(object):
                     data_unknown = data_in[data_in[split_attribute] == '?']
                     for attr_value in data_known[split_attribute].unique():
                         # create DecisionNode, recursion and add node
-                        child_node = DecisionNode('{} = {}'.format(split_attribute, attr_value))
+                        child_node = DecisionNode('{} = {}'.format(split_attribute, attr_value), node.get_level())
                         self.add_node(child_node, node)
                         # the split is computed on the known data and then weighted on unknown ones
                         weight_unknown = len(data_known[data_known[split_attribute] == attr_value]) / len(data_known)
@@ -260,7 +261,7 @@ class DecisionTree(object):
             else:
                 self.delete_node(node)
                 # the final number of class contained is the sum of the weights of every row with that specific target
-                node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label())
+                node = LeafNode(dict(data_in.groupby('target')['weight'].sum().round(4)), node.get_label(), node.get_level())
                 self.add_node(node, parent_node)
 
     def compute_split_error(self, data_in, threshold) -> int:
@@ -292,7 +293,7 @@ class DecisionTree(object):
 
     def fit(self, data_in) -> None:
         """ Fits the tree on "data_in" """
-        root_node = DecisionNode('root')
+        root_node = DecisionNode('root', 0)
         self.add_node(root_node, None)
         # add weight to dataset in order to handle unknown values
         data_in['weight'] = [1] * len(data_in)

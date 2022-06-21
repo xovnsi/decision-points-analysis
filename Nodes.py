@@ -9,12 +9,13 @@ TypeNode = TypeVar('TypeNode', bound='Node')
 class Node(object):
     """ Class implementing a generic node of a decision tree """
 
-    def __init__(self, parent_attribute_value):
+    def __init__(self, parent_attribute_value, parent_level):
         self._label = parent_attribute_value        # name of the node. Corresponds to the condition to be fulfilled in the parent node
         self._childs = set()
         self._attribute = None                      # attribute the node splits on. For continuous attributes the format is: "attribute:threshold"
         self._attribute_type = None                 # type of the attribute ['categorical', 'boolean', 'continuous']
         self._parent_node = None
+        self._level = parent_level + 1
 
     def set_attribute(self, attribute, attribute_type) -> None:
         """ Sets the attribute (and its type) on which the node splits """
@@ -27,6 +28,9 @@ class Node(object):
                 raise Exception("Threshold must be a numerical value")
         elif not self._attribute_type in ['categorical', 'boolean']:
             raise Exception("Attribute value not supported")
+
+    def get_level(self) -> int:
+        return self._level
 
     def get_label(self) -> str:
         """ Returns the name of the node """
