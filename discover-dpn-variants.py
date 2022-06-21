@@ -37,7 +37,6 @@ def main():
     # parse arguments
     args = parser.parse_args()
     net_name = args.net_name
-    '''
     attributes_map_file = f"{net_name}.attr"
     if attributes_map_file in os.listdir('dt-attributes'):
         with open(os.path.join('dt-attributes', attributes_map_file), 'r') as f:
@@ -45,7 +44,6 @@ def main():
             attributes_map = json.loads(json_string)
     else:
         raise FileNotFoundError('Create a configuration file for the decision tree before fitting it.')
-    '''
     #try:
     #    #net, initial_marking, final_marking = pnml_importer.apply("models/{}.pnml".format(net_name))
     #    net, im, fm = pnml_importer.apply("models/{}.pnml".format(net_name))
@@ -258,15 +256,15 @@ def main():
                                 decision_points_data[place_from_event][a].append(event_attr[a][0])
                         decision_points_data[place_from_event]['target'].append(target_act)
 
-    if 'road' in net_name or 'Road' in net_name:
-        attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
-                          'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
-                          'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
-                          'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
-                          'lastSent': 'categorical', 'matricola': 'categorical'}
-    else:
-        attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
-                          'communication': 'categorical', 'discarded': 'boolean'}
+#    if 'road' in net_name or 'Road' in net_name:
+#        attributes_map = {'lifecycle:transition': 'categorical', 'expense': 'continuous',
+#                          'totalPaymentAmount': 'continuous', 'paymentAmount': 'continuous', 'amount': 'continuous',
+#                          'org:resource': 'categorical', 'dismissal': 'categorical', 'vehicleClass': 'categorical',
+#                          'article': 'categorical', 'points': 'continuous', 'notificationType': 'categorical',
+#                          'lastSent': 'categorical', 'matricola': 'categorical'}
+#    else:
+#        attributes_map = {'amount': 'continuous', 'policyType': 'categorical', 'appeal': 'boolean', 'status': 'categorical',
+#                          'communication': 'categorical', 'discarded': 'boolean'}
 
     # For each decision point, create a dataframe, fit a decision tree and print the extracted rules
     file_name = 'results.txt'
