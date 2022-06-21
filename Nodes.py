@@ -87,8 +87,8 @@ class DecisionNode(Node):
 
 
 class LeafNode(Node):
-    def __init__(self, classes, parent_attribute_value):
-        super().__init__(parent_attribute_value)
+    def __init__(self, classes, parent_attribute_value, parent_level):
+        super().__init__(parent_attribute_value, parent_level)
         self._classes = classes
         # The label class of the node is the class with maximum number of examples
         self._label_class = max(self._classes.items(), key=operator.itemgetter(1))[0] 

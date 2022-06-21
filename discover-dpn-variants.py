@@ -301,7 +301,7 @@ def main():
             with open(file_name, 'a') as f:
                 f.write('{} - SUCCESS\n'.format(decision_point))
                 lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-                f.write('Rows with actual activity as target: {}/{}\n'.format(str(lf), str(len(dataset))))
+                f.write('Rows with invisible activity as target: {}/{}\n'.format(str(lf), str(len(dataset))))
 
                 # Predict (just to see the accuracy)
                 # y_pred = dt.predict(dataset.drop(columns=['target']))

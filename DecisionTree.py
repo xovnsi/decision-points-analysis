@@ -163,13 +163,14 @@ class DecisionTree(object):
             mean_info_gain = tests_examined['info_gain'].mean()
             # The best split must have at the least two subset with at least two cases 
             # TODO the above condition should be user dependent
-            select_max_gain_ratio = tests_examined[(tests_examined['info_gain'] >= mean_info_gain) & (tests_examined['not_near_trivial_subset'] == True)]
+            select_max_gain_ratio = tests_examined[(tests_examined['info_gain'] >= mean_info_gain) & (tests_examined['not_near_trivial_subset'])]
             if len(select_max_gain_ratio) != 0:
                 max_gain_ratio_idx = select_max_gain_ratio['gain_ratio'].idxmax()
                 max_gain_ratio = select_max_gain_ratio.loc[max_gain_ratio_idx, 'gain_ratio']
                 max_gain_ratio_threshold = select_max_gain_ratio.loc[max_gain_ratio_idx, 'threshold']
                 split_attribute = select_max_gain_ratio.loc[max_gain_ratio_idx, 'attribute']
             elif len(tests_examined[tests_examined['not_near_trivial_subset']]) != 0:
+                select_max_gain_ratio = tests_examined[tests_examined['not_near_trivial_subset']]   # Otherwise 'select_max_gain_ratio' computed before is empty
                 max_gain_ratio_idx = select_max_gain_ratio['gain_ratio'].idxmax()
                 max_gain_ratio = select_max_gain_ratio.loc[max_gain_ratio_idx, 'gain_ratio']
                 max_gain_ratio_threshold = select_max_gain_ratio.loc[max_gain_ratio_idx, 'threshold']
