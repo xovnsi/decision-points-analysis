@@ -118,6 +118,7 @@ for i in tqdm(range(NO_TRACES)):
     while dm != final_marking and len(visited_elements) < max_trace_length and len(all_enabled_trans) > 0:
         verboseprint(dm)
         all_enabled_trans = dpn_semantics.enabled_transitions(net, dm, ex_cont_total)
+        # breakpoint()
         for enabled in list(all_enabled_trans):
             if "guard" in enabled.properties:
                 if not dpn_semantics.evaluate_guard(enabled.properties["guard"], enabled.properties["readVariable"], ex_cont_total):
@@ -140,6 +141,7 @@ for i in tqdm(range(NO_TRACES)):
                 if trans.name in ["trans_A"]:
                     ex_cont["amount"] = copy.copy(ex_cont_total["amount"])
                     ex_cont["skip_everything"] = copy.copy(ex_cont_total["skip_everything"])
+                    ex_cont["doc_is_updated"] = copy.copy(ex_cont_total["doc_is_updated"])
             visited_elements.append(tuple([trans, ex_cont]))
         if 'loopB' in net_name:
             if trans.name in ["trans_S"]:

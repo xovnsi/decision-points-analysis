@@ -158,6 +158,7 @@ class DecisionTree(object):
                     tests_examined['threshold'].append(threshold)
                     tests_examined['attribute'].append(column)
                     tests_examined['not_near_trivial_subset'].append(are_there_at_least_two)
+            # breakpoint()
             # select the best split
             tests_examined = pd.DataFrame.from_dict(tests_examined)
             mean_info_gain = tests_examined['info_gain'].mean()
@@ -193,17 +194,24 @@ class DecisionTree(object):
             data_in = data_in.copy(deep=True) 
             data_in = data_in.drop(columns=[node.get_label().split()[0]])
         max_gain_ratio, local_threshold, split_attribute = self.get_split(data_in)
+        # breakpoint()
         # compute error predicting the most frequent class without splitting
         node_errors = data_in['target'].value_counts().sum() - data_in['target'].value_counts().max()
+        # compute percentage
+        # TODO directly compute percentage
+        node_errors = node_errors / len(data_in)
         # if split attribute does not exist then is a leaf 
         if split_attribute is not None and node.get_level() < self.max_depth:
             child_errors = self.compute_split_error(data_in[[split_attribute, 'target']], local_threshold)
+            # compute percentage
+            # TODO directly compute percentage
+            child_errors = child_errors / len(data_in)
             # if child errors are greater the actual error of the node than the split is useless
             if child_errors >= node_errors:
                 # the node (default type "DecisionNode") is "transformed" in a leaf node ("LeafNode" type)
                 parent_node = node.get_parent_node()
                 if parent_node is None and node.get_label() == 'root':
-                    print("The data are not feasible for fitting a tree. Can't find a suitable split of the root node.")
+                    print("Childs error percentage is higher than the root one. Can't find a suitable split of the root node.")
                 elif parent_node is None:
                     raise Exception("Can't transform DecisionNode {} in LeafNode: no parent found".format(node.get_label()))
                 else:

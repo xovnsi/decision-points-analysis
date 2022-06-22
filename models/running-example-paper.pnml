@@ -7,11 +7,6 @@
           <text>p_2</text>
         </name>
       </place>
-      <place id="p_4">
-        <name>
-          <text>p_4</text>
-        </name>
-      </place>
       <place id="p_5">
         <name>
           <text>p_5</text>
@@ -55,6 +50,11 @@
           <text>p_1</text>
         </name>
       </place>
+      <place id="p_4">
+        <name>
+          <text>p_4</text>
+        </name>
+      </place>
       <transition id="trans_A">
         <name>
           <text>Request loan</text>
@@ -67,11 +67,10 @@
         <readVariable>doc_is_updated</readVariable>
         <readVariable>skip_everything</readVariable>
       </transition>
-      <transition id="trans_B" guard="is_present == False">
+      <transition id="trans_E">
         <name>
-          <text>Register</text>
+          <text>Final check</text>
         </name>
-        <readVariable>is_present</readVariable>
       </transition>
       <transition id="trans_C" guard="(skip_everything == False &amp;&amp; amount &gt; 400) || loan_accepted == &quot;recheck&quot;">
         <name>
@@ -81,10 +80,11 @@
         <readVariable>amount</readVariable>
         <readVariable>loan_accepted</readVariable>
       </transition>
-      <transition id="trans_E">
+      <transition id="trans_B" guard="is_present == False">
         <name>
-          <text>Final check</text>
+          <text>Register</text>
         </name>
+        <readVariable>is_present</readVariable>
       </transition>
       <transition id="trans_F" guard="loan_accepted == &quot;yes&quot;">
         <name>
@@ -102,71 +102,73 @@
         <name>
           <text>skip_1</text>
         </name>
-        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="0ae8a9d1-bf3a-4b05-9bcb-9736da6dddab"/>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="84bfc8db-eecf-4aa5-a4c6-035e8f66788f"/>
         <readVariable>is_present</readVariable>
       </transition>
       <transition id="skip_2" guard="(skip_everything == True || amount &lt;= 400) &amp;&amp; loan_accepted != &quot;recheck&quot;">
         <name>
           <text>skip_2</text>
         </name>
-        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="dfa406b9-47eb-49ef-ae35-4dda7473da72"/>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="c3768ce8-956d-4b6e-9d14-0d804da92504"/>
         <readVariable>skip_everything</readVariable>
         <readVariable>amount</readVariable>
         <readVariable>loan_accepted</readVariable>
       </transition>
-      <transition id="skip_3">
+      <transition id="skip_3" guard="skip_everything == True || doc_is_updated == True">
         <name>
           <text>skip_3</text>
         </name>
-        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="00eb67d9-10df-4d60-a33c-f7ddfcb62ed9"/>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="e88ce71b-5323-4126-b9a3-305af957e721"/>
+        <readVariable>doc_is_updated</readVariable>
+        <readVariable>skip_everything</readVariable>
       </transition>
       <transition id="skip_4" guard="loan_accepted == &quot;recheck&quot;">
         <name>
           <text>skip_4</text>
         </name>
-        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="d39c3829-1724-49de-adae-80ca0fc10ba3"/>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="afbacb3c-2760-4775-abc4-81e107b607e6"/>
         <readVariable>loan_accepted</readVariable>
       </transition>
       <transition id="tauSplit_1">
         <name>
           <text>tauSplit_1</text>
         </name>
-        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="37cecaf4-fbe1-4cc7-a08d-5542e7070e91"/>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="14b34d44-479f-4992-92dd-419b6db2b7b8"/>
       </transition>
       <transition id="tauJoin_1">
         <name>
           <text>tauJoin_1</text>
         </name>
-        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="acbb96c4-9224-4b3d-88cc-9ec83895442b"/>
+        <toolspecific tool="ProM" version="6.4" activity="$invisible$" localNodeID="57a4a82a-aea1-422b-80cf-b71e48b42dc3"/>
       </transition>
-      <arc id="1758660178944" source="p_1" target="skip_1"/>
-      <arc id="1758660179328" source="tauSplit_1" target="p_3"/>
-      <arc id="1758660180096" source="trans_D" target="p_6"/>
-      <arc id="1758660179712" source="p_4" target="trans_D"/>
-      <arc id="1758660180480" source="tauJoin_1" target="p_7"/>
-      <arc id="1758660180864" source="p_8" target="trans_G"/>
-      <arc id="1758660181248" source="trans_G" target="sink"/>
-      <arc id="1758660178848" source="p_1" target="trans_B"/>
-      <arc id="1758660179232" source="p_2" target="tauSplit_1"/>
-      <arc id="1758660180000" source="skip_2" target="p_5"/>
-      <arc id="1758660180384" source="p_6" target="tauJoin_1"/>
-      <arc id="1758660179616" source="p_3" target="skip_2"/>
-      <arc id="1758660180768" source="p_8" target="trans_F"/>
-      <arc id="1758660181152" source="trans_F" target="sink"/>
-      <arc id="1758660178752" source="trans_A" target="p_1"/>
-      <arc id="1758660179136" source="skip_1" target="p_2"/>
-      <arc id="1758660179520" source="p_3" target="trans_C"/>
-      <arc id="1758660180288" source="p_5" target="tauJoin_1"/>
-      <arc id="1758660179904" source="trans_C" target="p_5"/>
-      <arc id="1758660180672" source="trans_E" target="p_8"/>
-      <arc id="1758660181056" source="skip_4" target="p_2"/>
-      <arc id="1758660178656" source="source" target="trans_A"/>
-      <arc id="1758660179040" source="trans_B" target="p_2"/>
-      <arc id="1758660179424" source="tauSplit_1" target="p_4"/>
-      <arc id="1758660180192" source="skip_3" target="p_6"/>
-      <arc id="1758660179808" source="p_4" target="skip_3"/>
-      <arc id="1758660180576" source="p_7" target="trans_E"/>
-      <arc id="1758660180960" source="p_8" target="skip_4"/>
+      <arc id="140617985246976" source="p_1" target="trans_B"/>
+      <arc id="140617985247360" source="p_2" target="tauSplit_1"/>
+      <arc id="140617985248512" source="p_6" target="tauJoin_1"/>
+      <arc id="140617985247744" source="p_3" target="skip_2"/>
+      <arc id="140617985248128" source="skip_2" target="p_5"/>
+      <arc id="140617985248896" source="p_8" target="trans_F"/>
+      <arc id="140617985249280" source="trans_F" target="sink"/>
+      <arc id="140617985246880" source="trans_A" target="p_1"/>
+      <arc id="140617985247264" source="skip_1" target="p_2"/>
+      <arc id="140617985247648" source="p_3" target="trans_C"/>
+      <arc id="140617985248416" source="p_5" target="tauJoin_1"/>
+      <arc id="140617985248032" source="trans_C" target="p_5"/>
+      <arc id="140617985248800" source="trans_E" target="p_8"/>
+      <arc id="140617985249184" source="skip_4" target="p_2"/>
+      <arc id="140617985246784" source="source" target="trans_A"/>
+      <arc id="140617985247168" source="trans_B" target="p_2"/>
+      <arc id="140617985247552" source="tauSplit_1" target="p_4"/>
+      <arc id="140617985248320" source="skip_3" target="p_6"/>
+      <arc id="140617985247936" source="p_4" target="skip_3"/>
+      <arc id="140617985248704" source="p_7" target="trans_E"/>
+      <arc id="140617985249088" source="p_8" target="skip_4"/>
+      <arc id="140617985247072" source="p_1" target="skip_1"/>
+      <arc id="140617985247456" source="tauSplit_1" target="p_3"/>
+      <arc id="140617985248224" source="trans_D" target="p_6"/>
+      <arc id="140617985247840" source="p_4" target="trans_D"/>
+      <arc id="140617985248608" source="tauJoin_1" target="p_7"/>
+      <arc id="140617985248992" source="p_8" target="trans_G"/>
+      <arc id="140617985249376" source="trans_G" target="sink"/>
     </page>
     <finalmarkings>
       <marking>

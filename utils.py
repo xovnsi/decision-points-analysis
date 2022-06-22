@@ -52,10 +52,10 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     # TODO reachability becomes useless if _new_get_dp_to_previous_event is used (and also loops)
     reachability = dict()
     # check if the two activities are contained in the same loop and save it if exists
-    for loop in loops:
-        if loop.is_node_in_loop_complete_net(current_act_name) and loop.is_node_in_loop_complete_net(previous_act_name):
-            # check if the last activity is reachable from the previous one (if not it means that the loop is active)
-            reachability[loop.name] = loop.check_if_reachable(previous_act, current_act.name, False)
+#    for loop in loops:
+#        if loop.is_node_in_loop_complete_net(current_act_name) and loop.is_node_in_loop_complete_net(previous_act_name):
+#            # check if the last activity is reachable from the previous one (if not it means that the loop is active)
+#            reachability[loop.name] = loop.check_if_reachable(previous_act, current_act.name, False)
 
     # Extracting the decision points between previous and current activities, if not already computed
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])

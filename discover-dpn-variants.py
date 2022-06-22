@@ -76,7 +76,7 @@ def main():
         print("Model not found")
 
     # Otherwise, extract the Petri net from the log using the inductive miner #TODO alternative if model not present?
-    # net, im, fm = pm4py.discover_petri_net_inductive(log)
+    #net, im, fm = pm4py.discover_petri_net_inductive(log)
 
     # Generating the simplified Petri net
     sink_complete_net = [place for place in net.places if place.name == 'sink'][0]
@@ -97,60 +97,92 @@ def main():
     im_sim[source] = 1
     fm_sim[sink] = 1
     gviz = pn_visualizer.apply(net, im, fm)
-    pn_visualizer.view(gviz)
+    #pn_visualizer.view(gviz)
     gviz = pn_visualizer.apply(sim_net, im_sim, fm_sim)
-    pn_visualizer.view(gviz)
+    #pn_visualizer.view(gviz)
 
     # Dealing with loops and other stuff... needs cleaning
     trans_events_map = get_map_transitions_events(net)
     events_trans_map = get_map_events_transitions(net)
 
-    # detect loops and create loop objects
-    loop_vertex = detect_loops(sim_net)
-    loop_vertex = delete_composite_loops(loop_vertex)
+    # Parallel branches MANUALLY for ROAD FINES PROM
+    parallel_branches = dict()
+    parallel_branches['Create Fine'] = dict()
+    parallel_branches['Create Fine']['branch_1'] = {'skip_1', trans_events_map['Send Appeal to Prefecture']}
+    parallel_branches['Create Fine']['branch_2'] = {trans_events_map['Insert Fine Notification'],
+                                                    trans_events_map['Send Fine'],
+                                                    trans_events_map['Insert Date Appeal to Prefecture'],
+                                                    trans_events_map['Appeal to Judge'],
+                                                    trans_events_map['Receive Result Appeal from Prefecture'],
+                                                    trans_events_map['Notify Result Appeal to Offender'],
+                                                    trans_events_map['Add penalty'],
+                                                    trans_events_map['Send for Credit Collection']}
+    parallel_branches['Create Fine']['branch_3'] = {trans_events_map['Payment'], trans_events_map['Send for Credit Collection']}
 
-    loops = list()
-    for loop_length in loop_vertex.keys():
-        for i, loop in enumerate(loop_vertex[loop_length]):
-            events_loop = [events_trans_map[vertex] for vertex in loop if vertex in events_trans_map.keys()]
-            loop_obj = Loop(loop, events_loop, sim_net, "{}_{}".format(loop_length, i))
-            loop_obj.set_complete_net_input(last_collapsed_left)
-            loop_obj.set_complete_net_output(last_collapsed_right)
-            loop_obj.set_complete_net_loop_nodes(sim_map)
-            loops.append(loop_obj)
+    parallel_branches['tauSplit_1'] = dict()
+    parallel_branches['tauSplit_1']['branch_1'] = {trans_events_map['Insert Fine Notification'],
+                                                   trans_events_map['Appeal to Judge'],
+                                                   trans_events_map['Receive Result Appeal from Prefecture'],
+                                                   trans_events_map['Notify Result Appeal to Offender'],
+                                                   trans_events_map['Add penalty']}
+    parallel_branches['tauSplit_1']['branch_2'] = {trans_events_map['Send Fine']}
+    parallel_branches['tauSplit_1']['branch_3'] = {trans_events_map['Insert Date Appeal to Prefecture']}
 
-    # join different parts of the same loop (different loops with same inputs and outputs)
-    not_joinable = False
-    while not not_joinable:
-        old_loops = copy.copy(loops)
-        new_loop_nodes = None
-        new_loop_events = None
-        for loop in old_loops:
-            new_loop_nodes = set()
-            new_loop_events = set()
-            for loop_inner in old_loops:
-                if loop != loop_inner:
-                    if loop.input_places_complete == loop_inner.input_places_complete and loop.output_places_complete == loop_inner.output_places_complete:
-                        new_loop_nodes = new_loop_nodes.union(set(loop.vertex))
-                        new_loop_nodes = new_loop_nodes.union(set(loop_inner.vertex))
-                        new_loop_events = new_loop_events.union(set(loop.events))
-                        new_loop_events = new_loop_events.union(set(loop_inner.events))
-                        loops.remove(loop_inner)
+    parallel_branches['tauSplit_2'] = dict()
+    parallel_branches['tauSplit_2']['branch_1'] = {trans_events_map['Appeal to Judge']}
+    parallel_branches['tauSplit_2']['branch_2'] = {trans_events_map['Receive Result Appeal from Prefecture']}
+    parallel_branches['tauSplit_2']['branch_3'] = {trans_events_map['Notify Result Appeal to Offender'],
+                                                   trans_events_map['Add penalty']}
+    parallel_branches['tauSplit_3'] = dict()
+    parallel_branches['tauSplit_3']['branch_1'] = {trans_events_map['Notify Result Appeal to Offender']}
+    parallel_branches['tauSplit_3']['branch_2'] = {trans_events_map['Add penalty']}
 
-            if len(new_loop_nodes) > 0:
-                new_loop = Loop(list(new_loop_nodes), list(new_loop_events), sim_net, loop.name)
-                new_loop.set_complete_net_input(last_collapsed_left)
-                new_loop.set_complete_net_output(last_collapsed_right)
-                new_loop.set_complete_net_loop_nodes(sim_map)
-                new_loop.set_complete_net_loop_events(events_trans_map)
-                loops.append(new_loop)
-                loops.remove(loop)
-                break
-        if len(new_loop_nodes) == 0:
-            not_joinable = True
-
-    for loop in loops:
-        loop.set_nearest_input_complete_net(sim_net, sim_map)
+    #    # detect loops and create loop objects
+#    loop_vertex = detect_loops(sim_net)
+#    loop_vertex = delete_composite_loops(loop_vertex)
+#
+#    loops = list()
+#    for loop_length in loop_vertex.keys():
+#        for i, loop in enumerate(loop_vertex[loop_length]):
+#            events_loop = [events_trans_map[vertex] for vertex in loop if vertex in events_trans_map.keys()]
+#            loop_obj = Loop(loop, events_loop, sim_net, "{}_{}".format(loop_length, i))
+#            loop_obj.set_complete_net_input(last_collapsed_left)
+#            loop_obj.set_complete_net_output(last_collapsed_right)
+#            loop_obj.set_complete_net_loop_nodes(sim_map)
+#            loops.append(loop_obj)
+#
+#    # join different parts of the same loop (different loops with same inputs and outputs)
+#    not_joinable = False
+#    while not not_joinable:
+#        old_loops = copy.copy(loops)
+#        new_loop_nodes = None
+#        new_loop_events = None
+#        for loop in old_loops:
+#            new_loop_nodes = set()
+#            new_loop_events = set()
+#            for loop_inner in old_loops:
+#                if loop != loop_inner:
+#                    if loop.input_places_complete == loop_inner.input_places_complete and loop.output_places_complete == loop_inner.output_places_complete:
+#                        new_loop_nodes = new_loop_nodes.union(set(loop.vertex))
+#                        new_loop_nodes = new_loop_nodes.union(set(loop_inner.vertex))
+#                        new_loop_events = new_loop_events.union(set(loop.events))
+#                        new_loop_events = new_loop_events.union(set(loop_inner.events))
+#                        loops.remove(loop_inner)
+#
+#            if len(new_loop_nodes) > 0:
+#                new_loop = Loop(list(new_loop_nodes), list(new_loop_events), sim_net, loop.name)
+#                new_loop.set_complete_net_input(last_collapsed_left)
+#                new_loop.set_complete_net_output(last_collapsed_right)
+#                new_loop.set_complete_net_loop_nodes(sim_map)
+#                new_loop.set_complete_net_loop_events(events_trans_map)
+#                loops.append(new_loop)
+#                loops.remove(loop)
+#                break
+#        if len(new_loop_nodes) == 0:
+#            not_joinable = True
+#
+#    for loop in loops:
+#        loop.set_nearest_input_complete_net(sim_net, sim_map)
 
     tic = time()
     # Scanning the log to get the data related to decision points
@@ -166,7 +198,8 @@ def main():
             transitions_sequence.append(trans_from_event)
             events_sequence.append(event_name)
             if len(transitions_sequence) > 1:
-                dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches, stored_dicts)
+                #dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches, stored_dicts)
+                dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, None, net, parallel_branches, stored_dicts)
                 dp_events_sequence['Event_{}'.format(i+1)] = dp_dict
 
         # Final update of the current trace (from last event to sink)
@@ -229,7 +262,6 @@ def main():
     for decision_point in decision_points_data.keys():
         print("\nDecision point: {}".format(decision_point))
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
-
         # Replacing ':' with '_' both in the dataset columns and in the attributes map since ':' creates problems
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}

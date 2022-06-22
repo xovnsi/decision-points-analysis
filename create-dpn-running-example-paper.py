@@ -118,9 +118,9 @@ t_D.properties[petri_properties.TRANS_GUARD] = 'skip_everything == False && doc_
 t_D.properties[petri_properties.READ_VARIABLE] = ['doc_is_updated', 'skip_everything']
 t_D.properties[petri_properties.WRITE_VARIABLE] = []
 
-t_G.properties[petri_properties.TRANS_GUARD] = 'skip_everything == True || doc_is_update == True'
-t_G.properties[petri_properties.READ_VARIABLE] = ['doc_is_updated', 'skip_everything']
-t_G.properties[petri_properties.WRITE_VARIABLE] = []
+skip_3.properties[petri_properties.TRANS_GUARD] = 'skip_everything == True || doc_is_updated == True'
+skip_3.properties[petri_properties.READ_VARIABLE] = ['doc_is_updated', 'skip_everything']
+skip_3.properties[petri_properties.WRITE_VARIABLE] = []
 
 t_F.properties[petri_properties.TRANS_GUARD] = 'loan_accepted == "yes"'
 t_F.properties[petri_properties.READ_VARIABLE] = ['loan_accepted']

@@ -68,7 +68,8 @@ def create_dict(st_session_state):
     #breakpoint()
     for name in st_session_state:
         if ('e_' in name or 't_' in name) and name.split('_')[1] not in ['trace', 'event']:
-            dict_conf[name.split('_')[1]] = st.session_state[name]
+            # remove initial 'e_' or 't_' from the name
+            dict_conf["_".join(name.split('_')[1:])] = st.session_state[name]
     return dict_conf
 
 if uploaded_file is not None:
