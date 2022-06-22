@@ -260,6 +260,23 @@ def main():
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
+        # Sampling to get a balanced dataset (in terms of target value)
+        groups = list()
+        grouped_df = dataset.groupby('target')
+        for target_value in dataset['target'].unique():
+            groups.append(grouped_df.get_group(target_value))
+        groups.sort(key=len)
+        # Groups is a list containing a dataset for each target value, ordered by length
+        # If the smaller datasets are less than the 35% of the total dataset length, then apply the sampling
+        if sum(len(group) for group in groups[:-1]) / len(dataset) <= 0.35:
+            samples = list()
+            # Each smaller dataset is appended to the 'samples' list, along with a sampled dataset from the largest one
+            for group in groups[:-1]:
+                samples.append(group)
+                samples.append(groups[-1].sample(len(group)))
+            # The datasets in the 'samples' list are then concatenated together
+            dataset = pd.concat(samples)
+
         # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
         # rules = discover_branching_conditions(dataset)
         # rules = {k: rules[k].replace('_', ':') for k in rules}
@@ -282,10 +299,10 @@ def main():
                 print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
 
                 # Rule extraction without pruning
-                rules = dt.extract_rules()
+                # rules = dt.extract_rules()
 
                 # Rule extraction with pruning
-                #rules = dt.extract_rules_with_pruning(dataset)
+                rules = dt.extract_rules_with_pruning(dataset)
 
                 # Overlapping rules discovery
                 # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
