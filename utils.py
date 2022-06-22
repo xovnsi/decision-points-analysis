@@ -24,7 +24,7 @@ def are_activities_parallel(first_activity, second_activity, parallel_branches) 
     return are_parallel
 
 
-def get_decision_points_and_targets(sequence, loops, net, parallel_branches, stored_dicts) -> [dict, dict]:
+def get_decision_points_and_targets(sequence, loops, net, reachable_activities, stored_dicts) -> [dict, dict]:
     """ Returns a dictionary containing decision points and their targets.
 
     Starting from the last activity in the sequence, the algorithm selects the previous not
@@ -34,21 +34,28 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
 
     # search the first not parallel activity before the last in the sequence
     current_act_name = sequence[-1]
+    current_act = [trans for trans in net.transitions if trans.name == current_act_name][0]
     previous_sequence = sequence[:-1]
     previous_sequence.reverse()
     previous_act_name = None
     for previous in previous_sequence:
+        '''
+        COMMENTED SINCE WE ARE TEMPORARILY USING MANUAL 'REACHABLE_ACTIVITIES' DICTIONARY
         # problems if the loop has some parts that cannot be simplified
         # TODO change the simplifying algo to be sure that all the parallel parts are recognized
         parallel = are_activities_parallel(current_act_name, previous, parallel_branches)
         if not parallel:
             previous_act_name = previous
             break
+        '''
+        previous_act = [trans for trans in net.transitions if trans.name == previous][0]
+        reachable = current_act.label in reachable_activities[previous_act.label]
+        if reachable:
+            previous_act_name = previous_act.name
+            break
     if previous_act_name is None:
         raise Exception("Can't find the previous not parallel activity")
-    # keep the transition objects
-    current_act = [trans for trans in net.transitions if trans.name == current_act_name][0]
-    previous_act = [trans for trans in net.transitions if trans.name == previous_act_name][0]
+
     # TODO reachability becomes useless if _new_get_dp_to_previous_event is used (and also loops)
     reachability = dict()
     # check if the two activities are contained in the same loop and save it if exists
@@ -60,7 +67,7 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     # Extracting the decision points between previous and current activities, if not already computed
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
     if prev_curr_key not in stored_dicts.keys():
-        dp_dict, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
+        dp_dict, _, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
 
         # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
         '''
@@ -96,7 +103,7 @@ def get_decision_points_and_targets(sequence, loops, net, parallel_branches, sto
     return dp_dict, stored_dicts
 
 
-def _new_get_dp_to_previous_event(previous, current, decision_points=None, passed_inn_arcs=None) -> [dict, bool]:
+def _new_get_dp_to_previous_event(previous, current, decision_points=None, decision_points_temp=None, passed_inn_arcs=None) -> [dict, dict, bool]:
     """ Extracts all the decision points that are traversed between two activities (previous and current), reporting the
     decision(s) that has been taken for each of them.
 
@@ -123,10 +130,14 @@ def _new_get_dp_to_previous_event(previous, current, decision_points=None, passe
 
     It returns a 'decision_points' dictionary which contains, for each decision point on every possible path between
     the 'current' activity and the 'previous' activity, the target value(s) to be followed.
+
+    # TODO decision_points_temp is not used at the moment, it was just to start working on handling parallel activities.
     """
 
     if decision_points is None:
         decision_points = dict()
+    if decision_points_temp is None:
+        decision_points_temp = dict()
     if passed_inn_arcs is None:
         passed_inn_arcs = set()
     target_found = False
@@ -147,16 +158,25 @@ def _new_get_dp_to_previous_event(previous, current, decision_points=None, passe
         for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
                 passed_inn_arcs.add(inner_in_arc)
-                decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source,
-                                                                                decision_points, passed_inn_arcs)
+                decision_points, decision_points_temp, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source,
+                                                                                decision_points, decision_points_temp, passed_inn_arcs)
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
                 passed_inn_arcs.remove(inner_in_arc)
                 target_found = target_found or previous_found
+                '''
+                if target_found:
+                    for dp_temp in decision_points_temp.keys():
+                        if dp_temp not in decision_points.keys():
+                            decision_points[dp_temp] = set()
+                        decision_points[dp_temp].update(decision_points_temp[dp_temp])
+                    decision_points_temp.clear()
+                '''
             else:
                 target_found = True
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
+                # for decision_points_temp, comment target_found=True and add dp target to decision_points_temp
 
-    return decision_points, target_found
+    return decision_points, decision_points_temp, target_found
 
 
 def _add_dp_target(decision_points, dp, target, previous_found):
@@ -714,7 +734,7 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
 
         for sink_in_act in sink_in_acts:
             if sink_in_act.label is None:
-                decision_points, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
+                decision_points, _, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
 
                 # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
                 '''

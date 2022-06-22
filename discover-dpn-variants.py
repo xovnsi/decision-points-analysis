@@ -105,37 +105,31 @@ def main():
     trans_events_map = get_map_transitions_events(net)
     events_trans_map = get_map_events_transitions(net)
 
-    # Parallel branches MANUALLY for ROAD FINES PROM
-    parallel_branches = dict()
-    parallel_branches['Create Fine'] = dict()
-    parallel_branches['Create Fine']['branch_1'] = {'skip_1', trans_events_map['Send Appeal to Prefecture']}
-    parallel_branches['Create Fine']['branch_2'] = {trans_events_map['Insert Fine Notification'],
-                                                    trans_events_map['Send Fine'],
-                                                    trans_events_map['Insert Date Appeal to Prefecture'],
-                                                    trans_events_map['Appeal to Judge'],
-                                                    trans_events_map['Receive Result Appeal from Prefecture'],
-                                                    trans_events_map['Notify Result Appeal to Offender'],
-                                                    trans_events_map['Add penalty'],
-                                                    trans_events_map['Send for Credit Collection']}
-    parallel_branches['Create Fine']['branch_3'] = {trans_events_map['Payment'], trans_events_map['Send for Credit Collection']}
-
-    parallel_branches['tauSplit_1'] = dict()
-    parallel_branches['tauSplit_1']['branch_1'] = {trans_events_map['Insert Fine Notification'],
-                                                   trans_events_map['Appeal to Judge'],
-                                                   trans_events_map['Receive Result Appeal from Prefecture'],
-                                                   trans_events_map['Notify Result Appeal to Offender'],
-                                                   trans_events_map['Add penalty']}
-    parallel_branches['tauSplit_1']['branch_2'] = {trans_events_map['Send Fine']}
-    parallel_branches['tauSplit_1']['branch_3'] = {trans_events_map['Insert Date Appeal to Prefecture']}
-
-    parallel_branches['tauSplit_2'] = dict()
-    parallel_branches['tauSplit_2']['branch_1'] = {trans_events_map['Appeal to Judge']}
-    parallel_branches['tauSplit_2']['branch_2'] = {trans_events_map['Receive Result Appeal from Prefecture']}
-    parallel_branches['tauSplit_2']['branch_3'] = {trans_events_map['Notify Result Appeal to Offender'],
-                                                   trans_events_map['Add penalty']}
-    parallel_branches['tauSplit_3'] = dict()
-    parallel_branches['tauSplit_3']['branch_1'] = {trans_events_map['Notify Result Appeal to Offender']}
-    parallel_branches['tauSplit_3']['branch_2'] = {trans_events_map['Add penalty']}
+    # Reachable activities MANUALLY for running-example-paper
+    reachable_activities = dict()
+    if net_name == 'running-example-paper':
+        reachable_activities['Request loan'] = {'Register', 'Check', 'Prepare documents', 'Final check', "Don't authorize", 'Authorize'}
+        reachable_activities['Register'] = {'Check', 'Prepare documents', 'Final check', "Don't authorize", 'Authorize'}
+        reachable_activities['Check'] = {'Check', 'Final check', "Don't authorize", 'Authorize'}
+        reachable_activities['Prepare documents'] = {'Prepare documents', 'Final check', "Don't authorize", 'Authorize'}
+        reachable_activities['Final check'] = {'Check', 'Prepare documents', 'Final check', "Don't authorize", 'Authorize'}
+        reachable_activities["Don't authorize"] = {}
+        reachable_activities['Authorize'] = {}
+    elif net_name == 'Road_Traffic_Fine_Management_Process':
+        reachable_activities['Create Fine'] = {'Send Appeal to Prefecture', 'Payment', 'Insert Fine Notification', 'Send Fine',
+                                               'Insert Date Appeal to Prefecture', 'Appeal to Judge', 'Receive Result Appeal from Prefecture',
+                                               'Notify Result Appeal to Offender', 'Add penalty', 'Send for Credit Collection'}
+        reachable_activities['Send Appeal to Prefecture'] = {}
+        reachable_activities['Payment'] = {'Payment', 'Send for Credit Collection'}
+        reachable_activities['Insert Fine Notification'] = {'Appeal to Judge', 'Receive Result Appeal from Prefecture',
+                                                            'Notify Result Appeal to Offender', 'Add penalty', 'Send for Credit Collection'}
+        reachable_activities['Send Fine'] = {'Send for Credit Collection'}
+        reachable_activities['Insert Date Appeal to Prefecture'] = {'Send for Credit Collection'}
+        reachable_activities['Appeal to Judge'] = {'Send for Credit Collection'}
+        reachable_activities['Receive Result Appeal from Prefecture'] = {'Send for Credit Collection'}
+        reachable_activities['Notify Result Appeal to Offender'] = {'Send for Credit Collection'}
+        reachable_activities['Add penalty'] = {'Send for Credit Collection'}
+        reachable_activities['Send for Credit Collection'] = {}
 
     #    # detect loops and create loop objects
 #    loop_vertex = detect_loops(sim_net)
@@ -199,7 +193,7 @@ def main():
             events_sequence.append(event_name)
             if len(transitions_sequence) > 1:
                 #dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches, stored_dicts)
-                dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, None, net, parallel_branches, stored_dicts)
+                dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, None, net, reachable_activities, stored_dicts)
                 dp_events_sequence['Event_{}'.format(i+1)] = dp_dict
 
         # Final update of the current trace (from last event to sink)
@@ -294,7 +288,7 @@ def main():
                 rules = dt.extract_rules_with_pruning(dataset)
 
                 # Overlapping rules discovery
-                rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
+                # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
 
                 rules = shorten_rules_manually(rules, attributes_map)
                 rules = {k: rules[k].replace('_', ':') for k in rules}
