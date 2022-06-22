@@ -1047,3 +1047,27 @@ def shorten_rules_manually(original_rules, attributes_map):
 
     # Rules for all target classes analyzed: returning the new rules dictionary
     return rules
+
+
+def sampling_dataset(dataset) -> pd.DataFrame:
+    """ Performs sampling to obtain a balanced dataset, in terms of target values. """
+
+    dataset = dataset.copy()
+
+    groups = list()
+    grouped_df = dataset.groupby('target')
+    for target_value in dataset['target'].unique():
+        groups.append(grouped_df.get_group(target_value))
+    groups.sort(key=len)
+    # Groups is a list containing a dataset for each target value, ordered by length
+    # If the smaller datasets are less than the 35% of the total dataset length, then apply the sampling
+    if sum(len(group) for group in groups[:-1]) / len(dataset) <= 0.35:
+        samples = list()
+        # Each smaller dataset is appended to the 'samples' list, along with a sampled dataset from the largest one
+        for group in groups[:-1]:
+            samples.append(group)
+            samples.append(groups[-1].sample(len(group)))
+        # The datasets in the 'samples' list are then concatenated together
+        dataset = pd.concat(samples, ignore_index=True)
+
+    return dataset

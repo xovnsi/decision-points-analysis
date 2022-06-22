@@ -16,7 +16,7 @@ from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from loop_utils import detect_loops
 from loop_utils import simplify_net, delete_composite_loops
-from utils import shorten_rules_manually, discover_overlapping_rules
+from utils import shorten_rules_manually, discover_overlapping_rules, sampling_dataset
 from utils import get_attributes_from_event
 from utils import extract_rules, get_map_transitions_events, get_decision_points_and_targets
 from utils import get_map_events_transitions, get_all_dp_from_event_to_sink
@@ -260,22 +260,8 @@ def main():
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
-        # Sampling to get a balanced dataset (in terms of target value)
-        groups = list()
-        grouped_df = dataset.groupby('target')
-        for target_value in dataset['target'].unique():
-            groups.append(grouped_df.get_group(target_value))
-        groups.sort(key=len)
-        # Groups is a list containing a dataset for each target value, ordered by length
-        # If the smaller datasets are less than the 35% of the total dataset length, then apply the sampling
-        if sum(len(group) for group in groups[:-1]) / len(dataset) <= 0.35:
-            samples = list()
-            # Each smaller dataset is appended to the 'samples' list, along with a sampled dataset from the largest one
-            for group in groups[:-1]:
-                samples.append(group)
-                samples.append(groups[-1].sample(len(group)))
-            # The datasets in the 'samples' list are then concatenated together
-            dataset = pd.concat(samples)
+        # Sampling
+        dataset = sampling_dataset(dataset)
 
         # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
         # rules = discover_branching_conditions(dataset)
@@ -294,9 +280,11 @@ def main():
                 lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
                 f.write('Rows with invisible activity as target: {}/{}\n'.format(str(lf), str(len(dataset))))
 
-                # Predict (just to see the accuracy)
+                # Predict (just to see the accuracy and F1 score)
                 y_pred = dt.predict(dataset.drop(columns=['target']))
                 print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
+                # TODO check if pos_label in F1 score is ok this way
+                print("F1 score: {}".format(metrics.f1_score(dataset['target'], y_pred, pos_label=dataset['target'].unique()[0])))
 
                 # Rule extraction without pruning
                 # rules = dt.extract_rules()
