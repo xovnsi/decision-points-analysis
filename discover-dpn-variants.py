@@ -255,11 +255,14 @@ def main():
                 y_pred = dt.predict(dataset.drop(columns=['target']))
                 print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
 
-                rules = dt.extract_rules()
+                # Rule extraction without pruning
+                # rules = dt.extract_rules()
 
-                # Rule extraction with pruning and overlapping rules discovery
-                # rules = dt.extract_rules_with_pruning(dataset)
-                # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
+                # Rule extraction with pruning
+                rules = dt.extract_rules_with_pruning(dataset)
+
+                # Overlapping rules discovery
+                rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
 
                 rules = shorten_rules_manually(rules, attributes_map)
                 rules = {k: rules[k].replace('_', ':') for k in rules}

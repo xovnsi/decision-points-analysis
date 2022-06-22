@@ -1,18 +1,7 @@
-import pm4py
-import copy
-import numpy as np
-from tqdm import tqdm
-from random import choice
 from pm4py.objects.petri_net.obj import PetriNet, Marking
 from pm4py.objects.petri_net.utils import petri_utils
 from pm4py.objects.petri_net.exporter import exporter as pnml_exporter
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
-from pm4py.objects.petri_net.importer import importer as pnml_importer
-from pm4py.objects.log.exporter.xes import exporter as xes_exporter
-from pm4py.objects.petri_net.data_petri_nets import semantics as dpn_semantics
-from pm4py.objects.petri_net import properties as petri_properties
-from pm4py.objects.petri_net.data_petri_nets.data_marking import DataMarking
-
 # create empty petri net
 net_name = "Road_Traffic_Fine_Management_Process"
 net = PetriNet(net_name)
@@ -77,7 +66,7 @@ net.places.add(p_25)
 net.places.add(p_26)
 net.places.add(p_27)
 
-# create and add trasitions
+# create and add transitions
 t_A = PetriNet.Transition("trans_A", "Create Fine")
 t_B = PetriNet.Transition("trans_B", "Send Appeal to Prefecture")
 t_C = PetriNet.Transition("trans_C", "Insert Fine Notification")
@@ -85,9 +74,9 @@ t_D = PetriNet.Transition("trans_D", "Send Fine")
 t_E = PetriNet.Transition("trans_E", "Insert Date Appeal to Prefecture")
 t_F = PetriNet.Transition("trans_F", "Payment")
 t_G = PetriNet.Transition("trans_G", "Appeal to Judge")
-t_H = PetriNet.Transition("trans_H", "Receive Result Appeal")
+t_H = PetriNet.Transition("trans_H", "Receive Result Appeal from Prefecture")
 t_I = PetriNet.Transition("trans_I", "Notify Result Appeal to Offender")
-t_L = PetriNet.Transition("trans_L", "Add Penalty")
+t_L = PetriNet.Transition("trans_L", "Add penalty")
 t_M = PetriNet.Transition("trans_M", "Send for Credit Collection")
 skip_1 = PetriNet.Transition("skip_1", None)
 skip_2 = PetriNet.Transition("skip_2", None)
