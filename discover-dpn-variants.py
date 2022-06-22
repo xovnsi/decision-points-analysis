@@ -198,7 +198,7 @@ def main():
 
         # Final update of the current trace (from last event to sink)
         transition = [trans for trans in net.transitions if trans.label == event_name][0]
-        dp_events_sequence['End'] = get_all_dp_from_event_to_sink(transition, sink_complete_net)
+        dp_events_sequence['End'] = get_all_dp_from_event_to_sink(transition, sink_complete_net, dp_events_sequence)
 
         for trace in variants[variant]:
             # Storing the trace attributes (if any)
@@ -282,10 +282,10 @@ def main():
                 print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
 
                 # Rule extraction without pruning
-                # rules = dt.extract_rules()
+                rules = dt.extract_rules()
 
                 # Rule extraction with pruning
-                rules = dt.extract_rules_with_pruning(dataset)
+                #rules = dt.extract_rules_with_pruning(dataset)
 
                 # Overlapping rules discovery
                 # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)

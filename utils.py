@@ -96,7 +96,8 @@ def get_decision_points_and_targets(sequence, loops, net, reachable_activities, 
                     print("   - {}".format(events_trans_map[inn_key]))
                 else:
                     print("   - {}".format(inn_key))
-        stored_dicts[' ,'.join([previous_act_name, current_act_name])] = dp_dict
+
+        stored_dicts[prev_curr_key] = dp_dict
     else:
         dp_dict = stored_dicts[prev_curr_key]
 
@@ -715,7 +716,7 @@ def update_dp_list(places_from_event, dp_list) -> list:
     return dp_list
 
 
-def get_all_dp_from_event_to_sink(transition, sink) -> dict:
+def get_all_dp_from_event_to_sink(transition, sink, decision_points_seen) -> dict:
     """ Returns all the decision points in the path from the 'transition' activity to the sink of the Petri net, passing
     only through invisible transitions.
 
@@ -726,6 +727,11 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
     Discovered decision points for all the backward paths are put in the same 'decision_points' dictionary.
     """
 
+    dp_seen = set()
+    for event_key in decision_points_seen:
+        for dp_key in decision_points_seen[event_key]:
+            dp_seen.add(dp_key)
+
     sink_in_acts = [in_arc.source for in_arc in sink.in_arcs]
     if transition in sink_in_acts:
         return dict()
@@ -734,7 +740,7 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
 
         for sink_in_act in sink_in_acts:
             if sink_in_act.label is None:
-                decision_points, _, _ = _new_get_dp_to_previous_event(transition, sink_in_act, decision_points)
+                decision_points, _ = _get_dp_to_previous_event_from_sink(transition, sink_in_act, dp_seen, decision_points)
 
                 # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
                 '''
@@ -752,6 +758,38 @@ def get_all_dp_from_event_to_sink(transition, sink) -> dict:
                 # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
 
         return decision_points
+
+
+def _get_dp_to_previous_event_from_sink(previous, current, dp_seen, decision_points=None, passed_inn_arcs=None) -> [dict, bool]:
+
+    if decision_points is None:
+        decision_points = dict()
+    if passed_inn_arcs is None:
+        passed_inn_arcs = set()
+    target_found = False
+    for in_arc in current.in_arcs:
+        # If decision point already seen in variant, stop following this path
+        if in_arc.source.name in dp_seen:
+            continue
+
+        for inner_in_arc in in_arc.source.in_arcs:
+            # If invisible activity backward, recurse only if 'inner_in_arc' has not been seen in this path yet
+            if inner_in_arc.source.label is None:
+                if inner_in_arc not in passed_inn_arcs:
+                    passed_inn_arcs.add(inner_in_arc)
+                    decision_points, previous_found = _get_dp_to_previous_event_from_sink(previous, inner_in_arc.source,
+                                                                                          dp_seen, decision_points,
+                                                                                          passed_inn_arcs)
+                    decision_points = _add_dp_target(decision_points, in_arc.source, current.name, True)
+                    passed_inn_arcs.remove(inner_in_arc)
+                    target_found = target_found or previous_found
+                else:
+                    decision_points = _add_dp_target(decision_points, in_arc.source, current.name, True)
+            # Otherwise, just add the decision point and its target activity
+            else:
+                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, True)
+
+    return decision_points, target_found
 
 
 def check_if_skip(place) -> bool:
