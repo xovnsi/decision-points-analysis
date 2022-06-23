@@ -1,0 +1,33 @@
+p_1 - SUCCESS
+Rows with invisible activity as target: 47/107
+Accuracy: 1.0
+F1 score: 1.0
+Rules:
+trans_B: is:present = False
+skip_1: is:present = True
+
+p_4 - SUCCESS
+Rows with invisible activity as target: 26/52
+Accuracy: 0.9615384615384616
+F1 score: 0.962962962962963
+Rules:
+trans_D: doc:is:updated = False && skip:everything = False
+skip_3: skip:everything = True || doc:is:updated = True
+
+p_3 - SUCCESS
+Rows with invisible activity as target: 55/134
+Accuracy: 0.7686567164179104
+F1 score: 0.7801418439716312
+Rules:
+trans_C: skip:everything = False && amount > 398.2698426478454
+skip_2: skip:everything = True || amount <= 398.2698426478454
+
+p_8 - SUCCESS
+Rows with invisible activity as target: 37/137
+Accuracy: 1.0
+F1 score: 1.0
+Rules:
+trans_G: loan:accepted = no
+skip_4: loan:accepted = recheck
+trans_F: loan:accepted = yes
+

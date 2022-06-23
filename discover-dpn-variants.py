@@ -282,9 +282,15 @@ def main():
 
                 # Predict (just to see the accuracy and F1 score)
                 y_pred = dt.predict(dataset.drop(columns=['target']))
-                print("Train accuracy: {}".format(metrics.accuracy_score(dataset['target'], y_pred)))
-                # TODO check if pos_label in F1 score is ok this way
-                print("F1 score: {}".format(metrics.f1_score(dataset['target'], y_pred, pos_label=dataset['target'].unique()[0])))
+                accuracy = metrics.accuracy_score(dataset['target'], y_pred)
+                print("Train accuracy: {}".format(accuracy))
+                f.write('Accuracy: {}\n'.format(accuracy))
+                if len(dataset['target'].unique()) > 2:
+                    f1_score = metrics.f1_score(dataset['target'], y_pred, average='weighted')
+                else:
+                    f1_score = metrics.f1_score(dataset['target'], y_pred, pos_label=dataset['target'].unique()[0])
+                print("F1 score: {}".format(f1_score))
+                f.write('F1 score: {}\n'.format(f1_score))
 
                 # Rule extraction without pruning
                 # rules = dt.extract_rules()
