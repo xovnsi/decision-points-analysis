@@ -1,66 +1,87 @@
 p_2 - SUCCESS
 Rows with invisible activity as target: 92766/92766
-Train accuracy: 0.8981954595433672F1 score: 0.9076001878522229Rules:
+Train accuracy: 0.8981954595433672
+F1 score: 0.9076001878522229
+Rules:
 skip_2: points <= 1.0 && totalPaymentAmount > 0.0
 tauSplit_1: points > 1.0 && totalPaymentAmount > 0.0 || totalPaymentAmount <= 0.0
 
 p_1 - SUCCESS
 Rows with invisible activity as target: 4141/8282
-Train accuracy: 0.7286887225307896F1 score: 0.7856120599179467Rules:
+Train accuracy: 0.7286887225307896
+F1 score: 0.7856120599179467
+Rules:
 skip_1: totalPaymentAmount > 0.0
 trans_B: totalPaymentAmount <= 0.0
 
 p_3 - SUCCESS
 Rows with invisible activity as target: 47536/47536
-Train accuracy: 0.7994572534500168F1 score: 0.7758786881391795Rules:
+Train accuracy: 0.7994572534500168
+F1 score: 0.7758786881391795
+Rules:
 skip_3: lastSent = P && dismissal = NIL || org:resource = 563 && dismissal = NIL && amount > 39.36 || org:resource = 32 && expense > 6.71 || dismissal = NIL && expense > 6.71 || dismissal = NIL && amount > 36.0 || org:resource = 557 && dismissal = NIL && amount > 41.0 || dismissal = NIL && expense <= 13.5 && expense > 6.46 || dismissal = NIL && expense <= 13.5 && amount > 38.0 || org:resource = 816 && dismissal = NIL && expense > 6.46 || lastSent = P && dismissal = NIL && expense <= 13.5 || org:resource = 820 && dismissal = NIL || expense <= 13.5 && expense > 10.0 || dismissal = NIL && expense <= 6.46 || dismissal = NIL && expense <= 13.5 || org:resource = 846 && expense > 6.46 || dismissal = NIL && expense <= 6.71 && expense > 6.46 || org:resource = 807 && dismissal = NIL || org:resource = 562 && dismissal = NIL && amount > 39.0 || dismissal = NIL && amount > 44.0 || amount > 25.0 && expense > 6.46 || org:resource = 560 && dismissal = NIL && amount > 39.0 || org:resource = 704 && expense <= 13.5 || org:resource = 554 && dismissal = NIL && amount > 47.0 || org:resource = 835 && amount > 32.0 || org:resource = 30 && dismissal = NIL && expense > 6.71 || org:resource = 836 && amount > 32.0 || dismissal = NIL && expense > 6.46 || org:resource = 802 && dismissal = NIL || org:resource = 0 && dismissal = NIL && expense <= 13.5 && amount > 65.0 || org:resource = 857 && dismissal = NIL && amount > 38.0 || dismissal = NIL && amount <= 286.5 && expense <= 13.5 && expense > 6.71 || org:resource = 829 && dismissal = NIL && expense <= 13.5 || org:resource = 555 && dismissal = NIL && amount > 37.56 || org:resource = 559 && dismissal = NIL && amount > 39.36 || org:resource = 849 && expense > 6.46 || org:resource = 552 && dismissal = NIL && amount > 37.56 || dismissal = NIL && expense > 13.5 || expense <= 13.5 && expense > 6.46 || org:resource = 564 && dismissal = NIL && amount > 71.5 || org:resource = 34 && expense <= 13.5 || dismissal = NIL && expense <= 10.0 || expense <= 11.0 && expense > 6.71 || org:resource = 818 && dismissal = NIL || org:resource = 541 && dismissal = NIL && amount > 38.0 || org:resource = 29 && dismissal = NIL && expense > 6.71 || org:resource = 825 && dismissal = NIL || org:resource = 558 && dismissal = NIL && amount > 39.0 || amount <= 47.0 && expense > 6.46 || dismissal = NIL && amount > 41.0 || org:resource = 565 && amount > 44.0 || org:resource = 831 && dismissal = NIL && amount > 65.0 || expense <= 13.5 && expense > 6.71 || dismissal = NIL && amount > 47.0 || org:resource = 556 && dismissal = NIL && amount > 38.0 || dismissal = NIL && expense <= 11.0 && expense > 6.71 || dismissal = NIL && amount > 38.0 || org:resource = 546 && dismissal = NIL && expense > 11.0 || org:resource = 817 && dismissal = NIL || org:resource = 568 && amount > 41.0 || dismissal = NIL && expense <= 13.5 && expense > 6.71 || org:resource one of [27, 32, 33, 808, 811, 813, 826] || dismissal = NIL || expense <= 13.5 || expense > 6.71
 skip_4: org:resource = 564 && amount <= 71.5 && expense <= 13.5 || org:resource = 566 && amount <= 44.0 && expense > 6.46 || amount <= 37.56 && expense <= 13.5 || amount <= 32.0 && expense > 6.46 || dismissal = NIL && expense > 6.71 || dismissal = NIL && expense <= 13.5 && expense > 11.88 || org:resource = 557 && amount <= 41.0 && expense <= 13.5 || dismissal = NIL && expense <= 13.5 && expense > 6.46 || org:resource = 831 && amount <= 65.0 && expense <= 13.5 || org:resource = 552 && amount <= 37.56 && expense <= 13.5 || amount <= 47.0 && expense <= 13.5 || org:resource = 558 && amount <= 39.0 && expense <= 13.5 || dismissal = NIL && expense <= 6.46 || dismissal = NIL && expense <= 13.5 || org:resource = 565 && amount <= 44.0 && expense > 6.46 || org:resource = 568 && amount <= 41.0 && expense > 6.46 || org:resource = 541 && amount <= 38.0 && expense <= 13.5 && expense > 6.71 || dismissal = NIL && amount <= 65.0 && expense <= 13.5 && expense > 6.71 || dismissal = NIL && expense > 6.46 || org:resource = 560 && amount <= 39.0 && expense <= 13.5 || amount <= 25.0 && expense > 6.71 || org:resource = 561 && dismissal = NIL && expense <= 13.5 || org:resource = 41 && amount > 343.35 || org:resource = 559 && amount <= 39.36 && expense <= 13.5 || vehicleClass = C && expense > 6.46 || dismissal = NIL && amount <= 47.0 && expense <= 13.5 && expense > 6.71 || dismissal = NIL && expense > 13.5 || expense <= 13.5 && expense > 6.46 || org:resource = 34 && expense <= 13.5 || amount <= 23.0 && expense <= 13.5 && expense > 6.71 || dismissal = NIL && amount <= 36.0 && expense <= 13.5 && expense > 6.71 || org:resource = 556 && amount <= 38.0 && expense <= 13.5 || expense <= 11.0 && expense > 6.71 || dismissal = NIL && expense <= 13.5 && amount > 31.3 && expense > 6.71 || org:resource = 49 && expense <= 13.5 && expense > 6.46 || org:resource = 29 && dismissal = NIL && expense > 6.71 || org:resource = 857 && amount <= 38.0 && expense <= 13.5 || org:resource = 49 && dismissal = NIL && expense <= 13.5 && expense > 6.46 || org:resource = 858 && amount <= 38.0 && expense > 6.46 || org:resource = 563 && amount <= 39.36 && expense > 6.46 || org:resource = 562 && amount <= 39.0 && expense > 6.46 || dismissal = NIL && amount <= 32.0 && expense <= 13.5 && expense > 6.71 || org:resource = 851 && amount <= 38.0 && expense > 6.46 || expense <= 13.5 && expense > 6.71 || org:resource = 567 && amount <= 41.0 && expense > 6.46 || dismissal = NIL && expense <= 13.5 && expense > 6.71 || dismissal one of [#, 5, A, C, D, G, I, N, NIL, T, U, V] || vehicleClass = M || expense <= 13.5 || expense > 6.71
 
 p_12 - SUCCESS
 Rows with invisible activity as target: 15772/15772
-Train accuracy: 0.8903753487192493F1 score: 0.8981923099570159Rules:
+Train accuracy: 0.8903753487192493
+F1 score: 0.8981923099570159
+Rules:
 skip_7: totalPaymentAmount > 0.0 && amount > 39.35
 skip_8: amount <= 39.35 || totalPaymentAmount <= 0.0
 
 p_5 - SUCCESS
 Rows with invisible activity as target: 70510/150370
-Train accuracy: 0.8659174037374476F1 score: 0.8337894875684233Rules:
+Train accuracy: 0.8659174037374476
+F1 score: 0.8337894875684233
+Rules:
 trans_C: totalPaymentAmount <= 18.0
 skip_5: totalPaymentAmount <= 18.0 || totalPaymentAmount > 18.0
 
 p_13 - SUCCESS
 Rows with invisible activity as target: 555/1110
-Train accuracy: 0.8972972972972973F1 score: 0.9043624161073824Rules:
+Train accuracy: 0.8972972972972973
+F1 score: 0.9043624161073824
+Rules:
 trans_G: totalPaymentAmount <= 0.0
 skip_9: totalPaymentAmount <= 0.0 || totalPaymentAmount > 0.0
 
 p_15 - SUCCESS
 Rows with invisible activity as target: 141020/141020
-Train accuracy: 0.6754502907389023F1 score: 0.6857758798247903Rules:
+Train accuracy: 0.6754502907389023
+F1 score: 0.6857758798247903
+Rules:
 skip_11: expense <= 13.5 && totalPaymentAmount > 18.42 || expense <= 12.91 && expense > 11.0 && totalPaymentAmount > 18.42 || expense <= 12.91 && expense > 11.0 || expense <= 13.5 && expense > 11.0 || expense > 10.0 && totalPaymentAmount > 18.42 || expense <= 11.0 && expense > 10.0 || expense > 13.5 && totalPaymentAmount > 18.42 || expense > 11.0 && totalPaymentAmount > 18.42 || expense <= 10.0 && totalPaymentAmount > 18.42 || org:resource = 810 && expense > 10.0 || org:resource = 828 && expense > 10.0 || expense <= 0.0 || totalPaymentAmount > 18.42
 tauSplit_3: org:resource = 829 && expense > 10.0 || expense <= 12.91 && expense > 11.0 && totalPaymentAmount > 18.42 || totalPaymentAmount <= 18.42 && expense > 4.96 || org:resource = 826 && expense > 10.0 || org:resource = 802 && expense > 10.0 || expense > 10.0 && totalPaymentAmount > 18.42 || expense <= 10.0 && totalPaymentAmount > 18.42 || org:resource = 29 && expense > 11.0 || expense <= 4.96
 
 p_19 - SUCCESS
 Rows with invisible activity as target: 896/1792
-Train accuracy: 0.9715401785714286F1 score: 0.971900826446281Rules:
+Train accuracy: 0.9715401785714286
+F1 score: 0.971900826446281
+Rules:
 skip_12: expense <= 11.88 && totalPaymentAmount <= 0.0 && amount > 39.0 || amount <= 39.0 && amount > 18.78 || expense <= 11.88 && expense > 6.71 || expense <= 11.88 && totalPaymentAmount <= 0.0 || amount <= 39.0 || totalPaymentAmount > 0.0
 trans_I: expense <= 28.0 && totalPaymentAmount <= 0.0 && expense > 22.2 || totalPaymentAmount <= 0.0 && expense > 11.88 && amount > 39.0 || expense <= 6.71 && totalPaymentAmount <= 0.0 && amount > 39.0 || totalPaymentAmount <= 0.0 && amount > 39.0 || totalPaymentAmount <= 0.0
 
 p_14 - SUCCESS
 Rows with invisible activity as target: 999/1998
-Train accuracy: 0.970970970970971F1 score: 0.9715127701375246Rules:
+Train accuracy: 0.970970970970971
+F1 score: 0.9715127701375246
+Rules:
 skip_10: amount <= 38.0 && totalPaymentAmount <= 0.0 || expense <= 11.62 && amount <= 38.0 || expense <= 11.88 && amount <= 38.0 || expense <= 11.88 && totalPaymentAmount <= 0.0 || amount <= 38.0 && amount > 32.8 || amount <= 137.55 && expense <= 11.88 && expense > 0.0 || expense <= 25.31 && amount <= 38.0 && totalPaymentAmount <= 0.0 || totalPaymentAmount <= 0.0 || expense <= 11.88 || amount <= 38.0 || totalPaymentAmount > 0.0
 trans_H: totalPaymentAmount <= 0.0 && expense > 14.25 || totalPaymentAmount <= 0.0 && expense > 11.62 || dismissal = NIL && totalPaymentAmount <= 0.0 && amount > 137.55 || dismissal = NIL && totalPaymentAmount <= 0.0 || totalPaymentAmount <= 0.0 && expense > 11.88 && amount > 38.0 || totalPaymentAmount <= 0.0 && amount > 38.0 || totalPaymentAmount <= 0.0 || expense > 25.31
 
 p_7 - SUCCESS
 Rows with invisible activity as target: 4188/8376
-Train accuracy: 0.8804918815663801F1 score: 0.8929983965793693Rules:
+Train accuracy: 0.8804918815663801
+F1 score: 0.8929983965793693
+Rules:
 skip_6: totalPaymentAmount > 0.0
 trans_E: totalPaymentAmount <= 0.0
 
 p_26 - SUCCESS
 Rows with invisible activity as target: 91357/150370
-Train accuracy: 0.9613885748487065F1 score: 0.9680981999604388Rules:
+Train accuracy: 0.9613885748487065
+F1 score: 0.9680981999604388
+Rules:
 trans_M: dismissal = NIL && totalPaymentAmount <= 18.42 && amount > 39.35 || expense <= 13.0 && amount <= 39.35 && totalPaymentAmount <= 18.42 && amount > 36.0 || dismissal = @
 skip_13: expense <= 13.0 && amount <= 39.35 && totalPaymentAmount <= 18.42 && amount > 36.0 || amount <= 39.35 && expense > 13.0 && amount > 36.0 || dismissal = NIL && totalPaymentAmount <= 18.42 && amount > 39.35 || dismissal one of [#, 5, A, D, G, I, N, T, U, V] || amount <= 36.0 || amount > 36.0 || totalPaymentAmount > 18.42
-
