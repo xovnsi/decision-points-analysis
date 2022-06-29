@@ -67,7 +67,13 @@ def get_decision_points_and_targets(sequence, loops, net, reachable_activities, 
     # Extracting the decision points between previous and current activities, if not already computed
     prev_curr_key = ' ,'.join([previous_act_name, current_act_name])
     if prev_curr_key not in stored_dicts.keys():
-        dp_dict, _, _ = _new_get_dp_to_previous_event(previous_act_name, current_act)
+        # ---------- DEBUGGING ----------
+        events_trans_map = get_map_events_transitions(net)
+        print("\nPrevious event: {}".format(previous_act.label))
+        print("Current event: {}".format(current_act.label))
+        # ---------- DEBUGGING ----------
+
+        dp_dict, _ = _new_get_dp_to_previous_event(sequence, current_act)
 
         # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
         '''
@@ -84,11 +90,8 @@ def get_decision_points_and_targets(sequence, loops, net, reachable_activities, 
         '''
         # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
 
-        # TODO this is just for debugging
-        print("\nPrevious event: {}".format(previous_act.label))
-        print("Current event: {}".format(current_act.label))
+        # ---------- DEBUGGING ----------
         print("DPs")
-        events_trans_map = get_map_events_transitions(net)
         for key in dp_dict.keys():
             print(" - {}".format(key))
             for inn_key in dp_dict[key]:
@@ -96,6 +99,7 @@ def get_decision_points_and_targets(sequence, loops, net, reachable_activities, 
                     print("   - {}".format(events_trans_map[inn_key]))
                 else:
                     print("   - {}".format(inn_key))
+        # ---------- DEBUGGING ----------
 
         stored_dicts[prev_curr_key] = dp_dict
     else:
@@ -104,7 +108,8 @@ def get_decision_points_and_targets(sequence, loops, net, reachable_activities, 
     return dp_dict, stored_dicts
 
 
-def _new_get_dp_to_previous_event(previous, current, decision_points=None, decision_points_temp=None, passed_inn_arcs=None) -> [dict, dict, bool]:
+def _new_get_dp_to_previous_event(previous_sequence, current, decision_points=None, passed_inn_arcs=None) -> [dict, bool]:
+    # TODO change documentation since now we are using previous_sequence
     """ Extracts all the decision points that are traversed between two activities (previous and current), reporting the
     decision(s) that has been taken for each of them.
 
@@ -131,14 +136,10 @@ def _new_get_dp_to_previous_event(previous, current, decision_points=None, decis
 
     It returns a 'decision_points' dictionary which contains, for each decision point on every possible path between
     the 'current' activity and the 'previous' activity, the target value(s) to be followed.
-
-    # TODO decision_points_temp is not used at the moment, it was just to start working on handling parallel activities.
     """
 
     if decision_points is None:
         decision_points = dict()
-    if decision_points_temp is None:
-        decision_points_temp = dict()
     if passed_inn_arcs is None:
         passed_inn_arcs = set()
     target_found = False
@@ -152,32 +153,27 @@ def _new_get_dp_to_previous_event(previous, current, decision_points=None, decis
                 inner_in_arcs_names.add(inner_in_arc.source.name)
 
         # Base case: the target activity (previous) is one of the activities immediately before the current one
-        if previous in inner_in_arcs_names:
+        if previous_sequence[-2] in inner_in_arcs_names:
             target_found = True
             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
+            continue
         # Recursive case: follow every invisible activity backward
         for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
                 passed_inn_arcs.add(inner_in_arc)
-                decision_points, decision_points_temp, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source,
-                                                                                decision_points, decision_points_temp, passed_inn_arcs)
+                decision_points, previous_found = _new_get_dp_to_previous_event(previous_sequence, inner_in_arc.source,
+                                                                                decision_points, passed_inn_arcs)
+                # TODO check if this is correct and, in case, condense the conditions
+                test = True if len(current.out_arcs) > 1 else False
+                previous_found = target_found or previous_found or test
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
                 passed_inn_arcs.remove(inner_in_arc)
                 target_found = target_found or previous_found
-                '''
-                if target_found:
-                    for dp_temp in decision_points_temp.keys():
-                        if dp_temp not in decision_points.keys():
-                            decision_points[dp_temp] = set()
-                        decision_points[dp_temp].update(decision_points_temp[dp_temp])
-                    decision_points_temp.clear()
-                '''
             else:
                 target_found = True
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
-                # for decision_points_temp, comment target_found=True and add dp target to decision_points_temp
 
-    return decision_points, decision_points_temp, target_found
+    return decision_points, target_found
 
 
 def _add_dp_target(decision_points, dp, target, previous_found):
