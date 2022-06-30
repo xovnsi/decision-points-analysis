@@ -193,7 +193,7 @@ def main():
             events_sequence.append(event_name)
             if len(transitions_sequence) > 1:
                 #dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches, stored_dicts)
-                dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, None, net, reachable_activities, stored_dicts)
+                dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, None, net, reachable_activities, stored_dicts, dp_events_sequence)
                 dp_events_sequence['Event_{}'.format(i+1)] = dp_dict
 
         # Final update of the current trace (from last event to sink)
