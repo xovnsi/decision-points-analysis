@@ -298,6 +298,10 @@ def main():
                 # Rule extraction with pruning
                 rules = dt.extract_rules_with_pruning(dataset)
 
+                # Alternative pruning (directly on tree)
+                # dt.pessimistic_pruning(dataset)
+                # rules = dt.extract_rules()
+
                 # Overlapping rules discovery
                 # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
 

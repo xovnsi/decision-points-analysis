@@ -1,3 +1,5 @@
+import copy
+
 from decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rules_from_leaf
 from Nodes import DecisionNode, LeafNode
 from typing import Union
@@ -7,6 +9,7 @@ import scipy.stats as stats
 from operator import itemgetter
 from tqdm import tqdm
 import multiprocessing
+from statsmodels.stats.proportion import proportion_confint
 
 
 class DecisionTree(object):
@@ -518,3 +521,83 @@ class DecisionTree(object):
 
         table_df = pd.DataFrame.from_dict(table, orient='index')
         return table_df
+
+    def pessimistic_pruning(self, data_in) -> None:
+        """ Prunes the decision tree, substituting subtrees with leaves when possible.
+
+        Given a subtree of the decision tree, computes the number of predicted errors keeping the subtree as it is.
+        Then, for each target value among its leaves, computes the number of predicted errors substituting the subtree
+        with a leaf having that target value. If the number of predicted errors after the substitution is lower than
+        the one before the substitution, then replaces the subtree with a leaf having as target value the one which
+        gave the smallest number of predicted errors.
+        The procedure is repeated for every subtree in the decision tree, starting from the bottom. Every time the
+        decision tree is pruned, the method is called recursively on the pruned decision tree in order to re-evaluate it
+        for possibly further pruning.
+
+        Method is taken by "Pruning Decision Trees" in "C4.5: Programs for Machine Learning" by J. R. Quinlan (1993).
+        """
+
+        subtrees_to_prune = set()
+        subtrees_with_only_leaves = [node for node in self.get_nodes() if isinstance(node, DecisionNode) and
+                                     node.get_label() != 'root' and
+                                     all(isinstance(child, LeafNode) for child in node.get_childs())]
+
+        for subtree in subtrees_with_only_leaves:
+            target_values = set()
+            subtree_errors = 0
+            # Number of predicted errors of the subtree
+            for leaf in subtree.get_childs():
+                subtree_errors += self.compute_number_predicted_errors(leaf, leaf._label_class, data_in)
+                target_values.add(leaf._label_class)
+
+            # Number of predicted errors replacing the subtree with a leaf for every target value among its children
+            tests_results = dict()
+            for target_value in target_values:
+                tests_results[target_value] = self.compute_number_predicted_errors(subtree, target_value, data_in)
+
+            # Storing the subtree if it needs to be pruned
+            min_tests_item = min(tests_results.items(), key=lambda x: x[1])
+            if min_tests_item[1] < subtree_errors:
+                subtrees_to_prune.add((subtree, min_tests_item[0]))
+
+        # Pruning the stored subtrees
+        for subtree, target_value in subtrees_to_prune:
+            self.delete_node(subtree)
+            node = LeafNode({target_value: len(data_in[data_in['target'] == target_value])}, subtree.get_label(), subtree.get_level())
+            self.add_node(node, subtree.get_parent_node())
+
+        # Recursion only if at least one subtree has been pruned
+        if subtrees_to_prune:
+            self.pessimistic_pruning(data_in)
+
+    def compute_number_predicted_errors(self, node, target_value, data_in) -> float:
+        """ Computes the number of predicted errors given a node, a target value and the training set.
+
+        First, it computes the number N of training instances covered by that node of the decision tree. Then, it
+        isolates the ones E that have a target value different from the one prescribed by the node. Finally, it computes
+        tha number of predicted errors of that node. This is computed as the product between N and the upper bound of a
+        binomial distribution with N trials and E observed events.
+        """
+
+        branch_conditions = extract_rules_from_leaf(node)
+
+        query = ""
+        for r in branch_conditions:
+            r_attr, r_comp, r_value = r.split(' ')
+            query += r_attr
+            if r_comp == '=':
+                query += ' == '
+            else:
+                query += ' ' + r_comp + ' '
+            if data_in.dtypes[r_attr] in ['float64', 'bool']:
+                query += r_value
+            else:
+                query += '"' + r_value + '"'
+            if r != branch_conditions[-1]:
+                query += ' & '
+
+        node_instances = data_in.query(query)
+        wrong_instances = node_instances[node_instances['target'] != target_value]
+
+        # TODO In some cases the upper bound is 'nan'
+        return len(node_instances) * proportion_confint(len(wrong_instances), len(node_instances), method='beta', alpha=0.50)[1]
