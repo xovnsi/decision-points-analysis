@@ -557,7 +557,8 @@ class DecisionTree(object):
 
             # Storing the subtree if it needs to be pruned
             min_tests_item = min(tests_results.items(), key=lambda x: x[1])
-            if min_tests_item[1] < subtree_errors:
+            # TODO added or conditions: in case of 'nan', then prune
+            if min_tests_item[1] < subtree_errors or np.isnan(subtree_errors) or np.isnan(min_tests_item[1]):
                 subtrees_to_prune.add((subtree, min_tests_item[0]))
 
         # Pruning the stored subtrees
@@ -599,5 +600,5 @@ class DecisionTree(object):
         node_instances = data_in.query(query)
         wrong_instances = node_instances[node_instances['target'] != target_value]
 
-        # TODO Sometimes both len are 0 so the upper bound is 'nan'
+        # TODO Sometimes both len are 0 so the upper bound is 'nan' (this also raises a warning since division by 0)
         return len(node_instances) * proportion_confint(len(wrong_instances), len(node_instances), method='beta', alpha=0.50)[1]
