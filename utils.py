@@ -166,8 +166,8 @@ def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_poi
         # Any previous activity is reached - no 'continue'
         if any(act for act in trans_sequence[:-1] if act in inner_in_arcs_names):
             target_found = True
-            test = True if in_arc.source.name not in dp_seen else False
-            decision_points = _add_dp_target(decision_points, in_arc.source, current.name, test)
+            add_dp = in_arc.source.name not in dp_seen or len(current.out_arcs) > 1
+            decision_points = _add_dp_target(decision_points, in_arc.source, current.name, add_dp)
             #continue
         # Recursive case: follow every invisible activity backward
         for inner_in_arc in inner_inv_acts:
