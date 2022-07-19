@@ -15,7 +15,7 @@ from statsmodels.stats.proportion import proportion_confint
 class DecisionTree(object):
     """ Implements a decision tree with C4.5 algorithm """
 
-    def __init__(self, attributes_map, max_depth=20):
+    def __init__(self, attributes_map, max_depth=7):
         self._nodes = set()
         self._root_node = None
         self.max_depth = max_depth
@@ -599,5 +599,5 @@ class DecisionTree(object):
         node_instances = data_in.query(query)
         wrong_instances = node_instances[node_instances['target'] != target_value]
 
-        # TODO In some cases the upper bound is 'nan'
+        # TODO Sometimes both len are 0 so the upper bound is 'nan'
         return len(node_instances) * proportion_confint(len(wrong_instances), len(node_instances), method='beta', alpha=0.50)[1]

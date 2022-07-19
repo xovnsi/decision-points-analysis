@@ -155,15 +155,15 @@ def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_poi
             else:
                 inner_in_arcs_names.add(inner_in_arc.source.name)
 
-        # TODO check if this method is correct and, in case, condense the conditions
+        # TODO Not too general...
 
-        # Looping and previous activity (-2) is reached
+        # Previous activity (-2) is reached
         if trans_sequence[-2] in inner_in_arcs_names:
             target_found = True
             #test = True if in_arc.source.name not in dp_seen else False
             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
             continue
-        # Not looping and any previous activity is reached
+        # Any previous activity is reached - no 'continue'
         if any(act for act in trans_sequence[:-1] if act in inner_in_arcs_names):
             target_found = True
             test = True if in_arc.source.name not in dp_seen else False
@@ -173,17 +173,16 @@ def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_poi
         for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
                 passed_inn_arcs.add(inner_in_arc)
-                decision_points, previous_found = _new_get_dp_to_previous_event(trans_sequence, inner_in_arc.source, dp_seen,
-                                                                                decision_points, passed_inn_arcs)
-                test = True if in_arc.source.name not in dp_seen or (in_arc.source.name in dp_seen and trans_sequence[-1] in trans_sequence[:-1]) else False
-                test_2 = previous_found and test
-                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, test_2)
+                decision_points, previous_found = _new_get_dp_to_previous_event(trans_sequence, inner_in_arc.source,
+                                                                                dp_seen, decision_points, passed_inn_arcs)
                 passed_inn_arcs.remove(inner_in_arc)
+                add_dp = in_arc.source.name not in dp_seen or (in_arc.source.name in dp_seen and trans_sequence[-1] in trans_sequence[:-1])
+                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found and add_dp)
                 target_found = target_found or previous_found
             else:
                 target_found = True
-                test = True if in_arc.source.name not in dp_seen or (in_arc.source.name in dp_seen and trans_sequence[-1] in trans_sequence[:-1]) else False
-                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, test)
+                add_dp = in_arc.source.name not in dp_seen or (in_arc.source.name in dp_seen and trans_sequence[-1] in trans_sequence[:-1])
+                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, add_dp)
 
     return decision_points, target_found
 
