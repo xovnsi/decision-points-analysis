@@ -155,48 +155,54 @@ def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_poi
             else:
                 inner_in_arcs_names.add(inner_in_arc.source.name)
 
-        # TODO Not too general...
-
-        # Previous activity (-2) is reached
+        # Immediately previous activity is reached -> Set target_found to True and add dp - continue
         if trans_sequence[-2] in inner_in_arcs_names:
             target_found = True
-            #test = True if in_arc.source.name not in dp_seen else False
             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
             continue
-        # Any previous activity is reached - no 'continue'
-        if any(act for act in trans_sequence[:-1] if act in inner_in_arcs_names):
+
+        # Any previous activity is reached -> Set target_found to True and add dp only if not seen yet - no 'continue'
+        elif any(act in inner_in_arcs_names for act in trans_sequence[:-2]):
             target_found = True
-            add_dp = in_arc.source.name not in dp_seen or len(current.out_arcs) > 1
-            decision_points = _add_dp_target(decision_points, in_arc.source, current.name, add_dp)
-            #continue
+            decision_points = _add_dp_target(decision_points, in_arc.source, current.name,
+                                             in_arc.source.name not in dp_seen or
+                                             any(act in inner_in_arcs_names for act in trans_sequence[:-2] if trans_sequence[:-2].count(act) > 1))
+                                            # Last or condition added because we can have more than one 'Payment' activities but trans_sequence[-2]
+                                            # could be another activity. In that case, when we see 'Send for Credit Collection' we should add 'p_12'
+                                            # with 'skip_8' as target. Without this additional condition, 'p_12' was already seen before so it was not
+                                            # added. Instead, now we add it because 'Payment' has been seen more than once during the variant.
+                                            # Not perfect since there could be an invisible activity as an alternative to 'Payment': in that case, we
+                                            # only see 'Payment' once but the loop has been done (passing through the invisible activity).
+
+        # True if dp not seen yet, or seen but looping ('^' is the logical xor operator)
+        add_dp = (in_arc.source.name not in dp_seen) ^ (trans_sequence[-1] in trans_sequence[:-1])
         # Recursive case: follow every invisible activity backward
         for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
                 passed_inn_arcs.add(inner_in_arc)
                 decision_points, previous_found = _new_get_dp_to_previous_event(trans_sequence, inner_in_arc.source,
-                                                                                dp_seen, decision_points, passed_inn_arcs)
+                                                                                dp_seen, decision_points,
+                                                                                passed_inn_arcs)
                 passed_inn_arcs.remove(inner_in_arc)
-                add_dp = in_arc.source.name not in dp_seen or (in_arc.source.name in dp_seen and trans_sequence[-1] in trans_sequence[:-1])
-                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found and add_dp)
+                decision_points = _add_dp_target(decision_points, in_arc.source, current.name,
+                                                 previous_found and add_dp)
                 target_found = target_found or previous_found
             else:
                 target_found = True
-                add_dp = in_arc.source.name not in dp_seen or (in_arc.source.name in dp_seen and trans_sequence[-1] in trans_sequence[:-1])
                 decision_points = _add_dp_target(decision_points, in_arc.source, current.name, add_dp)
 
     return decision_points, target_found
 
 
-def _add_dp_target(decision_points, dp, target, previous_found):
+def _add_dp_target(decision_points, dp, target, add_dp) -> dict:
     """ Adds the decision point and its target activity to the 'decision_points' dictionary.
 
-    Given the 'decision_points' dictionary, the place 'dp' (in_arc.source) and the target activity name (current.name),
-    adds the target activity name to the set of targets related to the decision point. If not presents, adds the
-    decision point to the dictionary keys first.
-    This is done if the place is an actual decision point, and if the boolean variable 'previous_found' is True.
+    Given the 'decision_points' dictionary, the place 'dp' and the target activity name, adds the target activity name
+    to the set of targets related to the decision point. If not present, adds the decision point to the dictionary keys
+    first. This is done if the place is an actual decision point, and if the boolean variable 'add_dp' is True.
     """
 
-    if previous_found and len(dp.out_arcs) > 1:
+    if add_dp and len(dp.out_arcs) > 1:
         if dp.name in decision_points.keys():
             decision_points[dp.name].add(target)
         else:
