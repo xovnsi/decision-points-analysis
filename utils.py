@@ -24,7 +24,7 @@ def are_activities_parallel(first_activity, second_activity, parallel_branches) 
     return are_parallel
 
 
-def get_decision_points_and_targets(sequence, loops, net, reachable_activities, stored_dicts, decision_points_seen) -> [dict, dict]:
+def get_decision_points_and_targets(sequence, net, stored_dicts) -> [dict, dict]:
     """ Returns a dictionary containing decision points and their targets.
 
     Starting from the last activity in the sequence, the algorithm selects the previous not
@@ -32,87 +32,39 @@ def get_decision_points_and_targets(sequence, loops, net, reachable_activities, 
     encountered on the path leading to the last activity in the sequence.
     """
 
-    # search the first not parallel activity before the last in the sequence
+    # Current activity
     current_act = [trans for trans in net.transitions if trans.name == sequence[-1]][0]
-    '''
-    previous_sequence = sequence[:-1]
-    previous_sequence.reverse()
-    previous_act_name = None
-    for previous in previous_sequence:
-        # problems if the loop has some parts that cannot be simplified
-        # TODO change the simplifying algo to be sure that all the parallel parts are recognized
-        parallel = are_activities_parallel(current_act_name, previous, parallel_branches)
-        if not parallel:
-            previous_act_name = previous
+
+    # Backward decision points search towards the previous reachable activity
+    dp_dict = dict()
+    for previous_act in reversed(sequence[:-1]):
+        prev_curr_key = ', '.join([previous_act, current_act.name])
+        if prev_curr_key not in stored_dicts.keys():
+            dp_dict, event_found = _new_get_dp_to_previous_event(previous_act, current_act)
+            if event_found:
+                # ------------------------------ DEBUGGING ------------------------------
+                events_trans_map = get_map_events_transitions(net)
+                print("\nPrevious event: {}".format(events_trans_map[previous_act]))
+                print("Current event: {}".format(current_act.label))
+                print("DPs")
+                for key in dp_dict.keys():
+                    print(" - {}".format(key))
+                    for inn_key in dp_dict[key]:
+                        if inn_key in events_trans_map.keys():
+                            print("   - {}".format(events_trans_map[inn_key]))
+                        else:
+                            print("   - {}".format(inn_key))
+                # ------------------------------ DEBUGGING ------------------------------
+                stored_dicts[prev_curr_key] = dp_dict
+                break
+        else:
+            dp_dict = stored_dicts[prev_curr_key]
             break
-
-        previous_act = [trans for trans in net.transitions if trans.name == previous][0]
-        reachable = current_act.label in reachable_activities[previous_act.label]
-        if reachable:
-            previous_act_name = previous_act.name
-            break
-    if previous_act_name is None:
-        raise Exception("Can't find the previous not parallel activity")
-
-    # TODO reachability becomes useless if _new_get_dp_to_previous_event is used (and also loops)
-    reachability = dict()
-    # check if the two activities are contained in the same loop and save it if exists
-#    for loop in loops:
-#        if loop.is_node_in_loop_complete_net(current_act_name) and loop.is_node_in_loop_complete_net(previous_act_name):
-#            # check if the last activity is reachable from the previous one (if not it means that the loop is active)
-#            reachability[loop.name] = loop.check_if_reachable(previous_act, current_act.name, False)
-    '''
-    # Extracting the decision points between previous and current activities, if not already computed
-    prev_curr_key = ' ,'.join(sequence)
-    if prev_curr_key not in stored_dicts.keys():
-        # ---------- DEBUGGING ----------
-        events_trans_map = get_map_events_transitions(net)
-        print("\nPrevious sequence: {}".format([events_trans_map[act] for act in sequence[:-1]]))
-        print("Current event: {}".format(current_act.label))
-        # ---------- DEBUGGING ----------
-
-        dp_seen = set()
-        for event_key in decision_points_seen:
-            for dp_key in decision_points_seen[event_key]:
-                dp_seen.add(dp_key)
-
-        dp_dict, _ = _new_get_dp_to_previous_event(sequence, current_act, dp_seen)
-
-        # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
-        '''
-        paths = get_all_paths(previous_act_name, current_act)
-        min_length_value = min(len(paths[k]) for k in paths)
-        min_length_path = [l for k, l in paths.items() if len(l) == min_length_value][0]
-        dp_dict = dict(min_length_path)
-        old_keys = list(dp_dict.keys()).copy()
-        for dp in old_keys:
-            if len(dp.out_arcs) < 2:
-                del dp_dict[dp]
-            else:
-                dp_dict[dp.name] = dp_dict.pop(dp)
-        '''
-        # ---------- ONLY SHORTEST PATH APPROACH (comment method call above) ----------
-
-        # ---------- DEBUGGING ----------
-        print("DPs")
-        for key in dp_dict.keys():
-            print(" - {}".format(key))
-            for inn_key in dp_dict[key]:
-                if inn_key in events_trans_map.keys():
-                    print("   - {}".format(events_trans_map[inn_key]))
-                else:
-                    print("   - {}".format(inn_key))
-        # ---------- DEBUGGING ----------
-
-        stored_dicts[prev_curr_key] = dp_dict
-    else:
-        dp_dict = stored_dicts[prev_curr_key]
 
     return dp_dict, stored_dicts
 
 
-def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_points=None, passed_inn_arcs=None) -> [dict, bool]:
-    # TODO change documentation since now we are using previous_sequence
+def _new_get_dp_to_previous_event(previous, current, decision_points=None, passed_inn_arcs=None) -> [dict, bool]:
     """ Extracts all the decision points that are traversed between two activities (previous and current), reporting the
     decision(s) that has been taken for each of them.
 
@@ -120,23 +72,18 @@ def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_poi
     the so-called 'inner_arcs', which are the arcs between the previous place (in_arc.source) and its previous
     activities (in_arc.source.in_arcs).
     If the 'previous' activity is immediately before the previous place (so it is the source of one of the inner_arcs),
-    then the algorithm set a boolean variable 'target_found' to True to signal that the target has been found, and it
+    then the algorithm sets a boolean variable 'target_found' to True to signal that the target has been found, and it
     adds the corresponding decision point (in_arc.source) to the dictionary.
     In any case, all the other backward paths containing an invisible activity are explored recursively.
     Every time an 'inner_arc' is traversed for exploration, it is added to the 'passed_inn_arcs' list, to avoid looping
-    endlessly. Indeed, before a new recursion on an 'inner_arc', the algorithm checks if it is present in that list:
-        1) If it is not present, it simply goes on with the recursion, since it means that the specific path has not
-           been explored yet.
-        2) Otherwise, it means that the current recursive call has already passed through that 'inner_arc' and so it
-           must stop the recursion. This also means that the path followed a loop, and so the decision points
-           encountered along that path must be added to the dictionary, since the target activity ('previous') can be
-           reached through that loop.
+    endlessly. Indeed, before a new recursion on an 'inner_arc', the algorithm checks if it is present in that list: if
+    it is not present, it simply goes on with the recursion, since it means that the specific path has not been explored
+    yet.
     Note that decision points are then added to the dictionary in a forward way: whenever the recursion cannot go on (no
     more invisible activities backward) it returns also signalling the 'target_found' value. This is True if the current
     path found the target activity (or an already explored 'inner_arc' during the same path, as explained before). The
     returned value is then put in disjunction with the current value of 'target_found' in case the target activity has
     been found by the actual instance and not by the recursive one.
-
     It returns a 'decision_points' dictionary which contains, for each decision point on every possible path between
     the 'current' activity and the 'previous' activity, the target value(s) to be followed.
     """
@@ -155,41 +102,20 @@ def _new_get_dp_to_previous_event(trans_sequence, current, dp_seen, decision_poi
             else:
                 inner_in_arcs_names.add(inner_in_arc.source.name)
 
-        # Immediately previous activity is reached -> Set target_found to True and add dp - continue
-        if trans_sequence[-2] in inner_in_arcs_names:
+        # Base case: the target activity (previous) is one of the activities immediately before the current one
+        if previous in inner_in_arcs_names:
             target_found = True
             decision_points = _add_dp_target(decision_points, in_arc.source, current.name, target_found)
-            continue
-
-        # Any previous activity is reached -> Set target_found to True and add dp only if not seen yet - no 'continue'
-        elif any(act in inner_in_arcs_names for act in trans_sequence[:-2]):
-            target_found = True
-            decision_points = _add_dp_target(decision_points, in_arc.source, current.name,
-                                             in_arc.source.name not in dp_seen or
-                                             any(act in inner_in_arcs_names for act in trans_sequence[:-2] if trans_sequence[:-2].count(act) > 1))
-                                            # Last or condition added because we can have more than one 'Payment' activities but trans_sequence[-2]
-                                            # could be another activity. In that case, when we see 'Send for Credit Collection' we should add 'p_12'
-                                            # with 'skip_8' as target. Without this additional condition, 'p_12' was already seen before so it was not
-                                            # added. Instead, now we add it because 'Payment' has been seen more than once during the variant.
-                                            # Not perfect since there could be an invisible activity as an alternative to 'Payment': in that case, we
-                                            # only see 'Payment' once but the loop has been done (passing through the invisible activity).
-
-        # True if dp not seen yet, or seen but looping ('^' is the logical xor operator)
-        add_dp = (in_arc.source.name not in dp_seen) ^ (trans_sequence[-1] in trans_sequence[:-1])
+            #continue
         # Recursive case: follow every invisible activity backward
         for inner_in_arc in inner_inv_acts:
             if inner_in_arc not in passed_inn_arcs:
                 passed_inn_arcs.add(inner_in_arc)
-                decision_points, previous_found = _new_get_dp_to_previous_event(trans_sequence, inner_in_arc.source,
-                                                                                dp_seen, decision_points,
-                                                                                passed_inn_arcs)
+                decision_points, previous_found = _new_get_dp_to_previous_event(previous, inner_in_arc.source,
+                                                                                decision_points, passed_inn_arcs)
                 passed_inn_arcs.remove(inner_in_arc)
-                decision_points = _add_dp_target(decision_points, in_arc.source, current.name,
-                                                 previous_found and add_dp)
+                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, previous_found)
                 target_found = target_found or previous_found
-            else:
-                target_found = True
-                decision_points = _add_dp_target(decision_points, in_arc.source, current.name, add_dp)
 
     return decision_points, target_found
 
