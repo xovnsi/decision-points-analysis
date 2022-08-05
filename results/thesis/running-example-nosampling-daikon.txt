@@ -1,0 +1,11 @@
+p_1:
+{'skip_1': 'None', 'trans_B': 'None'}
+
+p_4:
+{'skip_3': 'None', 'trans_D': 'None'}
+
+p_3:
+{'skip_2': 'None', 'trans_C': 'None'}
+
+p_8:
+{'skip_4': 'loan:accepted == "recheck"', 'trans_F': 'loan:accepted == "yes"', 'trans_G': 'loan:accepted == "no"'}

@@ -1,0 +1,46 @@
+p_1 - SUCCESS
+Dataset target values counts:
+ trans_B    60
+skip_1     47
+Name: target, dtype: int64
+Accuracy: 1.0
+F1 score: 1.0
+Rules:
+trans_B: is:present = False
+skip_1: is:present = True
+
+p_4 - SUCCESS
+Dataset target values counts:
+ skip_3     55
+trans_D    26
+Name: target, dtype: int64
+Accuracy: 0.9629629629629629
+F1 score: 0.9719626168224299
+Rules:
+skip_3: doc:is:updated = True || skip:everything = True
+trans_D: doc:is:updated = False && skip:everything = False
+
+p_3 - SUCCESS
+Dataset target values counts:
+ trans_C    79
+skip_2     55
+Name: target, dtype: int64
+Accuracy: 0.7686567164179104
+F1 score: 0.7801418439716312
+Rules:
+trans_C: skip:everything = False && amount > 398.2698426478454
+skip_2: skip:everything = True || amount <= 398.2698426478454
+
+p_8 - SUCCESS
+Dataset target values counts:
+ trans_G    57
+trans_F    43
+skip_4     37
+Name: target, dtype: int64
+Accuracy: 1.0
+F1 score: 1.0
+Rules:
+trans_G: loan:accepted = no
+skip_4: loan:accepted = recheck
+trans_F: loan:accepted = yes
+

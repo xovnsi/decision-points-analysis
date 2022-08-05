@@ -20,6 +20,7 @@ from utils import shorten_rules_manually, discover_overlapping_rules, sampling_d
 from utils import get_attributes_from_event
 from utils import extract_rules, get_map_transitions_events, get_decision_points_and_targets
 from utils import get_map_events_transitions, get_all_dp_from_event_to_sink
+from daikon_utils import discover_branching_conditions
 from DecisionTree import DecisionTree
 from Loops import Loop
 
@@ -226,16 +227,13 @@ def main():
                         decision_points_data[dp]['target'].append(dp_target)
 
     # Data has been gathered. For each decision point, fitting a decision tree on its data and extracting the rules
-    file_name = 'results.txt'
+    file_name = 'test.txt'
     for decision_point in decision_points_data.keys():
         print("\nDecision point: {}".format(decision_point))
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
         # Replacing ':' with '_' both in the dataset columns and in the attributes map since ':' creates problems
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
-
-        # Sampling
-        dataset = sampling_dataset(dataset)
 
         # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
         # rules = discover_branching_conditions(dataset)
@@ -244,33 +242,46 @@ def main():
         # continue
 
         print("Fitting a decision tree on the decision point's dataset...")
-        dt = DecisionTree(attributes_map)
-        dt.fit(dataset)
+        accuracies, f_scores = list(), list()
+        for i in tqdm(range(10)):
+            # Sampling
+            dataset = sampling_dataset(dataset)
 
+            # Fitting
+            dt = DecisionTree(attributes_map)
+            dt.fit(dataset)
+
+            # Predict
+            y_pred = dt.predict(dataset.drop(columns=['target']))
+
+            # Accuracy
+            accuracy = metrics.accuracy_score(dataset['target'], y_pred)
+            accuracies.append(accuracy)
+
+            # F1-score
+            if len(dataset['target'].unique()) > 2:
+                f1_score = metrics.f1_score(dataset['target'], y_pred, average='weighted')
+            else:
+                f1_score = metrics.f1_score(dataset['target'], y_pred, pos_label=dataset['target'].unique()[0])
+            f_scores.append(f1_score)
+
+        # Rules extraction
         if len(dt.get_nodes()) > 1:
             print("Training complete. Extracting rules...")
             with open(file_name, 'a') as f:
                 f.write('{} - SUCCESS\n'.format(decision_point))
-                lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-                f.write('Rows with invisible activity as target: {}/{}\n'.format(str(lf), str(len(dataset))))
+                f.write('Dataset target values counts:\n {}\n'.format(dataset['target'].value_counts()))
 
-                # Predict (just to see the accuracy and F1 score)
-                y_pred = dt.predict(dataset.drop(columns=['target']))
-                accuracy = metrics.accuracy_score(dataset['target'], y_pred)
-                print("Train accuracy: {}".format(accuracy))
-                f.write('Accuracy: {}\n'.format(accuracy))
-                if len(dataset['target'].unique()) > 2:
-                    f1_score = metrics.f1_score(dataset['target'], y_pred, average='weighted')
-                else:
-                    f1_score = metrics.f1_score(dataset['target'], y_pred, pos_label=dataset['target'].unique()[0])
-                print("F1 score: {}".format(f1_score))
-                f.write('F1 score: {}\n'.format(f1_score))
+                print("Train accuracy: {}".format(sum(accuracies) / len(accuracies)))
+                f.write('Accuracy: {}\n'.format(sum(accuracies) / len(accuracies)))
+                print("F1 score: {}".format(sum(f_scores) / len(f_scores)))
+                f.write('F1 score: {}\n'.format(sum(f_scores) / len(f_scores)))
 
                 # Rule extraction without pruning
-                # rules = dt.extract_rules()
+                rules = dt.extract_rules()
 
                 # Rule extraction with pruning
-                rules = dt.extract_rules_with_pruning(dataset)
+                # rules = dt.extract_rules_with_pruning(dataset)
 
                 # Alternative pruning (directly on tree)
                 # dt.pessimistic_pruning(dataset)
@@ -290,8 +301,7 @@ def main():
         else:
             with open(file_name, 'a') as f:
                 f.write('{} - FAIL\n'.format(decision_point))
-                lf = len(dataset[dataset['target'].str.startswith(('skip', 'tauJoin', 'tauSplit', 'init_loop'))])
-                f.write('Rows with invisible activity as target: {}/{}\n\n'.format(str(lf), str(len(dataset))))
+                f.write('Dataset target values counts: {}\n'.format(dataset['target'].value_counts()))
 
     toc = time()
     print("\nTotal time: {}".format(toc-tic))

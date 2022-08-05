@@ -1,0 +1,32 @@
+p_2:
+{}
+
+p_1:
+{'skip_1': 'totalPaymentAmount * points >= points * paymentAmount'}
+
+p_3:
+{'skip_3': 'notificationType != "P"', 'skip_4': 'notificationType == "P"'}
+
+p_5:
+{'skip_5': 'not (2 * expense - totalPaymentAmount + expense - expense - totalPaymentAmount == 0 && totalPaymentAmount - amount - points - amount - totalPaymentAmount - points == 0)', 'trans_C': '2 * expense - totalPaymentAmount + expense - expense - totalPaymentAmount == 0 && totalPaymentAmount - amount - points - amount - totalPaymentAmount - points == 0'}
+
+p_7:
+{'skip_6': 'totalPaymentAmount * points >= points * paymentAmount'}
+
+p_12:
+{'skip_7': 'not (totalPaymentAmount - paymentAmount <= expense * paymentAmount && points - amount - paymentAmount - amount - points - paymentAmount == 0 && totalPaymentAmount - paymentAmount != points + paymentAmount && totalPaymentAmount - amount < points + paymentAmount && expense - amount + expense - matricola - amount == 0)', 'skip_8': 'totalPaymentAmount - paymentAmount <= expense * paymentAmount && points - amount - paymentAmount - amount - points - paymentAmount == 0 && totalPaymentAmount - paymentAmount != points + paymentAmount && totalPaymentAmount - amount < points + paymentAmount && expense - amount + expense - matricola - amount == 0'}
+
+p_13:
+{'skip_9': 'not (article == 158.0 && totalPaymentAmount + points == points + paymentAmount && notificationType == "P" && vehicleClass == "A" && dismissal == "NIL")', 'trans_G': 'article == 158.0 && totalPaymentAmount + points == points + paymentAmount && notificationType == "P" && vehicleClass == "A" && dismissal == "NIL"'}
+
+p_14:
+{'skip_10': 'totalPaymentAmount * points >= points * paymentAmount'}
+
+p_15:
+{'skip_11': 'vehicleClass != "A"', 'tauSplit_3': 'vehicleClass == "A"'}
+
+p_19:
+{'skip_12': 'totalPaymentAmount * points >= points * paymentAmount'}
+
+p_26:
+{'skip_13': 'not (2.5549949984128696E16 * expense / totalPaymentAmount + 7.286107409922631E15 * totalPaymentAmount / paymentAmount - 2.5549949984128696E16 * expense / paymentAmount - 7.286107409922632E15 == 0 && 6.619669300365451E15 * totalPaymentAmount + paymentAmount + 2.6280087122450844E16 * totalPaymentAmount / paymentAmount + 1.3239338600730902E16 * matricola - totalPaymentAmount - 2.6280087122450816E16 == 0 && 6.619669300365451E15 * totalPaymentAmount - 2.628008712245084E16 * totalPaymentAmount / paymentAmount + 6.619669300365451E15 * matricola - paymentAmount + 2.6280087122450848E16 == 0)', 'trans_M': '2.5549949984128696E16 * expense / totalPaymentAmount + 7.286107409922631E15 * totalPaymentAmount / paymentAmount - 2.5549949984128696E16 * expense / paymentAmount - 7.286107409922632E15 == 0 && 6.619669300365451E15 * totalPaymentAmount + paymentAmount + 2.6280087122450844E16 * totalPaymentAmount / paymentAmount + 1.3239338600730902E16 * matricola - totalPaymentAmount - 2.6280087122450816E16 == 0 && 6.619669300365451E15 * totalPaymentAmount - 2.628008712245084E16 * totalPaymentAmount / paymentAmount + 6.619669300365451E15 * matricola - paymentAmount + 2.6280087122450848E16 == 0'}
