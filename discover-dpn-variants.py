@@ -3,26 +3,21 @@ import os
 from time import time
 from tqdm import tqdm
 import numpy as np
-import copy
 import pandas as pd
-import argcomplete, argparse
-import copy
+import argcomplete
+import argparse
 import json
-from pm4py.objects.petri_net.obj import Marking
 from sklearn import metrics
 from pm4py.algo.filtering.log.variants import variants_filter
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
-from loop_utils import detect_loops
-from loop_utils import simplify_net, delete_composite_loops
 from utils import shorten_rules_manually, discover_overlapping_rules, sampling_dataset
 from utils import get_attributes_from_event
-from utils import extract_rules, get_map_transitions_events, get_decision_points_and_targets
+from utils import get_map_transitions_events, get_decision_points_and_targets
 from utils import get_map_events_transitions, get_all_dp_from_event_to_sink
 from daikon_utils import discover_branching_conditions
 from DecisionTree import DecisionTree
-from Loops import Loop
 
 
 def main():
@@ -38,18 +33,6 @@ def main():
 
     # Importing the log
     log = xes_importer.apply('data/log-{}.xes'.format(net_name))
-    # TODO this dictionaries are not used in the end: could they be removed?
-    trace_attributes, event_attributes = dict(), dict()
-    for trace in log:
-        for attribute in trace.attributes:
-            if attribute not in trace_attributes.keys():
-                trace_attributes[attribute] = list()
-            trace_attributes[attribute].append(trace.attributes[attribute])
-        for event in trace:
-            for attribute in event.keys():
-                if attribute not in event_attributes.keys():
-                    event_attributes[attribute] = list()
-                event_attributes[attribute].append(event[attribute])
 
     # Importing the attributes_map file
     attributes_map_file = f"{net_name}.attr"
@@ -74,84 +57,16 @@ def main():
     try:
         net, im, fm = pnml_importer.apply("models/{}.pnml".format(net_name))
     except FileNotFoundError:
-        print("Model not found")
+        print("Existing Petri Net model not found. Extracting one using the Inductive Miner...")
+        net, im, fm = pm4py.discover_petri_net_inductive(log)
 
-    # Otherwise, extract the Petri net from the log using the inductive miner #TODO alternative if model not present?
-    #net, im, fm = pm4py.discover_petri_net_inductive(log)
-
-    # Generating the simplified Petri net
+    # Stuff...
     sink_complete_net = [place for place in net.places if place.name == 'sink'][0]
-    sim_net = copy.deepcopy(net)
-    sim_net, sim_map, last_collapsed_left, last_collapsed_right, parallel_branches = simplify_net(sim_net)
-    im_sim, fm_sim = Marking(), Marking()
-    for place in sim_net.places:
-        if place.name == 'source':
-            source = place
-        elif place.name == 'sink':
-            sink = place
-        else:
-            if place.name in sim_map.keys():
-                if 'sink' in sim_map[place.name]:
-                    sink = place
-                elif 'source' in sim_map[place.name]:
-                    source = place
-    im_sim[source] = 1
-    fm_sim[sink] = 1
     gviz = pn_visualizer.apply(net, im, fm)
-    #pn_visualizer.view(gviz)
-    gviz = pn_visualizer.apply(sim_net, im_sim, fm_sim)
-    #pn_visualizer.view(gviz)
+    pn_visualizer.view(gviz)
 
     # Dealing with loops and other stuff... needs cleaning
     trans_events_map = get_map_transitions_events(net)
-    events_trans_map = get_map_events_transitions(net)
-
-    #    # detect loops and create loop objects
-#    loop_vertex = detect_loops(sim_net)
-#    loop_vertex = delete_composite_loops(loop_vertex)
-#
-#    loops = list()
-#    for loop_length in loop_vertex.keys():
-#        for i, loop in enumerate(loop_vertex[loop_length]):
-#            events_loop = [events_trans_map[vertex] for vertex in loop if vertex in events_trans_map.keys()]
-#            loop_obj = Loop(loop, events_loop, sim_net, "{}_{}".format(loop_length, i))
-#            loop_obj.set_complete_net_input(last_collapsed_left)
-#            loop_obj.set_complete_net_output(last_collapsed_right)
-#            loop_obj.set_complete_net_loop_nodes(sim_map)
-#            loops.append(loop_obj)
-#
-#    # join different parts of the same loop (different loops with same inputs and outputs)
-#    not_joinable = False
-#    while not not_joinable:
-#        old_loops = copy.copy(loops)
-#        new_loop_nodes = None
-#        new_loop_events = None
-#        for loop in old_loops:
-#            new_loop_nodes = set()
-#            new_loop_events = set()
-#            for loop_inner in old_loops:
-#                if loop != loop_inner:
-#                    if loop.input_places_complete == loop_inner.input_places_complete and loop.output_places_complete == loop_inner.output_places_complete:
-#                        new_loop_nodes = new_loop_nodes.union(set(loop.vertex))
-#                        new_loop_nodes = new_loop_nodes.union(set(loop_inner.vertex))
-#                        new_loop_events = new_loop_events.union(set(loop.events))
-#                        new_loop_events = new_loop_events.union(set(loop_inner.events))
-#                        loops.remove(loop_inner)
-#
-#            if len(new_loop_nodes) > 0:
-#                new_loop = Loop(list(new_loop_nodes), list(new_loop_events), sim_net, loop.name)
-#                new_loop.set_complete_net_input(last_collapsed_left)
-#                new_loop.set_complete_net_output(last_collapsed_right)
-#                new_loop.set_complete_net_loop_nodes(sim_map)
-#                new_loop.set_complete_net_loop_events(events_trans_map)
-#                loops.append(new_loop)
-#                loops.remove(loop)
-#                break
-#        if len(new_loop_nodes) == 0:
-#            not_joinable = True
-#
-#    for loop in loops:
-#        loop.set_nearest_input_complete_net(sim_net, sim_map)
 
     tic = time()
     # Scanning the log to get the data related to decision points
@@ -167,7 +82,6 @@ def main():
             transitions_sequence.append(trans_from_event)
             events_sequence.append(event_name)
             if len(transitions_sequence) > 1:
-                #dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, loops, net, parallel_branches, stored_dicts)
                 dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, net, stored_dicts)
                 dp_events_sequence['Event_{}'.format(i+1)] = dp_dict
 

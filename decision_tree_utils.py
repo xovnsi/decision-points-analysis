@@ -1,6 +1,7 @@
 import numpy as np
 from copy import copy
 
+
 def extract_rules_from_leaf(node):
     """ Extract all the rules in the path from the leaf to the root """
     rules = list()
@@ -10,6 +11,7 @@ def extract_rules_from_leaf(node):
         current_node = current_node.get_parent_node()
     return rules
 
+
 def get_total_threshold(data, local_threshold) -> float:
     """ Computes the threshold on the total dataset
 
@@ -18,10 +20,12 @@ def get_total_threshold(data, local_threshold) -> float:
     data = data[data != '?'].astype(float)
     return data[data.le(local_threshold)].max()
 
+
 def class_entropy(data) -> float:
     """ Returns the weighted entropy of a split """
     ops = data.groupby('target')['weight'].sum() / data['weight'].sum()
     return - np.sum(ops * np.log2(ops))
+
 
 def get_split_gain(data_in, attr_type) -> [float, float, float, bool]:
     """ Computes the information gain, the gain ratio, the local threshold and the meaningfulness of the split
