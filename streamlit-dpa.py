@@ -45,10 +45,10 @@ def save_json(dict_conf, data_dir='dt-attributes'):
         json.dump(json_string, file)
 
 
-def create_dict(st_session_state):
+def create_dict():
     dict_conf = dict()
-    for name in st_session_state:
-        if ('e_' in name or 't_' in name) and name.split('_')[1] not in ['trace', 'event']:
+    for name in st.session_state:
+        if name in st.session_state['list_event_attr'] or name in st.session_state['list_trace_attr']:
             # remove initial 'e_' or 't_' from the name
             dict_conf["_".join(name.split('_')[1:])] = st.session_state[name]
     return dict_conf
@@ -133,7 +133,7 @@ def build_datasets():
     return decision_points_data
 
 
-def rules_computation(attributes_map):
+def rules_computation():
     map_event_trans = get_map_events_transitions(st.session_state['net'])
     file_name = 'results_{}_{}.txt'.format(st.session_state['uploaded_log_name'], datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S"))
     for decision_point in st.session_state.decision_points_data.keys():
@@ -141,7 +141,7 @@ def rules_computation(attributes_map):
         dataset = pd.DataFrame.from_dict(st.session_state.decision_points_data[decision_point])
         # Replacing ':' with '_' both in the dataset columns and in the attributes map since ':' creates problems
         dataset.columns = dataset.columns.str.replace(':', '_')
-        attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
+        attributes_map = {k.replace(':', '_'): st.session_state['attributes_map'][k] for k in st.session_state['attributes_map']}
 
         # Discovering branching conditions with Daikon
         if st.session_state.method == 'Daikon':
@@ -203,7 +203,7 @@ def rules_computation(attributes_map):
 
                     rules = shorten_rules_manually(rules, attributes_map)
                     rules = {k: rules[k].replace('_', ':') for k in rules}
-                    rules = {map_event_trans[k]: rules[k] for k in rules if k in map_event_trans}
+                    #rules = {map_event_trans[k]: rules[k] for k in rules if k in map_event_trans}
 
                     f.write('Rules:\n')
                     for k in rules:
@@ -215,14 +215,17 @@ def rules_computation(attributes_map):
                 with open(file_name, 'a') as f:
                     f.write('{} - FAIL\n'.format(decision_point))
                     f.write('Dataset target values counts: {}\n'.format(dataset['target'].value_counts()))
+    return file_name
 
 
 ########################################################################################################################
+
 
 def main():
     if 'uploaded_log_name' not in st.session_state:
         st.session_state['uploaded_log_name'] = None
 
+    st.title("Decision Points Analysis")
     uploaded_event_log = st.file_uploader('Choose the event log file in .xes format')
 
     if uploaded_event_log is not None:
@@ -232,6 +235,7 @@ def main():
             st.session_state['list_trace_attr'], st.session_state['list_event_attr'] = list(), list()
             st.session_state['attr_config_saved'] = False
             st.session_state['net'] = None
+            st.session_state['net_graph_image'] = None
             st.session_state['decision_points_data'] = None
             st.session_state['results_selection'] = False
 
@@ -255,39 +259,50 @@ def main():
                  'First 10 unique values of events attributes: ', st.session_state['df_event'].head(10))
 
         # Attributes types selection
+        st.header("Attributes types configuration")
+        st.write("Select the right type for each attribute.")
         col_event, col_trace = st.columns(2)
         with col_trace:
-            st.header("Trace attributes")
+            st.subheader("Trace attributes")
             for name in st.session_state['list_trace_attr']:
                 st.selectbox(name.split('t_')[1], ('categorical', 'continuous', 'boolean'), key=name)
         with col_event:
-            st.header("Event attributes")
+            st.subheader("Event attributes")
             for name in st.session_state['list_event_attr']:
                 st.selectbox(name.split('e_')[1], ('categorical', 'continuous', 'boolean'), key=name)
 
-        # TODO is this work (button and dataset conversion below) done at every refresh? If so, put another state variable
         # Saving configuration button
-        if st.button('Save Configuration'):
-            dict_conf = create_dict(st.session_state)
+        if st.button('Save Configuration') and not st.session_state['attr_config_saved']:
+            dict_conf = create_dict()
             save_json(dict_conf)
-            st.session_state['attr_config_saved'] = True
 
-        if st.session_state['attr_config_saved']:
             # Converting the attributes types in the log according to the attributes_map file
             attributes_map_file = '{}.attr'.format(st.session_state['uploaded_log_name'])
             with open(os.path.join('dt-attributes', attributes_map_file), 'r') as f:
                 json_string = json.load(f)
-                attributes_map = json.loads(json_string)
+                st.session_state['attributes_map'] = json.loads(json_string)
 
+            attr_conversion_error = set()
             for trace in st.session_state['log']:
                 for event in trace:
                     for attribute in event.keys():
-                        if attribute in attributes_map:
-                            if attributes_map[attribute] == 'continuous':
-                                event[attribute] = float(event[attribute])
-                            elif attributes_map[attribute] == 'boolean':
+                        if attribute in st.session_state['attributes_map']:
+                            if st.session_state['attributes_map'][attribute] == 'continuous':
+                                try:
+                                    event[attribute] = float(event[attribute])
+                                except ValueError:
+                                    attr_conversion_error.add(attribute)
+                            elif st.session_state['attributes_map'][attribute] == 'boolean':
                                 event[attribute] = bool(event[attribute])
 
+            if attr_conversion_error:
+                for attribute in attr_conversion_error:
+                    st.error("Attribute '{}' does not appear to be a continuous one. Is it categorical? Please recheck the configuration.".format(attribute), icon="🚨")
+                os.remove(os.path.join('dt-attributes', attributes_map_file))
+            else:
+                st.session_state['attr_config_saved'] = True
+
+        if st.session_state['attr_config_saved']:
             # Importing the Petri net model or extracting one
             st.header("Petri Net model")
             if st.session_state['net'] is None:
@@ -297,13 +312,14 @@ def main():
                 except (FileNotFoundError, OSError):
                     st.warning("Existing Petri Net model not found. "
                                "If you wish to use an already created model, please put the .pnml file inside a 'models' "
-                               "folder, using the same name as the one of the log file.")
+                               "folder, using the same name as the one of the log file.", icon="⚠️")
                     st.write("Extracting a Petri Net model using the Inductive Miner...")
                     st.session_state['net'], st.session_state['im'], st.session_state['fm'] = pm4py.discover_petri_net_inductive(st.session_state['log'])
 
-            gviz = pn_visualizer.apply(st.session_state['net'], st.session_state['im'], st.session_state['fm'])
-            gviz.graph_attr['bgcolor'] = 'white'
-            st.graphviz_chart(gviz)
+            if st.session_state['net_graph_image'] is None:
+                st.session_state['net_graph_image'] = pn_visualizer.apply(st.session_state['net'], st.session_state['im'], st.session_state['fm'])
+                st.session_state['net_graph_image'].graph_attr['bgcolor'] = 'white'
+            st.graphviz_chart(st.session_state['net_graph_image'])
 
             # Extracting the decision points datasets
             if st.session_state.decision_points_data is None:
@@ -311,6 +327,7 @@ def main():
 
             # Method selection
             st.header("Rules extraction")
+            st.text("Choose the preferred method.")
             st.session_state.method = st.selectbox('Decision Trees or Daikon?', ('Choose one...', 'Decision Trees', 'Daikon'))
             if st.session_state.method == 'Decision Trees':
                 st.session_state.pruning = st.selectbox('Pruning method?', ('Choose one...', 'Rules simplification', 'Pessimistic', 'No Pruning'))
@@ -325,9 +342,10 @@ def main():
             # If the method has been selected, then compute the results
             if st.button('Start rules computation'):
                 if not st.session_state.results_selection:
-                    st.write("Please make a selection first.")
+                    st.error("Please make a selection first.", icon="🚨")
                 else:
-                    rules_computation(attributes_map)
+                    output_file_name = rules_computation()
+                    st.success("A text file containing the results has been saved with the name '{}'".format(output_file_name), icon="✅")
 
 
 if __name__ == '__main__':
