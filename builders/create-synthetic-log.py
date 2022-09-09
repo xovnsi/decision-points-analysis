@@ -193,4 +193,4 @@ for index, element_sequence in tqdm(enumerate(all_visited)):
             curr_timestamp = curr_timestamp + datetime.timedelta(minutes=5)
     log.append(trace)
 #breakpoint()
-xes_exporter.apply(log, 'data/log-{}.xes'.format(net_name))
+xes_exporter.apply(log, 'logs/log-{}.xes'.format(net_name))

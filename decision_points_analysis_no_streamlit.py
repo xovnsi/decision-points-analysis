@@ -12,12 +12,12 @@ from pm4py.algo.filtering.log.variants import variants_filter
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
-from utils import shorten_rules_manually, discover_overlapping_rules, sampling_dataset
-from utils import get_attributes_from_event
-from utils import get_map_transitions_events, get_decision_points_and_targets
-from utils import get_map_events_transitions, get_all_dp_from_event_to_sink
+from backward_search import get_decision_points_and_targets, get_all_dp_from_sink_to_last_event
+from rules_extraction import sampling_dataset, extract_rules_with_pruning, pessimistic_pruning,\
+    discover_overlapping_rules, shorten_rules_manually
+from utils import get_attributes_from_event, get_map_events_to_transitions
 from daikon_utils import discover_branching_conditions
-from DecisionTree import DecisionTree
+from DecisionTreeC45 import DecisionTree
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
     net_name = args.net_name
 
     # Importing the log
-    log = xes_importer.apply('data/log-{}.xes'.format(net_name))
+    log = xes_importer.apply('logs/log-{}.xes'.format(net_name))
 
     # Importing the attributes_map file
     attributes_map_file = f"{net_name}.attr"
@@ -66,11 +66,11 @@ def main():
     pn_visualizer.view(gviz)
 
     # Dealing with loops and other stuff... needs cleaning
-    trans_events_map = get_map_transitions_events(net)
+    events_to_trans_map = get_map_events_to_transitions(net)
 
     tic = time()
-    # Scanning the log to get the data related to decision points
-    print('Extracting training data from Event Log...')
+    # Scanning the log to get the logs related to decision points
+    print('Extracting training logs from Event Log...')
     decision_points_data, event_attr, stored_dicts = dict(), dict(), dict()
     variants = variants_filter.get_variants(log)
     # Decision points of interest are searched considering the variants only
@@ -78,7 +78,7 @@ def main():
         transitions_sequence, events_sequence = list(), list()
         dp_events_sequence = dict()
         for i, event_name in enumerate(variant.split(',')):
-            trans_from_event = trans_events_map[event_name]
+            trans_from_event = events_to_trans_map[event_name]
             transitions_sequence.append(trans_from_event)
             events_sequence.append(event_name)
             if len(transitions_sequence) > 1:
@@ -87,7 +87,7 @@ def main():
 
         # Final update of the current trace (from last event to sink)
         transition = [trans for trans in net.transitions if trans.label == event_name][0]
-        dp_events_sequence['End'] = get_all_dp_from_event_to_sink(transition, sink_complete_net, dp_events_sequence)
+        dp_events_sequence['End'] = get_all_dp_from_sink_to_last_event(transition, sink_complete_net, dp_events_sequence)
 
         for trace in variants[variant]:
             # Storing the trace attributes (if any)
@@ -99,7 +99,7 @@ def main():
 
             transitions_sequence = list()
             for i, event in enumerate(trace):
-                trans_from_event = trans_events_map[event["concept:name"]]
+                trans_from_event = events_to_trans_map[event["concept:name"]]
                 transitions_sequence.append(trans_from_event)
 
                 # Appending the last attribute values to the decision point dictionary
@@ -140,7 +140,7 @@ def main():
                                 decision_points_data[dp][a].append(event_attr[a])
                         decision_points_data[dp]['target'].append(dp_target)
 
-    # Data has been gathered. For each decision point, fitting a decision tree on its data and extracting the rules
+    # Data has been gathered. For each decision point, fitting a decision tree on its logs and extracting the rules
     file_name = 'test.txt'
     for decision_point in decision_points_data.keys():
         print("\nDecision point: {}".format(decision_point))
@@ -162,7 +162,7 @@ def main():
             dataset = sampling_dataset(dataset)
 
             # Fitting
-            dt = DecisionTree(attributes_map)
+            dt = DecisionTree.DecisionTree(attributes_map)
             dt.fit(dataset)
 
             # Predict
