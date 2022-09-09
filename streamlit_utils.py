@@ -146,6 +146,12 @@ def rules_computation():
             rules = discover_branching_conditions(dataset)
             rules = {k: rules[k].replace('_', ':') for k in rules}
             st.write(rules)
+            with open(file_name, 'a') as f:
+                f.write('Decision point: {}\n'.format(decision_point))
+                f.write('Rules:\n')
+                for k in rules:
+                    f.write('{}: {}\n'.format(k, rules[k]))
+                f.write('\n')
         else:
             st.write("Fitting a decision tree on the decision point's dataset...")
             accuracies, f_scores = list(), list()
