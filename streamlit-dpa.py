@@ -14,7 +14,7 @@ def main():
         st.session_state['uploaded_log_name'] = None
 
     st.title("Decision Points Analysis")
-    uploaded_event_log = st.file_uploader('Choose the event log file in .xes format')
+    uploaded_event_log = st.file_uploader('Choose the event log file in .xes format', type='xes')
 
     if uploaded_event_log is not None:
         if st.session_state['uploaded_log_name'] != uploaded_event_log.name.split('.')[0]:
@@ -134,6 +134,8 @@ def main():
                 else:
                     output_file_name = rules_computation()
                     st.success("A text file containing the results has been saved with the name '{}'".format(output_file_name), icon="✅")
+                    with open(output_file_name, "rb") as f:
+                        st.download_button("Download results", f, file_name=output_file_name)
 
 
 if __name__ == '__main__':
