@@ -297,7 +297,7 @@ def _compute_number_predicted_errors(node, target_value, data_in) -> float:
     return len(node_instances) * proportion_confint(len(wrong_instances), len(node_instances), method='beta', alpha=0.50)[1]
 
 
-def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rules):
+def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rules) -> dict:
     """ Discovers overlapping rules, if any.
 
     Given the fitted decision tree, extracts the training set instances that have been wrongly classified, i.e., for
@@ -364,7 +364,7 @@ def discover_overlapping_rules(base_tree, dataset, attributes_map, original_rule
     return rules
 
 
-def shorten_rules_manually(original_rules, attributes_map):
+def shorten_rules_manually(original_rules, attributes_map) -> dict:
     """ Rewrites the final rules dictionary to compress many-valued categorical attributes equalities and continuous
     attributes inequalities.
 

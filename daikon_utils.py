@@ -1,6 +1,7 @@
-import subprocess
 import os
 import math
+import subprocess
+from typing import Union
 from operator import itemgetter
 
 
@@ -99,7 +100,7 @@ def _get_daikon_invariants(dataset) -> list:
     return invariants
 
 
-def _build_conj_expr(sets, invariants) -> str | None:
+def _build_conj_expr(sets, invariants) -> Union[str, None]:
     """ Builds a conjunctive expression starting from the invariants found.
 
     The resulting conjunctive expression is built using a greedy approach. The first atom selected is the one with the

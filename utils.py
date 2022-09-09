@@ -14,10 +14,10 @@ def get_attributes_from_event(event) -> dict:
 
 
 def get_map_events_to_transitions(net) -> dict:
-    """ Compute a map of transitions name and events
+    """ Compute a mapping between log events and Petri Net transitions names.
 
     Given a Petri Net in the implementation of Pm4Py library, the function creates
-    a dictionary containing for every event the corresponding transition name
+    a dictionary containing for every event the corresponding transition name.
     """
     # initialize
     map_trans_events = dict()
@@ -28,10 +28,10 @@ def get_map_events_to_transitions(net) -> dict:
 
 
 def get_map_transitions_to_events(net) -> dict:
-    """ Compute a map of event name and transitions name
+    """ Compute a mapping between Petri Net transitions names and log events.
 
     Given a Petri Net in the implementation of Pm4Py library, the function creates
-    a dictionary containing for every transition the corresponding event name
+    a dictionary containing for every transition the corresponding event name.
     """
     # initialize
     map_events_trans = dict()
