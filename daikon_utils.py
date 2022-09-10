@@ -82,7 +82,7 @@ def _get_daikon_invariants(dataset) -> list:
     """
 
     dataset.drop(columns=['target']).to_csv(path_or_buf='dataset.csv', index=False)
-    subprocess.run(['perl', '-I/', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
+    subprocess.run(['perl', '-I/app/', 'daikon-5.8.10/scripts/convertcsv.pl', 'dataset.csv'])
     subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.Daikon', '--nohierarchy', '-o', 'invariants.inv',
                     '--no_text_output', '--noversion', '--omit_from_output', 'r', 'dataset.dtrace', 'dataset.decls'])
     inv = subprocess.run(['java', '-cp', 'daikon-5.8.10/daikon.jar', 'daikon.PrintInvariants',
