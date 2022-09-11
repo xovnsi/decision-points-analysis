@@ -23,7 +23,6 @@ def main():
             st.session_state['list_trace_attr'], st.session_state['list_event_attr'] = list(), list()
             st.session_state['attr_config_saved'] = False
             st.session_state['net'] = None
-            st.session_state['net_graph_image'] = None
             st.session_state['decision_points_data'] = None
             st.session_state['results_selection'] = False
 
@@ -86,7 +85,7 @@ def main():
 
             if attr_conversion_error:
                 for attribute in attr_conversion_error:
-                    st.error("Attribute '{}' does not appear to be a continuous one. Is it categorical? Please recheck the configuration.".format(attribute), icon="🚨")
+                    st.error("Attribute '{}' does not appear to be a continuous one. Is it categorical? Please recheck the configuration.".format(attribute), icon="\U0001F6A8")
                 os.remove(os.path.join('dt-attributes', attributes_map_file))
             else:
                 st.session_state['attr_config_saved'] = True
@@ -100,12 +99,11 @@ def main():
                     st.session_state['net'], st.session_state['im'], st.session_state['fm'] = pnml_importer.apply("models/{}.pnml".format(st.session_state['uploaded_log_name']))
                 except (FileNotFoundError, OSError):
                     st.warning("Existing Petri Net model not found. "
-                               "If you wish to use an already created model, please put the .pnml file inside a 'models' "
-                               "folder, using the same name as the one of the log file.", icon="⚠️")
+                               "If you wish to use an already created model, put the .pnml file inside a 'models' "
+                               "folder, using the same name as the one of the log file.", icon="\U000026A0")
                     st.write("Extracting a Petri Net model using the Inductive Miner...")
                     st.session_state['net'], st.session_state['im'], st.session_state['fm'] = pm4py.discover_petri_net_inductive(st.session_state['log'])
 
-            if st.session_state['net_graph_image'] is None:
                 st.session_state['net_graph_image'] = pn_visualizer.apply(st.session_state['net'], st.session_state['im'], st.session_state['fm'])
                 st.session_state['net_graph_image'].graph_attr['bgcolor'] = 'white'
             st.graphviz_chart(st.session_state['net_graph_image'])
@@ -130,10 +128,10 @@ def main():
             # If the method has been selected, then compute the results
             if st.button('Start rules computation'):
                 if not st.session_state.results_selection:
-                    st.error("Please make a selection first.", icon="🚨")
+                    st.error("Please make a selection first.", icon="\U0001F6A8")
                 else:
                     output_file_name = rules_computation()
-                    st.success("A text file containing the results has been saved with the name '{}'".format(output_file_name), icon="✅")
+                    st.success("A text file containing the results has been saved with the name '{}'".format(output_file_name), icon="\U00002705")
                     with open(output_file_name, "rb") as f:
                         st.download_button("Download results", f, file_name=output_file_name)
 
