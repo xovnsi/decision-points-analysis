@@ -38,7 +38,7 @@ are not recorded in the Event Log.
 
 ### Can I try it out?
 
-Sure. A working version of the algorithm is available as a web app via Streamlit at [this page](https://savoiadiego-decision-points-analysis-streamlit-dpa-28jy5l.streamlitapp.com/).
+Sure. A working version of the algorithm is available as a web app via Streamlit at [this page](https://savoiadiego-decision-points-analysis-streamlit-dpa-gbben4.streamlitapp.com/).
 
 You just need to upload the Event Log file (.xes format only at the moment) and it will show the first 10 unique values
 for each attribute. You must select the proper type for each attribute (categorical, continuous or boolean) through the
