@@ -1,5 +1,5 @@
-from decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rules_from_leaf
-from Nodes import DecisionNode, LeafNode
+from DecisionTreeC45.decision_tree_utils import class_entropy, get_split_gain, get_total_threshold, extract_rules_from_leaf
+from DecisionTreeC45.Nodes import DecisionNode, LeafNode
 from typing import Union
 import pandas as pd
 import numpy as np
