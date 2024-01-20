@@ -8,6 +8,7 @@ from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from streamlit_utils import get_unique_values_log, create_dict, save_json, build_datasets, rules_computation
 
+st.set_page_config(layout="wide")
 
 def main():
     if 'uploaded_log_name' not in st.session_state:

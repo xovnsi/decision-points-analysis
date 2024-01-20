@@ -64,7 +64,8 @@ def build_datasets():
         # Storing decision points of interest between pairs of events
         transitions_sequence, events_sequence = list(), list()
         dp_events_sequence = dict()
-        for i, event_name in enumerate(variant.split(',')):
+
+        for i, event_name in enumerate(variant):
             trans_from_event = map_events_transitions[event_name]
             transitions_sequence.append(trans_from_event)
             events_sequence.append(event_name)
