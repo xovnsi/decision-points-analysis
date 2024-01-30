@@ -3,10 +3,14 @@ import json
 import pm4py
 import shutil
 import streamlit as st
+import streamlit.components.v1 as components
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from streamlit_utils import get_unique_values_log, create_dict, save_json, build_datasets, rules_computation
+from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
+from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
+from Naked.toolshed.shell import muterun_js
 
 st.set_page_config(layout="wide")
 
@@ -108,6 +112,30 @@ def main():
                 st.session_state['net_graph_image'] = pn_visualizer.apply(st.session_state['net'], st.session_state['im'], st.session_state['fm'])
                 st.session_state['net_graph_image'].graph_attr['bgcolor'] = 'white'
             st.graphviz_chart(st.session_state['net_graph_image'])
+
+
+            # view and save initial BPMN model
+            st.session_state['initial_bpmn_diagram'] = pm4py.convert_to_bpmn(
+                st.session_state['net'],
+                st.session_state['im'],
+                st.session_state['fm'],
+            )
+            st.header("Initial BPMN diagram")
+            st.session_state['initial_bpmn_graph_image'] = bpmn_visualizer.apply(st.session_state['initial_bpmn_diagram'], parameters={'font_size': 10})
+            st.graphviz_chart(st.session_state['initial_bpmn_graph_image'])
+            if not os.path.exists('tmp'):
+                os.mkdir('tmp')
+            bpmn_exporter.apply(st.session_state['initial_bpmn_diagram'], 'tmp/initial.bpmn')
+
+            # use bpmn-js through naked to save the svg file:
+            node_script_path = 'diagram.js'
+
+            response = muterun_js(node_script_path, arguments="-r esm")
+
+            if response.exitcode == 0:
+                print(response.stdout)
+            else:
+                print(response.stderr)
 
             # Extracting the decision points datasets
             if st.session_state.decision_points_data is None:

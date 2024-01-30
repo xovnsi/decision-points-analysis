@@ -13,6 +13,9 @@ from utils import get_attributes_from_event, get_map_events_to_transitions, get_
 from daikon_utils import discover_branching_conditions
 from DecisionTreeC45.DecisionTree import DecisionTree
 from sklearn import metrics
+from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
+from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
+import pm4py
 
 
 def get_unique_values_log():
@@ -145,7 +148,6 @@ def rules_computation():
         # TODO if original attribute has '_' we convert it to ':' at the end. Should store which attributes to convert
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): st.session_state['attributes_map'][k] for k in st.session_state['attributes_map']}
-
         if st.session_state.method == 'Daikon':
             st.write("Discovering branching conditions with Daikon...")
             rules = discover_branching_conditions(dataset)
@@ -223,7 +225,22 @@ def rules_computation():
                     for k in converted_rules.keys():
                         f.write('{}: {}\n'.format(k, converted_rules[k]))
                     f.write('\n')
+                st.write('converted rules')
                 st.write(converted_rules)
+                st.write('rules')
+                st.write(rules)
+                st.write('map_transitions_events')
+                st.write(map_transitions_events)
+                st.write('net')
+                st.write(st.session_state['net'])
+                st.session_state['foo_diagram'] = pm4py.convert_to_bpmn(
+                    st.session_state['net'],
+                    st.session_state['im'],
+                    st.session_state['fm'],
+                )
+                bpmn_exporter.apply(
+                    st.session_state['foo_diagram'],
+                    'tmp/foo.bpmn')
             else:
                 st.write("Could not fit a Decision Tree on this dataset.")
                 with open(file_name, 'a') as f:
