@@ -4,6 +4,7 @@ import pm4py
 import shutil
 import streamlit as st
 import streamlit.components.v1 as components
+import subprocess
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
@@ -14,6 +15,8 @@ from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
 st.set_page_config(layout="wide")
 
 def main():
+    # used to serve BPMNio
+    subprocess.run(['python', '-m', 'http.server'])
     if 'uploaded_log_name' not in st.session_state:
         st.session_state['uploaded_log_name'] = None
 
