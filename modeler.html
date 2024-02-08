@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+
+  <!-- required modeler styles -->
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.0.0/dist/assets/bpmn-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.0.0/dist/assets/diagram-js.css">
+  <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.0.0/dist/assets/bpmn-font/css/bpmn.css">
+
+  <!-- modeler distro -->
+  <script src="https://unpkg.com/bpmn-js@17.0.0/dist/bpmn-modeler.development.js"></script>
+
+  <!-- needed for this example only -->
+  <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.js"></script>
+
+  <script async src="https://ga.jspm.io/npm:es-module-shims@1.8.2/dist/es-module-shims.js"
+    crossorigin="anonymous"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "bpmn-js-cli": "https://ga.jspm.io/npm:bpmn-js-cli@2.4.0/index.js",
+        "bpmn-js/lib/Modeler": "https://ga.jspm.io/npm:bpmn-js@16.5.0/lib/Modeler.js"
+      },
+      "scopes": {
+        "https://ga.jspm.io/": {
+          "@bpmn-io/diagram-js-ui": "https://ga.jspm.io/npm:@bpmn-io/diagram-js-ui@0.2.2/lib/index.js",
+          "bpmn-moddle": "https://ga.jspm.io/npm:bpmn-moddle@8.1.0/dist/index.esm.js",
+          "clsx": "https://ga.jspm.io/npm:clsx@2.1.0/dist/clsx.mjs",
+          "diagram-js": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/Diagram.js",
+          "diagram-js-direct-editing": "https://ga.jspm.io/npm:diagram-js-direct-editing@2.1.2/lib/index.js",
+          "diagram-js/lib/command": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/command/index.js",
+          "diagram-js/lib/command/CommandInterceptor": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/command/CommandInterceptor.js",
+          "diagram-js/lib/core/ElementFactory": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/core/ElementFactory.js",
+          "diagram-js/lib/draw/BaseRenderer": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/draw/BaseRenderer.js",
+          "diagram-js/lib/features/align-elements": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/align-elements/index.js",
+          "diagram-js/lib/features/attach-support": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/attach-support/index.js",
+          "diagram-js/lib/features/auto-place": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/auto-place/index.js",
+          "diagram-js/lib/features/auto-place/AutoPlaceUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/auto-place/AutoPlaceUtil.js",
+          "diagram-js/lib/features/auto-resize/AutoResize": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/auto-resize/AutoResize.js",
+          "diagram-js/lib/features/auto-resize/AutoResizeProvider": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/auto-resize/AutoResizeProvider.js",
+          "diagram-js/lib/features/auto-scroll": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/auto-scroll/index.js",
+          "diagram-js/lib/features/bendpoints": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/bendpoints/index.js",
+          "diagram-js/lib/features/bendpoints/GeometricUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/bendpoints/GeometricUtil.js",
+          "diagram-js/lib/features/change-support": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/change-support/index.js",
+          "diagram-js/lib/features/complex-preview": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/complex-preview/index.js",
+          "diagram-js/lib/features/connect": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/connect/index.js",
+          "diagram-js/lib/features/connection-preview": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/connection-preview/index.js",
+          "diagram-js/lib/features/context-pad": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/context-pad/index.js",
+          "diagram-js/lib/features/copy-paste": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/copy-paste/index.js",
+          "diagram-js/lib/features/create": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/create/index.js",
+          "diagram-js/lib/features/distribute-elements": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/distribute-elements/index.js",
+          "diagram-js/lib/features/editor-actions": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/editor-actions/index.js",
+          "diagram-js/lib/features/editor-actions/EditorActions": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/editor-actions/EditorActions.js",
+          "diagram-js/lib/features/global-connect": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/global-connect/index.js",
+          "diagram-js/lib/features/grid-snapping": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/grid-snapping/index.js",
+          "diagram-js/lib/features/hand-tool": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/hand-tool/index.js",
+          "diagram-js/lib/features/interaction-events": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/interaction-events/index.js",
+          "diagram-js/lib/features/keyboard": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/keyboard/index.js",
+          "diagram-js/lib/features/keyboard-move-selection": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/keyboard-move-selection/index.js",
+          "diagram-js/lib/features/keyboard/KeyboardBindings": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/keyboard/KeyboardBindings.js",
+          "diagram-js/lib/features/keyboard/KeyboardUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/keyboard/KeyboardUtil.js",
+          "diagram-js/lib/features/label-support": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/label-support/index.js",
+          "diagram-js/lib/features/lasso-tool": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/lasso-tool/index.js",
+          "diagram-js/lib/features/modeling/Modeling": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/modeling/Modeling.js",
+          "diagram-js/lib/features/modeling/cmd/helper/AnchorsHelper": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/modeling/cmd/helper/AnchorsHelper.js",
+          "diagram-js/lib/features/move": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/move/index.js",
+          "diagram-js/lib/features/ordering/OrderingProvider": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/ordering/OrderingProvider.js",
+          "diagram-js/lib/features/outline": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/outline/index.js",
+          "diagram-js/lib/features/overlays": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/overlays/index.js",
+          "diagram-js/lib/features/palette": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/palette/index.js",
+          "diagram-js/lib/features/popup-menu": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/popup-menu/index.js",
+          "diagram-js/lib/features/preview-support": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/preview-support/index.js",
+          "diagram-js/lib/features/replace": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/replace/index.js",
+          "diagram-js/lib/features/resize": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/resize/index.js",
+          "diagram-js/lib/features/resize/ResizeUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/resize/ResizeUtil.js",
+          "diagram-js/lib/features/root-elements": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/root-elements/index.js",
+          "diagram-js/lib/features/rules": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/rules/index.js",
+          "diagram-js/lib/features/rules/RuleProvider": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/rules/RuleProvider.js",
+          "diagram-js/lib/features/search-pad": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/search-pad/index.js",
+          "diagram-js/lib/features/selection": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/selection/index.js",
+          "diagram-js/lib/features/snapping": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/snapping/index.js",
+          "diagram-js/lib/features/snapping/CreateMoveSnapping": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/snapping/CreateMoveSnapping.js",
+          "diagram-js/lib/features/snapping/SnapUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/snapping/SnapUtil.js",
+          "diagram-js/lib/features/space-tool": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/space-tool/index.js",
+          "diagram-js/lib/features/space-tool/SpaceTool": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/space-tool/SpaceTool.js",
+          "diagram-js/lib/features/tooltips": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/features/tooltips/index.js",
+          "diagram-js/lib/i18n/translate": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/i18n/translate/index.js",
+          "diagram-js/lib/layout/BaseLayouter": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/layout/BaseLayouter.js",
+          "diagram-js/lib/layout/CroppingConnectionDocking": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/layout/CroppingConnectionDocking.js",
+          "diagram-js/lib/layout/LayoutUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/layout/LayoutUtil.js",
+          "diagram-js/lib/layout/ManhattanLayout": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/layout/ManhattanLayout.js",
+          "diagram-js/lib/navigation/keyboard-move": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/navigation/keyboard-move/index.js",
+          "diagram-js/lib/navigation/movecanvas": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/navigation/movecanvas/index.js",
+          "diagram-js/lib/navigation/touch": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/navigation/touch/index.js",
+          "diagram-js/lib/navigation/zoomscroll": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/navigation/zoomscroll/index.js",
+          "diagram-js/lib/util/AttachUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/AttachUtil.js",
+          "diagram-js/lib/util/Collections": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/Collections.js",
+          "diagram-js/lib/util/Elements": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/Elements.js",
+          "diagram-js/lib/util/EscapeUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/EscapeUtil.js",
+          "diagram-js/lib/util/Geometry": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/Geometry.js",
+          "diagram-js/lib/util/LineIntersection": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/LineIntersection.js",
+          "diagram-js/lib/util/Math": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/Math.js",
+          "diagram-js/lib/util/ModelUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/ModelUtil.js",
+          "diagram-js/lib/util/Mouse": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/Mouse.js",
+          "diagram-js/lib/util/PositionUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/PositionUtil.js",
+          "diagram-js/lib/util/RenderUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/RenderUtil.js",
+          "diagram-js/lib/util/SvgTransformUtil": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/SvgTransformUtil.js",
+          "diagram-js/lib/util/Text": "https://ga.jspm.io/npm:diagram-js@13.4.0/lib/util/Text.js",
+          "didi": "https://ga.jspm.io/npm:didi@10.0.1/dist/index.esm.js",
+          "hammerjs": "https://ga.jspm.io/npm:hammerjs@2.0.8/hammer.js",
+          "htm": "https://ga.jspm.io/npm:htm@3.1.1/dist/htm.module.js",
+          "htm/preact": "https://ga.jspm.io/npm:htm@3.1.1/preact/index.module.js",
+          "ids": "https://ga.jspm.io/npm:ids@1.0.5/dist/index.esm.js",
+          "inherits-browser": "https://ga.jspm.io/npm:inherits-browser@0.1.0/dist/index.es.js",
+          "min-dash": "https://ga.jspm.io/npm:min-dash@4.2.1/dist/index.esm.js",
+          "min-dom": "https://ga.jspm.io/npm:min-dom@4.1.0/dist/index.esm.js",
+          "moddle": "https://ga.jspm.io/npm:moddle@6.2.3/dist/index.esm.js",
+          "moddle-xml": "https://ga.jspm.io/npm:moddle-xml@10.1.0/dist/index.esm.js",
+          "object-refs": "https://ga.jspm.io/npm:object-refs@0.4.0/dist/index.js",
+          "path-intersection": "https://ga.jspm.io/npm:path-intersection@3.0.0/intersect.js",
+          "preact": "https://ga.jspm.io/npm:preact@10.19.3/dist/preact.module.js",
+          "preact/hooks": "https://ga.jspm.io/npm:preact@10.19.3/hooks/dist/hooks.module.js",
+          "saxen": "https://ga.jspm.io/npm:saxen@8.1.2/dist/index.js",
+          "tiny-svg": "https://ga.jspm.io/npm:tiny-svg@3.0.1/dist/index.esm.js"
+        }
+      }
+    }
+    </script>
+
+  <style>
+    html,
+    body,
+    #canvas {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .diagram-note {
+      background-color: rgba(66, 180, 21, 0.7);
+      color: White;
+      border-radius: 5px;
+      font-family: Arial;
+      font-size: 12px;
+      padding: 5px;
+      min-height: 16px;
+      width: 50px;
+      text-align: center;
+    }
+
+    .needs-discussion:not(.djs-connection) .djs-visual> :nth-child(1) {
+      stroke: rgba(66, 180, 21, 0.7) !important;
+      /* color elements as red */
+    }
+
+    #save-button {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+    }
+  </style>
+</head>
+
+
+<script type="module">
+  import BpmnModeler from "bpmn-js/lib/Modeler";
+  import CliModule from "bpmn-js-cli";
+
+  var cli_modeler = new BpmnModeler({
+    container: '#canvas',
+    additionalModules: [
+      CliModule
+    ],
+    cli: {
+      bindTo: 'cli'
+    }
+  });
+
+  window.cli_modeler = cli_modeler;
+  window.foo = "bar";
+</script>
+
+<body>
+  <div id="canvas"></div>
+
+  <button id="save-button">print to console</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log(window.cli_modeler);
+      console.log(window.foo);
+
+      // load external diagram file via AJAX and open it
+      var diagramUrl = './tmp/initial_out.bpmn';
+      $.when(
+        $.get(diagramUrl, openDiagram, 'text')).then(
+          () => {
+            //load json and update the model
+            fetch('./tmp/rules.json')
+              .then(response => response.json())
+              .then((data) => {
+
+                var rules = data;
+                console.log(rules);
+                cli.elements().forEach((el) => {
+                  const businessObjectName = cli.element(el).businessObject.name;
+                  for (const [key, value] of Object.entries(rules)) {
+                    if (businessObjectName === key) {
+                      cli.element(el).incoming.forEach((_in) => {
+                        if (_in) {
+                          cli.setLabel(_in, value);
+                        }
+                      });
+                      break;
+                    }
+                  }
+                });
+                console.log(data)
+              })
+          }
+        )
+
+      // wire save button
+      $('#save-button').click(exportDiagram);
+
+
+
+
+
+
+
+      async function exportDiagram() {
+
+        try {
+          var result = await window.cli_modeler.saveXML({format: true});
+          alert('Diagram exported. Check the developer tools!');
+          console.log('DIAGRAM', result.xml);
+        } catch (err) {
+
+          console.error('could not save BPMN 2.0 diagram', err);
+        }
+      }
+
+      /**
+       * Open diagram in our modeler instance.
+       *
+       * @param {String} bpmnXML diagram to display
+       */
+      async function openDiagram(bpmnXML) {
+
+        // import diagram
+        try {
+
+          await window.cli_modeler.importXML(bpmnXML);
+
+          // access modeler components
+          //var canvas = bpmnModeler.get('canvas');
+          //var overlays = bpmnModeler.get('overlays');
+          var canvas = window.cli_modeler.get('canvas');
+          var overlays = window.cli_modeler.get('overlays');
+
+
+          // zoom to fit full viewport
+          canvas.zoom('fit-viewport');
+
+          // attach an overlay to a node
+          overlays.add('SCAN_OK', 'note', {
+            position: {
+              bottom: 0,
+              right: 0
+            },
+            html: '<div class="diagram-note">Mixed up the labels?</div>'
+          });
+
+          // add marker
+          canvas.addMarker('SCAN_OK', 'needs-discussion');
+        } catch (err) {
+
+          console.error('could not import BPMN 2.0 diagram', err);
+        }
+      }
+
+
+    });
+  </script>
+  <!--
+      Thanks for trying out our BPMN toolkit!
+
+      This example uses the pre-built distribution of the bpmn-js modeler.
+      Consider rolling your own distribution to have more flexibility
+      regarding which features to include.
+
+      Checkout our advanced examples section to learn more:
+      * https://github.com/bpmn-io/bpmn-js-examples#advanced
+
+      To get a bit broader overview over how bpmn-js works,
+      follow our walkthrough:
+      * https://bpmn.io/toolkit/bpmn-js/walkthrough/
+
+      Related starters:
+      * https://raw.githubusercontent.com/bpmn-io/bpmn-js-examples/starter/viewer.html
+    -->
+</body>
+
+</html>
