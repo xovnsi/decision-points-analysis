@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Hello World</title>
+  <title>BPMNio Modeler</title>
 
   <!-- required modeler styles -->
   <link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.0.0/dist/assets/bpmn-js.css">
@@ -22,7 +22,8 @@
     {
       "imports": {
         "bpmn-js-cli": "https://ga.jspm.io/npm:bpmn-js-cli@2.4.0/index.js",
-        "bpmn-js/lib/Modeler": "https://ga.jspm.io/npm:bpmn-js@16.5.0/lib/Modeler.js"
+        "bpmn-js/lib/Modeler": "https://ga.jspm.io/npm:bpmn-js@16.5.0/lib/Modeler.js",
+        "bpmn-auto-layout": "https://ga.jspm.io/npm:bpmn-auto-layout@0.4.0/dist/index.esm.js"
       },
       "scopes": {
         "https://ga.jspm.io/": {
@@ -124,7 +125,12 @@
           "preact": "https://ga.jspm.io/npm:preact@10.19.3/dist/preact.module.js",
           "preact/hooks": "https://ga.jspm.io/npm:preact@10.19.3/hooks/dist/hooks.module.js",
           "saxen": "https://ga.jspm.io/npm:saxen@8.1.2/dist/index.js",
-          "tiny-svg": "https://ga.jspm.io/npm:tiny-svg@3.0.1/dist/index.esm.js"
+          "tiny-svg": "https://ga.jspm.io/npm:tiny-svg@3.0.1/dist/index.esm.js",
+          "bpmn-moddle": "https://ga.jspm.io/npm:bpmn-moddle@8.1.0/dist/index.esm.js",
+          "min-dash": "https://ga.jspm.io/npm:min-dash@4.2.1/dist/index.esm.js",
+          "moddle": "https://ga.jspm.io/npm:moddle@6.2.3/dist/index.esm.js",
+          "moddle-xml": "https://ga.jspm.io/npm:moddle-xml@10.1.0/dist/index.esm.js",
+          "saxen": "https://ga.jspm.io/npm:saxen@8.1.2/dist/index.js"
         }
       }
     }
@@ -168,6 +174,7 @@
 <script type="module">
   import BpmnModeler from "bpmn-js/lib/Modeler";
   import CliModule from "bpmn-js-cli";
+  import {layoutProcess} from "bpmn-auto-layout";
 
   var cli_modeler = new BpmnModeler({
     container: '#canvas',
@@ -181,6 +188,7 @@
 
   window.cli_modeler = cli_modeler;
   window.foo = "bar";
+  window.layoutProcess = layoutProcess;
 </script>
 
 <body>
@@ -190,11 +198,11 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      console.log(window.cli_modeler);
+      console.log(window.cli);
       console.log(window.foo);
 
       // load external diagram file via AJAX and open it
-      var diagramUrl = './tmp/initial_out.bpmn';
+      var diagramUrl = './tmp/initial_in.bpmn';
       $.when(
         $.get(diagramUrl, openDiagram, 'text')).then(
           () => {
@@ -205,7 +213,7 @@
 
                 var rules = data;
                 console.log(rules);
-                cli.elements().forEach((el) => {
+                window.cli.elements().forEach((el) => {
                   const businessObjectName = cli.element(el).businessObject.name;
                   for (const [key, value] of Object.entries(rules)) {
                     if (businessObjectName === key) {
@@ -221,8 +229,25 @@
                 console.log(data)
               })
           }
-        )
-
+        ).then(() => {
+          var result = window.cli_modeler.saveXML({format: true});
+          result.then(function (res) {
+            console.log('result');
+            //console.log(res.xml);
+            var updated = window.layoutProcess(res.xml);
+            updated.then(function (res) {
+              console.log('result updated');
+              console.log(res);
+              console.log(res.xml);
+              window.cli_modeler.importXML(res);
+            })
+          })
+          // result = window.layoutProcess(result.xml);
+          // window.cli_modeler.importXML(result)
+        }
+        ).catch(error => {
+          console.error('Failed to update layout:', error);
+        });
       // wire save button
       $('#save-button').click(exportDiagram);
 

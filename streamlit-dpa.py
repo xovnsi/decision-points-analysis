@@ -125,17 +125,15 @@ def main():
             st.graphviz_chart(st.session_state['initial_bpmn_graph_image'])
             if not os.path.exists('tmp'):
                 os.mkdir('tmp')
-            bpmn_exporter.apply(st.session_state['initial_bpmn_diagram'], 'tmp/initial.bpmn')
+            bpmn_exporter.apply(st.session_state['initial_bpmn_diagram'], 'tmp/initial_in.bpmn')
 
             # use bpmn-js through naked to save the svg file:
-            node_script_path = 'diagram.js'
-
-            response = muterun_js(node_script_path, arguments="-r esm")
-
-            if response.exitcode == 0:
-                print(response.stdout)
-            else:
-                print(response.stderr)
+            # node_script_path = './initial.js'
+            # response = muterun_js(node_script_path, arguments="-r esm")
+            # if response.exitcode == 0:
+            #     print(response.stdout)
+            # else:
+            #     print(response.stderr)
 
             # Extracting the decision points datasets
             if st.session_state.decision_points_data is None:
@@ -163,6 +161,11 @@ def main():
                     st.success("A text file containing the results has been saved with the name '{}'".format(output_file_name), icon="\U00002705")
                     with open(output_file_name, "rb") as f:
                         st.download_button("Download results", f, file_name=output_file_name)
+
+                # display updated bpmn with the rules
+                # 
+                st.components.v1.iframe("http://localhost:8000/modeler.html", height=800)
+
 
 
 if __name__ == '__main__':

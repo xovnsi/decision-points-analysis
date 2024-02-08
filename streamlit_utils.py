@@ -138,6 +138,7 @@ def build_datasets():
 
 
 def rules_computation():
+    rule_dictionary = {}
     map_transitions_events = get_map_transitions_to_events(st.session_state['net'])
     file_name = 'results_{}_{}.txt'.format(st.session_state['uploaded_log_name'], datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S"))
     for decision_point in st.session_state.decision_points_data.keys():
@@ -165,6 +166,7 @@ def rules_computation():
                 for k in converted_rules.keys():
                     f.write('{}: {}\n'.format(k, converted_rules[k]))
                 f.write('\n')
+            rule_dictionary = rule_dictionary | converted_rules
         else:
             st.write("Fitting a decision tree on the decision point's dataset...")
 
@@ -227,12 +229,13 @@ def rules_computation():
                     f.write('\n')
                 st.write('converted rules')
                 st.write(converted_rules)
-                st.write('rules')
-                st.write(rules)
-                st.write('map_transitions_events')
-                st.write(map_transitions_events)
-                st.write('net')
-                st.write(st.session_state['net'])
+                rule_dictionary = rule_dictionary | converted_rules
+                # st.write('rules')
+                # st.write(rules)
+                # st.write('map_transitions_events')
+                # st.write(map_transitions_events)
+                # st.write('net')
+                # st.write(st.session_state['net'])
                 st.session_state['foo_diagram'] = pm4py.convert_to_bpmn(
                     st.session_state['net'],
                     st.session_state['im'],
@@ -241,9 +244,14 @@ def rules_computation():
                 bpmn_exporter.apply(
                     st.session_state['foo_diagram'],
                     'tmp/foo.bpmn')
+
             else:
                 st.write("Could not fit a Decision Tree on this dataset.")
                 with open(file_name, 'a') as f:
                     f.write('{} - FAIL\n'.format(decision_point))
                     f.write('Dataset target values counts: {}\n'.format(dataset['target'].value_counts()))
+
+    with open('./tmp/rules.json', 'w') as f:
+        json.dump(rule_dictionary, f)
+
     return file_name
