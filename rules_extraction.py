@@ -30,7 +30,12 @@ def sampling_dataset(dataset) -> pd.DataFrame:
             samples.append(group)
             samples.append(groups[-1].sample(len(group)))
         # The datasets in the 'samples' list are then concatenated together
-        dataset = pd.concat(samples, ignore_index=True)
+        try:
+            dataset = pd.concat(samples, ignore_index=True)
+        except ValueError as e:
+            print(f'Value Error: {e}')
+            print('No samples added to the dataset')
+            
 
     return dataset
 
