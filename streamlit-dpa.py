@@ -16,7 +16,7 @@ st.set_page_config(layout="wide")
 
 def main():
     # used to serve BPMNio
-    subprocess.run(['python', '-m', 'http.server'])
+    subprocess.Popen(['python', '-m', 'http.server'])
     if 'uploaded_log_name' not in st.session_state:
         st.session_state['uploaded_log_name'] = None
 
