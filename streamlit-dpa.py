@@ -10,7 +10,6 @@ from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from streamlit_utils import get_unique_values_log, create_dict, save_json, build_datasets, rules_computation
 from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
-from Naked.toolshed.shell import muterun_js
 
 st.set_page_config(layout="wide")
 
