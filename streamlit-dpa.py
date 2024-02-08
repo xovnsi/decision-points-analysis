@@ -8,15 +8,16 @@ import subprocess
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
-from streamlit_utils import get_unique_values_log, create_dict, save_json, build_datasets, rules_computation
+from streamlit_utils import get_unique_values_log, create_dict, save_json, build_datasets, rules_computation, start_server
 from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import requests
 
 st.set_page_config(layout="wide")
 
 def main():
-    # used to serve BPMNio
-    subprocess.Popen(['python', '-m', 'http.server'])
+    start_server()
     if 'uploaded_log_name' not in st.session_state:
         st.session_state['uploaded_log_name'] = None
 

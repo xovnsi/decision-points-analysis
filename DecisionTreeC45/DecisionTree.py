@@ -78,7 +78,17 @@ class DecisionTree(object):
 
     def predict(self, data_in, distribution=False):
         """ Starting from the root, predicts the class corresponding to the features contained in "data_in" """
+        # try:
+        print(self._root_node.get_attribute())
+        if self._root_node.get_attribute() == None:
+            return
+
         attribute = self._root_node.get_attribute().split(":")[0]
+        # except AttributeError as e:
+        #     print(f'Attribute error: {e}')
+        #     print(f'Skipping tree {self}: no root node')
+        #     return []
+
         data_in = data_in.fillna('?')
         preds = list()
         # data_in is a pandas DataFrame

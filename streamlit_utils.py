@@ -16,6 +16,8 @@ from sklearn import metrics
 from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
 import pm4py
+import requests
+import subprocess
 
 
 def get_unique_values_log():
@@ -179,6 +181,9 @@ def rules_computation():
                 dt.fit(dataset)
 
                 y_pred = dt.predict(dataset.drop(columns=['target']))
+                if y_pred == None:
+                    print("The data are not feasible for fitting a tree. Can't find a suitable split of the root node.")
+                    continue
 
                 accuracy = metrics.accuracy_score(dataset['target'], y_pred)
                 accuracies.append(accuracy)
@@ -255,3 +260,15 @@ def rules_computation():
         json.dump(rule_dictionary, f)
 
     return file_name
+
+def start_server():
+    """http.server is used to load files from filesystem into
+    the streamlit app; by default browsers block such scripts"""
+    try:
+        response = requests.get("http://localhost:8000")
+        if response.status_code == 200:
+            print('http.server already running')
+    except requests.ConnectionError as e:
+        print('Starting http.server on port 8000')
+
+        server_process = subprocess.Popen(['python', '-m', 'http.server'])
