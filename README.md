@@ -1,4 +1,6 @@
 # Decision Points Analysis
+This is a fork of the repository available [here](https://github.com/savoiadiego/decision-points-analysis).
+
 #### *A novel method to perform Decision Points Analysis considering multiple paths that process instances could follow inside the Petri Net model.*
 
 Understanding and analyzing decisions inside a business process can provide valuable insights about the process itself.
@@ -36,9 +38,32 @@ set of visible transitions recorded in the log, the model could allow multiple d
 transitions. These alternative paths may or may not have been followed by the process instance, since invisible transitions
 are not recorded in the Event Log.
 
-### Can I try it out?
+### How to run
 
-Sure. A working version of the algorithm is available as a web app via Streamlit at [this page](https://savoiadiego-decision-points-analysis-streamlit-dpa-gbben4.streamlitapp.com/).
+Install python requirements
+```
+pip install -r requirements.txt
+```
+
+To start the application
+```
+streamlit run streamlit-dpa.py
+```
+
+In order to use daikon for rule extraction, you may need to copy [`checkargs.pm`](./checkargs.pm) into your perl package directory. You can check your directory location with
+```
+perl -le "print for @INC"
+```
+e.g.
+```
+/usr/lib/perl5/5.38/vendor_perl
+```
+You may also need to install other missing perl packages. You can do it with
+```
+cpan install <package name>
+```
+
+### Usage
 
 You just need to upload the Event Log file (.xes format only at the moment) and it will show the first 10 unique values
 for each attribute. You must select the proper type for each attribute (categorical, continuous or boolean) through the
