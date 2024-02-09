@@ -130,14 +130,6 @@ def main():
                 os.mkdir('tmp')
             bpmn_exporter.apply(st.session_state['initial_bpmn_diagram'], 'tmp/initial_in.bpmn')
 
-            # use bpmn-js through naked to save the svg file:
-            # node_script_path = './initial.js'
-            # response = muterun_js(node_script_path, arguments="-r esm")
-            # if response.exitcode == 0:
-            #     print(response.stdout)
-            # else:
-            #     print(response.stderr)
-
             # Extracting the decision points datasets
             if st.session_state.decision_points_data is None:
                 st.session_state.decision_points_data = build_datasets()
