@@ -131,7 +131,7 @@ def main():
             bpmn_exporter.apply(st.session_state['initial_bpmn_diagram'], 'tmp/initial_in.bpmn')
 
             # Extracting the decision points datasets
-            if st.session_state.decision_points_data is None:
+            if not st.session_state.decision_points_data:
                 st.session_state.decision_points_data = build_datasets()
 
             # Method selection
@@ -158,8 +158,18 @@ def main():
                         st.download_button("Download results", f, file_name=output_file_name)
 
                 # display updated bpmn with the rules
-                # 
                 st.components.v1.iframe("http://localhost:8000/modeler.html", height=800)
+                #st.components.v1.html("""
+                #<style>
+                #    #myFrame { width:100%; height:1000px }
+                #</style>
+                #<iframe
+                #    src="http://localhost:8000/modeler.html"
+                #    id="myFrame"
+                #    height="1000"
+                #    frameborder="1">
+                #</iframe>
+                #                      """)
 
 
 

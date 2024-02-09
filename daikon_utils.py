@@ -67,6 +67,8 @@ def discover_branching_conditions(dataset) -> dict:
     if len(target_datasets) == 2:
         conj_expressions = _adjust_conditions(target_datasets, conj_expressions)
 
+    conj_expressions = ['None' if not e else e for e in conj_expressions]
+
     # Rewriting the operands for the latent variables (i.e. '_plus_' becomes '+' etc.)
     conj_expressions = list(map(_clean_latent_variables, conj_expressions))
 
@@ -166,9 +168,12 @@ def _adjust_conditions(sets, conj_expressions) -> list:
     the lower information gain is set to the negation of the other.
     """
 
+    print(conj_expressions)
     conj_expr_1, conj_expr_2 = conj_expressions
 
-    if conj_expr_1 is not None and conj_expr_2 is not None:
+    if conj_expr_1 is None and conj_expr_2 is None:
+        return ['None', 'None']
+    elif conj_expr_1 is not None and conj_expr_2 is not None:
         expr_1_list = conj_expr_1.split(' && ')
         expr_2_list = conj_expr_2.split(' && ')
         info_gain_expr_1 = _compute_information_gain(sets, expr_1_list)
