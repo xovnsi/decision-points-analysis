@@ -10,7 +10,8 @@ class Trace:
         self.attribute_space = {
             "speed": [1.0, 5.0],
             "color": ["red", "blue", "black", "silver"],
-            "isManual": [True, False]
+            "manual": [True, False],
+            "ac": ["yes", "no"]
         }
 
         self.attributes = {}
@@ -77,7 +78,8 @@ def trace_to_xes(trace, concept_name):
       <date key="time:timestamp" value="{current_time.isoformat()}+01:00"/>\n"""
 
         for key, value in trace.attributes.items():
-            xes_trace += f'      <string key="{key}" value="{value}"/>\n'
+            value_type = "boolean" if isinstance(value, bool) else "string"
+            xes_trace += f'      <{value_type} key="{key}" value="{str(value).lower()}"/>\n'
 
         xes_trace += "    </event>\n"
         current_time += delta
@@ -144,12 +146,12 @@ nodes = [
         Condition("color", "==", "silver", "D"),
     ], "E"),
     Node("C", [
-        Condition("isManual", "==", True, "G"),
+        Condition("manual", "==", True, "G"),
     ], "H"),
     Node("D", [], "F"),
     Node("E", [], "F"),
     Node("F", [], None),
-    Node("G", [], "F"),
+    Node("G", [], "I"),
     Node("H", [], "I"),
     Node("I", [], None),
 ]
