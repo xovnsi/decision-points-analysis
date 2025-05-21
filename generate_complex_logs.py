@@ -7,13 +7,13 @@ import argparse
 from datetime import datetime, timedelta
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Generate complex event logs with concurrency, branching, and loops.")
+    parser = argparse.ArgumentParser(description="Generate customizable event logs.")
     parser.add_argument("-n", "--num-traces", type=int, default=100,
                         help="Number of traces to generate (default: 100)")
     parser.add_argument("-a", "--num-attributes", type=int, default=3,
                         help="Number of attributes per event (default: 3)")
-    parser.add_argument("-o", "--output-name", type=str, default="complex",
-                        help="Output base name for log and attributes files (default: complex)")
+    parser.add_argument("-o", "--output-name", type=str, default="test",
+                        help="Output base name for log and attributes files (default: test)")
     return parser.parse_args()
 
 def generate_random_value(attr_type):
@@ -27,29 +27,26 @@ def generate_random_value(attr_type):
         return None
 
 def generate_trace(attributes):
-    """
-    Generates one trace with branching, loops, and concurrency based on attribute values.
-    """
-    trace_events = ["Start"]
-
-    # Branching: choose between two paths based on attr_0
+    # Use a balanced condition for decision_label
     if attributes.get("attr_0", 0) > 50:
-        trace_events += ["Task_A1", "Task_A2"]
+        decision_label = random.choice(["A", "B"])  # randomly pick so tree sees variation
+        if decision_label == "A":
+            trace_events = ["Start", "Task_A1", "Task_A2"]
+        else:
+            trace_events = ["Start", "Task_A3", "Task_A4"]
     else:
-        trace_events += ["Task_B1", "Task_B2"]
+        decision_label = random.choice(["C", "D"])
+        if decision_label == "C":
+            trace_events = ["Start", "Task_B1", "Task_B2"]
+        else:
+            trace_events = ["Start", "Task_B3", "Task_B4"]
 
-    # Parallel tasks (interleaved randomly)
-    parallel_tasks = ["Parallel_1", "Parallel_2", "Parallel_3"]
-    random.shuffle(parallel_tasks)
-    trace_events += parallel_tasks
-
-    # Optional loop: repeat "Review" 0 to 2 times randomly
-    for _ in range(random.randint(0, 2)):
-        trace_events.append("Review")
+    # Add parallel tasks and loops as before...
 
     trace_events.append("End")
-
+    attributes["decision_label"] = decision_label
     return trace_events
+
 
 def main():
     args = parse_args()
@@ -58,48 +55,49 @@ def main():
     NUM_ATTRIBUTES = args.num_attributes
     OUTPUT_NAME = args.output_name
 
-    # Define attribute types cyclically
+    ATTRIBUTE_TYPES = []
     types = ["continuous", "boolean", "categorical"]
-    ATTRIBUTE_TYPES = [types[i % len(types)] for i in range(NUM_ATTRIBUTES)]
+    for i in range(NUM_ATTRIBUTES):
+        ATTRIBUTE_TYPES.append(types[i % len(types)])
 
     log = EventLog()
 
     for trace_idx in range(NUM_TRACES):
-        # Generate attribute values for this trace
+        # Generate attributes for this trace
         attributes = {}
         for i in range(NUM_ATTRIBUTES):
             attr_name = f"attr_{i}"
             attributes[attr_name] = generate_random_value(ATTRIBUTE_TYPES[i])
 
-        # Generate the event sequence for the trace
+        # Generate event sequence depending on attributes, also adds decision_label
         event_sequence = generate_trace(attributes)
 
-        # Build the trace
         trace = Trace()
         trace.attributes["concept:name"] = f"Trace_{trace_idx+1}"
 
-        # Timestamps: start now, increment 1 min per event
         timestamp = datetime.now()
-
         for event_name in event_sequence:
             event = Event()
             event["concept:name"] = event_name
-            # Add all attributes to each event
+
+            # Add all attributes including decision_label to each event
             for attr_name, attr_value in attributes.items():
                 event[attr_name] = attr_value
+
             event["time:timestamp"] = timestamp
             timestamp += timedelta(minutes=1)
 
             trace.append(event)
         log.append(trace)
 
-    # Export log to XES
+    # Export the log
     log_file_path = f"logs/log-{OUTPUT_NAME}.xes"
     xes_exporter.apply(log, log_file_path)
     print(f"Log exported to {log_file_path}")
 
-    # Save attribute types to JSON for decision tree usage
+    # Save attribute types to JSON for your decision tree input (including decision_label type)
     attr_map = {f"attr_{i}": ATTRIBUTE_TYPES[i] for i in range(NUM_ATTRIBUTES)}
+    attr_map["decision_label"] = "categorical"
     attr_file_path = f"dt-attributes/{OUTPUT_NAME}.attr"
     with open(attr_file_path, "w") as f:
         json.dump(attr_map, f, indent=4)

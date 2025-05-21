@@ -4,20 +4,20 @@
 		<string key="concept:name" value="Trace 0" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-21T09:32:05.976150" />
-			<float key="cost" value="83.31483879500699" />
+			<date key="time:timestamp" value="2025-05-21T09:47:02.964798" />
+			<float key="cost" value="60.34" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-21T09:37:05.976150" />
-			<float key="cost" value="83.31483879500699" />
+			<date key="time:timestamp" value="2025-05-21T09:52:02.964798" />
+			<float key="cost" value="60.34" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-21T09:42:05.976150" />
-			<float key="cost" value="83.31483879500699" />
+			<date key="time:timestamp" value="2025-05-21T09:57:02.964798" />
+			<float key="cost" value="60.34" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -25,20 +25,20 @@
 		<string key="concept:name" value="Trace 1" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-22T09:32:05.976150" />
-			<float key="cost" value="35.42924353853587" />
+			<date key="time:timestamp" value="2025-05-22T09:47:02.964798" />
+			<float key="cost" value="54.54" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-05-22T09:37:05.976150" />
-			<float key="cost" value="35.42924353853587" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-05-22T09:52:02.964798" />
+			<float key="cost" value="54.54" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-22T09:42:05.976150" />
-			<float key="cost" value="35.42924353853587" />
+			<date key="time:timestamp" value="2025-05-22T09:57:02.964798" />
+			<float key="cost" value="54.54" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -46,20 +46,20 @@
 		<string key="concept:name" value="Trace 2" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-23T09:32:05.976150" />
-			<float key="cost" value="26.27341518216788" />
+			<date key="time:timestamp" value="2025-05-23T09:47:02.964798" />
+			<float key="cost" value="35.45" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-05-23T09:37:05.976150" />
-			<float key="cost" value="26.27341518216788" />
+			<date key="time:timestamp" value="2025-05-23T09:52:02.964798" />
+			<float key="cost" value="35.45" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-23T09:42:05.976150" />
-			<float key="cost" value="26.27341518216788" />
+			<date key="time:timestamp" value="2025-05-23T09:57:02.964798" />
+			<float key="cost" value="35.45" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -67,83 +67,83 @@
 		<string key="concept:name" value="Trace 3" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-24T09:32:05.976150" />
-			<float key="cost" value="68.36889743122431" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-24T09:47:02.964798" />
+			<float key="cost" value="64.13" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-24T09:37:05.976150" />
-			<float key="cost" value="68.36889743122431" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-24T09:52:02.964798" />
+			<float key="cost" value="64.13" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-24T09:42:05.976150" />
-			<float key="cost" value="68.36889743122431" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-24T09:57:02.964798" />
+			<float key="cost" value="64.13" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 4" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-25T09:32:05.976150" />
-			<float key="cost" value="35.91535516029525" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-25T09:47:02.964798" />
+			<float key="cost" value="13.31" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-05-25T09:37:05.976150" />
-			<float key="cost" value="35.91535516029525" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-25T09:52:02.964798" />
+			<float key="cost" value="13.31" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-25T09:42:05.976150" />
-			<float key="cost" value="35.91535516029525" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-25T09:57:02.964798" />
+			<float key="cost" value="13.31" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 5" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-26T09:32:05.976150" />
-			<float key="cost" value="62.933072416873536" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-26T09:47:02.964798" />
+			<float key="cost" value="65.09" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-26T09:37:05.976150" />
-			<float key="cost" value="62.933072416873536" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-26T09:52:02.964798" />
+			<float key="cost" value="65.09" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-26T09:42:05.976150" />
-			<float key="cost" value="62.933072416873536" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-05-26T09:57:02.964798" />
+			<float key="cost" value="65.09" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 6" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-27T09:32:05.976150" />
-			<float key="cost" value="88.71779146753033" />
+			<date key="time:timestamp" value="2025-05-27T09:47:02.964798" />
+			<float key="cost" value="87.81" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-27T09:37:05.976150" />
-			<float key="cost" value="88.71779146753033" />
+			<date key="time:timestamp" value="2025-05-27T09:52:02.964798" />
+			<float key="cost" value="87.81" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-27T09:42:05.976150" />
-			<float key="cost" value="88.71779146753033" />
+			<date key="time:timestamp" value="2025-05-27T09:57:02.964798" />
+			<float key="cost" value="87.81" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -151,125 +151,125 @@
 		<string key="concept:name" value="Trace 7" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-28T09:32:05.976150" />
-			<float key="cost" value="55.71219608075517" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-28T09:47:02.964798" />
+			<float key="cost" value="18.7" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-28T09:37:05.976150" />
-			<float key="cost" value="55.71219608075517" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-05-28T09:52:02.964798" />
+			<float key="cost" value="18.7" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-28T09:42:05.976150" />
-			<float key="cost" value="55.71219608075517" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-28T09:57:02.964798" />
+			<float key="cost" value="18.7" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 8" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-29T09:32:05.976150" />
-			<float key="cost" value="47.68888480389775" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-29T09:47:02.964798" />
+			<float key="cost" value="4.16" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-05-29T09:37:05.976150" />
-			<float key="cost" value="47.68888480389775" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-29T09:52:02.964798" />
+			<float key="cost" value="4.16" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-29T09:42:05.976150" />
-			<float key="cost" value="47.68888480389775" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-29T09:57:02.964798" />
+			<float key="cost" value="4.16" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 9" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-30T09:32:05.976150" />
-			<float key="cost" value="87.07200413509491" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-30T09:47:02.964798" />
+			<float key="cost" value="2.17" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-30T09:37:05.976150" />
-			<float key="cost" value="87.07200413509491" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-05-30T09:52:02.964798" />
+			<float key="cost" value="2.17" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-30T09:42:05.976150" />
-			<float key="cost" value="87.07200413509491" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-30T09:57:02.964798" />
+			<float key="cost" value="2.17" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 10" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-05-31T09:32:05.976150" />
-			<float key="cost" value="98.69806106080671" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-31T09:47:02.964798" />
+			<float key="cost" value="24.01" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-05-31T09:37:05.976150" />
-			<float key="cost" value="98.69806106080671" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-05-31T09:52:02.964798" />
+			<float key="cost" value="24.01" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-05-31T09:42:05.976150" />
-			<float key="cost" value="98.69806106080671" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-05-31T09:57:02.964798" />
+			<float key="cost" value="24.01" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 11" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-01T09:32:05.976150" />
-			<float key="cost" value="61.02700481483831" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-01T09:47:02.964798" />
+			<float key="cost" value="48.92" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-01T09:37:05.976150" />
-			<float key="cost" value="61.02700481483831" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-01T09:52:02.964798" />
+			<float key="cost" value="48.92" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-01T09:42:05.976150" />
-			<float key="cost" value="61.02700481483831" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-01T09:57:02.964798" />
+			<float key="cost" value="48.92" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 12" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-02T09:32:05.976150" />
-			<float key="cost" value="47.934118746472045" />
+			<date key="time:timestamp" value="2025-06-02T09:47:02.964798" />
+			<float key="cost" value="66.52" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-02T09:37:05.976150" />
-			<float key="cost" value="47.934118746472045" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-02T09:52:02.964798" />
+			<float key="cost" value="66.52" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-02T09:42:05.976150" />
-			<float key="cost" value="47.934118746472045" />
+			<date key="time:timestamp" value="2025-06-02T09:57:02.964798" />
+			<float key="cost" value="66.52" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -277,20 +277,20 @@
 		<string key="concept:name" value="Trace 13" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-03T09:32:05.976150" />
-			<float key="cost" value="38.08783555275673" />
+			<date key="time:timestamp" value="2025-06-03T09:47:02.964798" />
+			<float key="cost" value="99.87" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-03T09:37:05.976150" />
-			<float key="cost" value="38.08783555275673" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-03T09:52:02.964798" />
+			<float key="cost" value="99.87" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-03T09:42:05.976150" />
-			<float key="cost" value="38.08783555275673" />
+			<date key="time:timestamp" value="2025-06-03T09:57:02.964798" />
+			<float key="cost" value="99.87" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -298,41 +298,41 @@
 		<string key="concept:name" value="Trace 14" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-04T09:32:05.976150" />
-			<float key="cost" value="45.537715485965165" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-04T09:47:02.964798" />
+			<float key="cost" value="18.1" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-04T09:37:05.976150" />
-			<float key="cost" value="45.537715485965165" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-04T09:52:02.964798" />
+			<float key="cost" value="18.1" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-04T09:42:05.976150" />
-			<float key="cost" value="45.537715485965165" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-04T09:57:02.964798" />
+			<float key="cost" value="18.1" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 15" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-05T09:32:05.976150" />
-			<float key="cost" value="9.46790524421779" />
+			<date key="time:timestamp" value="2025-06-05T09:47:02.964798" />
+			<float key="cost" value="96.29" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-05T09:37:05.976150" />
-			<float key="cost" value="9.46790524421779" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-05T09:52:02.964798" />
+			<float key="cost" value="96.29" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-05T09:42:05.976150" />
-			<float key="cost" value="9.46790524421779" />
+			<date key="time:timestamp" value="2025-06-05T09:57:02.964798" />
+			<float key="cost" value="96.29" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -340,62 +340,62 @@
 		<string key="concept:name" value="Trace 16" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-06T09:32:05.976150" />
-			<float key="cost" value="2.059259468904351" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-06T09:47:02.964798" />
+			<float key="cost" value="49.48" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-06T09:37:05.976150" />
-			<float key="cost" value="2.059259468904351" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-06T09:52:02.964798" />
+			<float key="cost" value="49.48" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-06T09:42:05.976150" />
-			<float key="cost" value="2.059259468904351" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-06T09:57:02.964798" />
+			<float key="cost" value="49.48" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 17" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-07T09:32:05.976150" />
-			<float key="cost" value="56.027642475125624" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-07T09:47:02.964798" />
+			<float key="cost" value="31.34" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-07T09:37:05.976150" />
-			<float key="cost" value="56.027642475125624" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-07T09:52:02.964798" />
+			<float key="cost" value="31.34" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-07T09:42:05.976150" />
-			<float key="cost" value="56.027642475125624" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-07T09:57:02.964798" />
+			<float key="cost" value="31.34" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 18" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-08T09:32:05.976150" />
-			<float key="cost" value="52.368605862086696" />
+			<date key="time:timestamp" value="2025-06-08T09:47:02.964798" />
+			<float key="cost" value="7.44" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-08T09:37:05.976150" />
-			<float key="cost" value="52.368605862086696" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-08T09:52:02.964798" />
+			<float key="cost" value="7.44" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-08T09:42:05.976150" />
-			<float key="cost" value="52.368605862086696" />
+			<date key="time:timestamp" value="2025-06-08T09:57:02.964798" />
+			<float key="cost" value="7.44" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -403,41 +403,41 @@
 		<string key="concept:name" value="Trace 19" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-09T09:32:05.976150" />
-			<float key="cost" value="35.85083735014568" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-09T09:47:02.964798" />
+			<float key="cost" value="21.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-09T09:37:05.976150" />
-			<float key="cost" value="35.85083735014568" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-09T09:52:02.964798" />
+			<float key="cost" value="21.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-09T09:42:05.976150" />
-			<float key="cost" value="35.85083735014568" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-09T09:57:02.964798" />
+			<float key="cost" value="21.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 20" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-10T09:32:05.976150" />
-			<float key="cost" value="71.00855573078846" />
+			<date key="time:timestamp" value="2025-06-10T09:47:02.964798" />
+			<float key="cost" value="5.41" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-10T09:37:05.976150" />
-			<float key="cost" value="71.00855573078846" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-10T09:52:02.964798" />
+			<float key="cost" value="5.41" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-10T09:42:05.976150" />
-			<float key="cost" value="71.00855573078846" />
+			<date key="time:timestamp" value="2025-06-10T09:57:02.964798" />
+			<float key="cost" value="5.41" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -445,20 +445,20 @@
 		<string key="concept:name" value="Trace 21" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-11T09:32:05.976150" />
-			<float key="cost" value="5.029778220974002" />
+			<date key="time:timestamp" value="2025-06-11T09:47:02.964798" />
+			<float key="cost" value="89.7" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-11T09:37:05.976150" />
-			<float key="cost" value="5.029778220974002" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-11T09:52:02.964798" />
+			<float key="cost" value="89.7" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-11T09:42:05.976150" />
-			<float key="cost" value="5.029778220974002" />
+			<date key="time:timestamp" value="2025-06-11T09:57:02.964798" />
+			<float key="cost" value="89.7" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -466,20 +466,20 @@
 		<string key="concept:name" value="Trace 22" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-12T09:32:05.976150" />
-			<float key="cost" value="87.4462025529587" />
+			<date key="time:timestamp" value="2025-06-12T09:47:02.964798" />
+			<float key="cost" value="89.08" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-12T09:37:05.976150" />
-			<float key="cost" value="87.4462025529587" />
+			<date key="time:timestamp" value="2025-06-12T09:52:02.964798" />
+			<float key="cost" value="89.08" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-12T09:42:05.976150" />
-			<float key="cost" value="87.4462025529587" />
+			<date key="time:timestamp" value="2025-06-12T09:57:02.964798" />
+			<float key="cost" value="89.08" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -487,41 +487,41 @@
 		<string key="concept:name" value="Trace 23" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-13T09:32:05.976150" />
-			<float key="cost" value="97.05827298238329" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-13T09:47:02.964798" />
+			<float key="cost" value="61.39" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-13T09:37:05.976150" />
-			<float key="cost" value="97.05827298238329" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-13T09:52:02.964798" />
+			<float key="cost" value="61.39" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-13T09:42:05.976150" />
-			<float key="cost" value="97.05827298238329" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-13T09:57:02.964798" />
+			<float key="cost" value="61.39" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 24" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-14T09:32:05.976150" />
-			<float key="cost" value="3.804935341984006" />
+			<date key="time:timestamp" value="2025-06-14T09:47:02.964798" />
+			<float key="cost" value="17.07" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-14T09:37:05.976150" />
-			<float key="cost" value="3.804935341984006" />
+			<date key="time:timestamp" value="2025-06-14T09:52:02.964798" />
+			<float key="cost" value="17.07" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-14T09:42:05.976150" />
-			<float key="cost" value="3.804935341984006" />
+			<date key="time:timestamp" value="2025-06-14T09:57:02.964798" />
+			<float key="cost" value="17.07" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -529,41 +529,41 @@
 		<string key="concept:name" value="Trace 25" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-15T09:32:05.976150" />
-			<float key="cost" value="86.30593541183954" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-15T09:47:02.964798" />
+			<float key="cost" value="66.58" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-15T09:37:05.976150" />
-			<float key="cost" value="86.30593541183954" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-15T09:52:02.964798" />
+			<float key="cost" value="66.58" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-15T09:42:05.976150" />
-			<float key="cost" value="86.30593541183954" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-15T09:57:02.964798" />
+			<float key="cost" value="66.58" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 26" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-16T09:32:05.976150" />
-			<float key="cost" value="7.343968786844856" />
+			<date key="time:timestamp" value="2025-06-16T09:47:02.964798" />
+			<float key="cost" value="53.77" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-16T09:37:05.976150" />
-			<float key="cost" value="7.343968786844856" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-16T09:52:02.964798" />
+			<float key="cost" value="53.77" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-16T09:42:05.976150" />
-			<float key="cost" value="7.343968786844856" />
+			<date key="time:timestamp" value="2025-06-16T09:57:02.964798" />
+			<float key="cost" value="53.77" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -571,41 +571,41 @@
 		<string key="concept:name" value="Trace 27" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-17T09:32:05.976150" />
-			<float key="cost" value="80.11883601606773" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-17T09:47:02.964798" />
+			<float key="cost" value="45.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-17T09:37:05.976150" />
-			<float key="cost" value="80.11883601606773" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-17T09:52:02.964798" />
+			<float key="cost" value="45.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-17T09:42:05.976150" />
-			<float key="cost" value="80.11883601606773" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-17T09:57:02.964798" />
+			<float key="cost" value="45.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 28" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-18T09:32:05.976150" />
-			<float key="cost" value="32.15683829030682" />
+			<date key="time:timestamp" value="2025-06-18T09:47:02.964798" />
+			<float key="cost" value="44.49" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-18T09:37:05.976150" />
-			<float key="cost" value="32.15683829030682" />
+			<date key="time:timestamp" value="2025-06-18T09:52:02.964798" />
+			<float key="cost" value="44.49" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-18T09:42:05.976150" />
-			<float key="cost" value="32.15683829030682" />
+			<date key="time:timestamp" value="2025-06-18T09:57:02.964798" />
+			<float key="cost" value="44.49" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -613,20 +613,20 @@
 		<string key="concept:name" value="Trace 29" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-19T09:32:05.976150" />
-			<float key="cost" value="36.137565014519325" />
+			<date key="time:timestamp" value="2025-06-19T09:47:02.964798" />
+			<float key="cost" value="27.67" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-19T09:37:05.976150" />
-			<float key="cost" value="36.137565014519325" />
+			<date key="time:timestamp" value="2025-06-19T09:52:02.964798" />
+			<float key="cost" value="27.67" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-19T09:42:05.976150" />
-			<float key="cost" value="36.137565014519325" />
+			<date key="time:timestamp" value="2025-06-19T09:57:02.964798" />
+			<float key="cost" value="27.67" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -634,20 +634,20 @@
 		<string key="concept:name" value="Trace 30" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-20T09:32:05.976150" />
-			<float key="cost" value="65.76084837514567" />
+			<date key="time:timestamp" value="2025-06-20T09:47:02.964798" />
+			<float key="cost" value="2.46" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-20T09:37:05.976150" />
-			<float key="cost" value="65.76084837514567" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-20T09:52:02.964798" />
+			<float key="cost" value="2.46" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-20T09:42:05.976150" />
-			<float key="cost" value="65.76084837514567" />
+			<date key="time:timestamp" value="2025-06-20T09:57:02.964798" />
+			<float key="cost" value="2.46" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -655,41 +655,41 @@
 		<string key="concept:name" value="Trace 31" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-21T09:32:05.976150" />
-			<float key="cost" value="83.06054952175705" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-21T09:47:02.964798" />
+			<float key="cost" value="93.81" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-21T09:37:05.976150" />
-			<float key="cost" value="83.06054952175705" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-21T09:52:02.964798" />
+			<float key="cost" value="93.81" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-21T09:42:05.976150" />
-			<float key="cost" value="83.06054952175705" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-21T09:57:02.964798" />
+			<float key="cost" value="93.81" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 32" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-22T09:32:05.976150" />
-			<float key="cost" value="14.505443066223533" />
+			<date key="time:timestamp" value="2025-06-22T09:47:02.964798" />
+			<float key="cost" value="86.05" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-22T09:37:05.976150" />
-			<float key="cost" value="14.505443066223533" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-22T09:52:02.964798" />
+			<float key="cost" value="86.05" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-22T09:42:05.976150" />
-			<float key="cost" value="14.505443066223533" />
+			<date key="time:timestamp" value="2025-06-22T09:57:02.964798" />
+			<float key="cost" value="86.05" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -697,41 +697,41 @@
 		<string key="concept:name" value="Trace 33" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-23T09:32:05.976150" />
-			<float key="cost" value="85.92770340995509" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-23T09:47:02.964798" />
+			<float key="cost" value="73.67" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-23T09:37:05.976150" />
-			<float key="cost" value="85.92770340995509" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-23T09:52:02.964798" />
+			<float key="cost" value="73.67" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-23T09:42:05.976150" />
-			<float key="cost" value="85.92770340995509" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-23T09:57:02.964798" />
+			<float key="cost" value="73.67" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 34" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-24T09:32:05.976150" />
-			<float key="cost" value="54.031047082378635" />
+			<date key="time:timestamp" value="2025-06-24T09:47:02.964798" />
+			<float key="cost" value="82.35" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-24T09:37:05.976150" />
-			<float key="cost" value="54.031047082378635" />
+			<date key="time:timestamp" value="2025-06-24T09:52:02.964798" />
+			<float key="cost" value="82.35" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-24T09:42:05.976150" />
-			<float key="cost" value="54.031047082378635" />
+			<date key="time:timestamp" value="2025-06-24T09:57:02.964798" />
+			<float key="cost" value="82.35" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -739,41 +739,41 @@
 		<string key="concept:name" value="Trace 35" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-25T09:32:05.976150" />
-			<float key="cost" value="6.481455167072747" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-25T09:47:02.964798" />
+			<float key="cost" value="12.88" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-25T09:37:05.976150" />
-			<float key="cost" value="6.481455167072747" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-25T09:52:02.964798" />
+			<float key="cost" value="12.88" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-25T09:42:05.976150" />
-			<float key="cost" value="6.481455167072747" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-25T09:57:02.964798" />
+			<float key="cost" value="12.88" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 36" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-26T09:32:05.976150" />
-			<float key="cost" value="18.44194757259836" />
+			<date key="time:timestamp" value="2025-06-26T09:47:02.964798" />
+			<float key="cost" value="31.64" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-26T09:37:05.976150" />
-			<float key="cost" value="18.44194757259836" />
+			<date key="time:timestamp" value="2025-06-26T09:52:02.964798" />
+			<float key="cost" value="31.64" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-26T09:42:05.976150" />
-			<float key="cost" value="18.44194757259836" />
+			<date key="time:timestamp" value="2025-06-26T09:57:02.964798" />
+			<float key="cost" value="31.64" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -781,62 +781,62 @@
 		<string key="concept:name" value="Trace 37" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-27T09:32:05.976150" />
-			<float key="cost" value="13.669186325978465" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-27T09:47:02.964798" />
+			<float key="cost" value="81.02" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-27T09:37:05.976150" />
-			<float key="cost" value="13.669186325978465" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-27T09:52:02.964798" />
+			<float key="cost" value="81.02" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-27T09:42:05.976150" />
-			<float key="cost" value="13.669186325978465" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-27T09:57:02.964798" />
+			<float key="cost" value="81.02" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 38" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-28T09:32:05.976150" />
-			<float key="cost" value="6.09639448039736" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-28T09:47:02.964798" />
+			<float key="cost" value="95.18" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-28T09:37:05.976150" />
-			<float key="cost" value="6.09639448039736" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-06-28T09:52:02.964798" />
+			<float key="cost" value="95.18" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-28T09:42:05.976150" />
-			<float key="cost" value="6.09639448039736" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-06-28T09:57:02.964798" />
+			<float key="cost" value="95.18" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 39" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-29T09:32:05.976150" />
-			<float key="cost" value="64.14160465854594" />
+			<date key="time:timestamp" value="2025-06-29T09:47:02.964798" />
+			<float key="cost" value="9.38" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-06-29T09:37:05.976150" />
-			<float key="cost" value="64.14160465854594" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-06-29T09:52:02.964798" />
+			<float key="cost" value="9.38" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-29T09:42:05.976150" />
-			<float key="cost" value="64.14160465854594" />
+			<date key="time:timestamp" value="2025-06-29T09:57:02.964798" />
+			<float key="cost" value="9.38" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -844,83 +844,83 @@
 		<string key="concept:name" value="Trace 40" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-06-30T09:32:05.976150" />
-			<float key="cost" value="15.64697528156348" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-30T09:47:02.964798" />
+			<float key="cost" value="26.08" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-06-30T09:37:05.976150" />
-			<float key="cost" value="15.64697528156348" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-30T09:52:02.964798" />
+			<float key="cost" value="26.08" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-06-30T09:42:05.976150" />
-			<float key="cost" value="15.64697528156348" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-06-30T09:57:02.964798" />
+			<float key="cost" value="26.08" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 41" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-01T09:32:05.976150" />
-			<float key="cost" value="87.98403334074887" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-01T09:47:02.964798" />
+			<float key="cost" value="5.01" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-01T09:37:05.976150" />
-			<float key="cost" value="87.98403334074887" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-01T09:52:02.964798" />
+			<float key="cost" value="5.01" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-01T09:42:05.976150" />
-			<float key="cost" value="87.98403334074887" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-01T09:57:02.964798" />
+			<float key="cost" value="5.01" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 42" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-02T09:32:05.976150" />
-			<float key="cost" value="48.085592387905315" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-02T09:47:02.964798" />
+			<float key="cost" value="99.73" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-02T09:37:05.976150" />
-			<float key="cost" value="48.085592387905315" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-02T09:52:02.964798" />
+			<float key="cost" value="99.73" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-02T09:42:05.976150" />
-			<float key="cost" value="48.085592387905315" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-02T09:57:02.964798" />
+			<float key="cost" value="99.73" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 43" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-03T09:32:05.976150" />
-			<float key="cost" value="58.48094044429247" />
+			<date key="time:timestamp" value="2025-07-03T09:47:02.964798" />
+			<float key="cost" value="91.8" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-03T09:37:05.976150" />
-			<float key="cost" value="58.48094044429247" />
+			<date key="time:timestamp" value="2025-07-03T09:52:02.964798" />
+			<float key="cost" value="91.8" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-03T09:42:05.976150" />
-			<float key="cost" value="58.48094044429247" />
+			<date key="time:timestamp" value="2025-07-03T09:57:02.964798" />
+			<float key="cost" value="91.8" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -928,20 +928,20 @@
 		<string key="concept:name" value="Trace 44" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-04T09:32:05.976150" />
-			<float key="cost" value="49.1532615279535" />
+			<date key="time:timestamp" value="2025-07-04T09:47:02.964798" />
+			<float key="cost" value="64.76" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-04T09:37:05.976150" />
-			<float key="cost" value="49.1532615279535" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-04T09:52:02.964798" />
+			<float key="cost" value="64.76" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-04T09:42:05.976150" />
-			<float key="cost" value="49.1532615279535" />
+			<date key="time:timestamp" value="2025-07-04T09:57:02.964798" />
+			<float key="cost" value="64.76" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -949,83 +949,83 @@
 		<string key="concept:name" value="Trace 45" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-05T09:32:05.976150" />
-			<float key="cost" value="37.130562717124505" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-05T09:47:02.964798" />
+			<float key="cost" value="41.74" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-05T09:37:05.976150" />
-			<float key="cost" value="37.130562717124505" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-05T09:52:02.964798" />
+			<float key="cost" value="41.74" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-05T09:42:05.976150" />
-			<float key="cost" value="37.130562717124505" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-05T09:57:02.964798" />
+			<float key="cost" value="41.74" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 46" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-06T09:32:05.976150" />
-			<float key="cost" value="6.7764721306097675" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-06T09:47:02.964798" />
+			<float key="cost" value="3.8" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-06T09:37:05.976150" />
-			<float key="cost" value="6.7764721306097675" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-06T09:52:02.964798" />
+			<float key="cost" value="3.8" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-06T09:42:05.976150" />
-			<float key="cost" value="6.7764721306097675" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-06T09:57:02.964798" />
+			<float key="cost" value="3.8" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 47" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-07T09:32:05.976150" />
-			<float key="cost" value="22.125481477406105" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-07T09:47:02.964798" />
+			<float key="cost" value="3.47" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-07T09:37:05.976150" />
-			<float key="cost" value="22.125481477406105" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-07T09:52:02.964798" />
+			<float key="cost" value="3.47" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-07T09:42:05.976150" />
-			<float key="cost" value="22.125481477406105" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-07T09:57:02.964798" />
+			<float key="cost" value="3.47" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 48" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-08T09:32:05.976150" />
-			<float key="cost" value="17.845535416491387" />
+			<date key="time:timestamp" value="2025-07-08T09:47:02.964798" />
+			<float key="cost" value="91.23" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-08T09:37:05.976150" />
-			<float key="cost" value="17.845535416491387" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-08T09:52:02.964798" />
+			<float key="cost" value="91.23" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-08T09:42:05.976150" />
-			<float key="cost" value="17.845535416491387" />
+			<date key="time:timestamp" value="2025-07-08T09:57:02.964798" />
+			<float key="cost" value="91.23" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1033,41 +1033,41 @@
 		<string key="concept:name" value="Trace 49" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-09T09:32:05.976150" />
-			<float key="cost" value="80.6986015938532" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-09T09:47:02.964798" />
+			<float key="cost" value="7.79" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-09T09:37:05.976150" />
-			<float key="cost" value="80.6986015938532" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-09T09:52:02.964798" />
+			<float key="cost" value="7.79" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-09T09:42:05.976150" />
-			<float key="cost" value="80.6986015938532" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-09T09:57:02.964798" />
+			<float key="cost" value="7.79" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 50" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-10T09:32:05.976150" />
-			<float key="cost" value="16.146870560289493" />
+			<date key="time:timestamp" value="2025-07-10T09:47:02.964798" />
+			<float key="cost" value="48.04" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-10T09:37:05.976150" />
-			<float key="cost" value="16.146870560289493" />
+			<date key="time:timestamp" value="2025-07-10T09:52:02.964798" />
+			<float key="cost" value="48.04" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-10T09:42:05.976150" />
-			<float key="cost" value="16.146870560289493" />
+			<date key="time:timestamp" value="2025-07-10T09:57:02.964798" />
+			<float key="cost" value="48.04" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1075,20 +1075,20 @@
 		<string key="concept:name" value="Trace 51" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-11T09:32:05.976150" />
-			<float key="cost" value="34.33948256283856" />
+			<date key="time:timestamp" value="2025-07-11T09:47:02.964798" />
+			<float key="cost" value="2.95" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-11T09:37:05.976150" />
-			<float key="cost" value="34.33948256283856" />
+			<date key="time:timestamp" value="2025-07-11T09:52:02.964798" />
+			<float key="cost" value="2.95" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-11T09:42:05.976150" />
-			<float key="cost" value="34.33948256283856" />
+			<date key="time:timestamp" value="2025-07-11T09:57:02.964798" />
+			<float key="cost" value="2.95" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1096,41 +1096,41 @@
 		<string key="concept:name" value="Trace 52" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-12T09:32:05.976150" />
-			<float key="cost" value="33.48722982589987" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-12T09:47:02.964798" />
+			<float key="cost" value="52.07" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-12T09:37:05.976150" />
-			<float key="cost" value="33.48722982589987" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-12T09:52:02.964798" />
+			<float key="cost" value="52.07" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-12T09:42:05.976150" />
-			<float key="cost" value="33.48722982589987" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-12T09:57:02.964798" />
+			<float key="cost" value="52.07" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 53" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-13T09:32:05.976150" />
-			<float key="cost" value="78.36322661560372" />
+			<date key="time:timestamp" value="2025-07-13T09:47:02.964798" />
+			<float key="cost" value="18.83" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-13T09:37:05.976150" />
-			<float key="cost" value="78.36322661560372" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-13T09:52:02.964798" />
+			<float key="cost" value="18.83" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-13T09:42:05.976150" />
-			<float key="cost" value="78.36322661560372" />
+			<date key="time:timestamp" value="2025-07-13T09:57:02.964798" />
+			<float key="cost" value="18.83" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1138,41 +1138,41 @@
 		<string key="concept:name" value="Trace 54" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-14T09:32:05.976150" />
-			<float key="cost" value="43.31852866265368" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-14T09:47:02.964798" />
+			<float key="cost" value="38.13" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-14T09:37:05.976150" />
-			<float key="cost" value="43.31852866265368" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-14T09:52:02.964798" />
+			<float key="cost" value="38.13" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-14T09:42:05.976150" />
-			<float key="cost" value="43.31852866265368" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-14T09:57:02.964798" />
+			<float key="cost" value="38.13" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 55" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-15T09:32:05.976150" />
-			<float key="cost" value="81.61411558718419" />
+			<date key="time:timestamp" value="2025-07-15T09:47:02.964798" />
+			<float key="cost" value="19.61" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-15T09:37:05.976150" />
-			<float key="cost" value="81.61411558718419" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-15T09:52:02.964798" />
+			<float key="cost" value="19.61" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-15T09:42:05.976150" />
-			<float key="cost" value="81.61411558718419" />
+			<date key="time:timestamp" value="2025-07-15T09:57:02.964798" />
+			<float key="cost" value="19.61" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1180,20 +1180,20 @@
 		<string key="concept:name" value="Trace 56" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-16T09:32:05.976150" />
-			<float key="cost" value="55.788083484800744" />
+			<date key="time:timestamp" value="2025-07-16T09:47:02.964798" />
+			<float key="cost" value="6.88" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-16T09:37:05.976150" />
-			<float key="cost" value="55.788083484800744" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-16T09:52:02.964798" />
+			<float key="cost" value="6.88" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-16T09:42:05.976150" />
-			<float key="cost" value="55.788083484800744" />
+			<date key="time:timestamp" value="2025-07-16T09:57:02.964798" />
+			<float key="cost" value="6.88" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1201,41 +1201,41 @@
 		<string key="concept:name" value="Trace 57" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-17T09:32:05.976150" />
-			<float key="cost" value="30.641887958606016" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-17T09:47:02.964798" />
+			<float key="cost" value="67.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-17T09:37:05.976150" />
-			<float key="cost" value="30.641887958606016" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-17T09:52:02.964798" />
+			<float key="cost" value="67.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-17T09:42:05.976150" />
-			<float key="cost" value="30.641887958606016" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-17T09:57:02.964798" />
+			<float key="cost" value="67.29" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 58" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-18T09:32:05.976150" />
-			<float key="cost" value="30.65053003326723" />
+			<date key="time:timestamp" value="2025-07-18T09:47:02.964798" />
+			<float key="cost" value="1.1" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-18T09:37:05.976150" />
-			<float key="cost" value="30.65053003326723" />
+			<date key="time:timestamp" value="2025-07-18T09:52:02.964798" />
+			<float key="cost" value="1.1" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-18T09:42:05.976150" />
-			<float key="cost" value="30.65053003326723" />
+			<date key="time:timestamp" value="2025-07-18T09:57:02.964798" />
+			<float key="cost" value="1.1" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1243,20 +1243,20 @@
 		<string key="concept:name" value="Trace 59" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-19T09:32:05.976150" />
-			<float key="cost" value="3.3260828839396295" />
+			<date key="time:timestamp" value="2025-07-19T09:47:02.964798" />
+			<float key="cost" value="4.89" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-19T09:37:05.976150" />
-			<float key="cost" value="3.3260828839396295" />
+			<date key="time:timestamp" value="2025-07-19T09:52:02.964798" />
+			<float key="cost" value="4.89" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-19T09:42:05.976150" />
-			<float key="cost" value="3.3260828839396295" />
+			<date key="time:timestamp" value="2025-07-19T09:57:02.964798" />
+			<float key="cost" value="4.89" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1264,20 +1264,20 @@
 		<string key="concept:name" value="Trace 60" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-20T09:32:05.976150" />
-			<float key="cost" value="94.0932254972468" />
+			<date key="time:timestamp" value="2025-07-20T09:47:02.964798" />
+			<float key="cost" value="30.52" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-20T09:37:05.976150" />
-			<float key="cost" value="94.0932254972468" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-20T09:52:02.964798" />
+			<float key="cost" value="30.52" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-20T09:42:05.976150" />
-			<float key="cost" value="94.0932254972468" />
+			<date key="time:timestamp" value="2025-07-20T09:57:02.964798" />
+			<float key="cost" value="30.52" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1285,83 +1285,83 @@
 		<string key="concept:name" value="Trace 61" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-21T09:32:05.976150" />
-			<float key="cost" value="23.318850184029937" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-21T09:47:02.964798" />
+			<float key="cost" value="23.92" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-21T09:37:05.976150" />
-			<float key="cost" value="23.318850184029937" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-21T09:52:02.964798" />
+			<float key="cost" value="23.92" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-21T09:42:05.976150" />
-			<float key="cost" value="23.318850184029937" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-21T09:57:02.964798" />
+			<float key="cost" value="23.92" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 62" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-22T09:32:05.976150" />
-			<float key="cost" value="32.3979001752009" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-22T09:47:02.964798" />
+			<float key="cost" value="95.97" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-22T09:37:05.976150" />
-			<float key="cost" value="32.3979001752009" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-22T09:52:02.964798" />
+			<float key="cost" value="95.97" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-22T09:42:05.976150" />
-			<float key="cost" value="32.3979001752009" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-22T09:57:02.964798" />
+			<float key="cost" value="95.97" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 63" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-23T09:32:05.976150" />
-			<float key="cost" value="19.449272623059734" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-23T09:47:02.964798" />
+			<float key="cost" value="8.33" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-23T09:37:05.976150" />
-			<float key="cost" value="19.449272623059734" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-23T09:52:02.964798" />
+			<float key="cost" value="8.33" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-23T09:42:05.976150" />
-			<float key="cost" value="19.449272623059734" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-23T09:57:02.964798" />
+			<float key="cost" value="8.33" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 64" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-24T09:32:05.976150" />
-			<float key="cost" value="49.52358610605815" />
+			<date key="time:timestamp" value="2025-07-24T09:47:02.964798" />
+			<float key="cost" value="84.27" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-24T09:37:05.976150" />
-			<float key="cost" value="49.52358610605815" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-24T09:52:02.964798" />
+			<float key="cost" value="84.27" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-24T09:42:05.976150" />
-			<float key="cost" value="49.52358610605815" />
+			<date key="time:timestamp" value="2025-07-24T09:57:02.964798" />
+			<float key="cost" value="84.27" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1369,20 +1369,20 @@
 		<string key="concept:name" value="Trace 65" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-25T09:32:05.976150" />
-			<float key="cost" value="75.24006989104788" />
+			<date key="time:timestamp" value="2025-07-25T09:47:02.964798" />
+			<float key="cost" value="20.37" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-25T09:37:05.976150" />
-			<float key="cost" value="75.24006989104788" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-25T09:52:02.964798" />
+			<float key="cost" value="20.37" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-25T09:42:05.976150" />
-			<float key="cost" value="75.24006989104788" />
+			<date key="time:timestamp" value="2025-07-25T09:57:02.964798" />
+			<float key="cost" value="20.37" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1390,41 +1390,41 @@
 		<string key="concept:name" value="Trace 66" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-26T09:32:05.976150" />
-			<float key="cost" value="42.51589320705938" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-26T09:47:02.964798" />
+			<float key="cost" value="59.62" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-26T09:37:05.976150" />
-			<float key="cost" value="42.51589320705938" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-26T09:52:02.964798" />
+			<float key="cost" value="59.62" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-26T09:42:05.976150" />
-			<float key="cost" value="42.51589320705938" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-07-26T09:57:02.964798" />
+			<float key="cost" value="59.62" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 67" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-27T09:32:05.976150" />
-			<float key="cost" value="81.49734295160754" />
+			<date key="time:timestamp" value="2025-07-27T09:47:02.964798" />
+			<float key="cost" value="14.15" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-27T09:37:05.976150" />
-			<float key="cost" value="81.49734295160754" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-27T09:52:02.964798" />
+			<float key="cost" value="14.15" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-27T09:42:05.976150" />
-			<float key="cost" value="81.49734295160754" />
+			<date key="time:timestamp" value="2025-07-27T09:57:02.964798" />
+			<float key="cost" value="14.15" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1432,62 +1432,62 @@
 		<string key="concept:name" value="Trace 68" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-28T09:32:05.976150" />
-			<float key="cost" value="50.041463216528534" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-28T09:47:02.964798" />
+			<float key="cost" value="57.85" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-28T09:37:05.976150" />
-			<float key="cost" value="50.041463216528534" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-28T09:52:02.964798" />
+			<float key="cost" value="57.85" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-28T09:42:05.976150" />
-			<float key="cost" value="50.041463216528534" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-28T09:57:02.964798" />
+			<float key="cost" value="57.85" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 69" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-29T09:32:05.976150" />
-			<float key="cost" value="40.7950221119322" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-29T09:47:02.964798" />
+			<float key="cost" value="58.04" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-07-29T09:37:05.976150" />
-			<float key="cost" value="40.7950221119322" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-07-29T09:52:02.964798" />
+			<float key="cost" value="58.04" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-29T09:42:05.976150" />
-			<float key="cost" value="40.7950221119322" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-07-29T09:57:02.964798" />
+			<float key="cost" value="58.04" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 70" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-30T09:32:05.976150" />
-			<float key="cost" value="63.272649783880276" />
+			<date key="time:timestamp" value="2025-07-30T09:47:02.964798" />
+			<float key="cost" value="52.94" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-30T09:37:05.976150" />
-			<float key="cost" value="63.272649783880276" />
+			<date key="time:timestamp" value="2025-07-30T09:52:02.964798" />
+			<float key="cost" value="52.94" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-30T09:42:05.976150" />
-			<float key="cost" value="63.272649783880276" />
+			<date key="time:timestamp" value="2025-07-30T09:57:02.964798" />
+			<float key="cost" value="52.94" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1495,20 +1495,20 @@
 		<string key="concept:name" value="Trace 71" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-07-31T09:32:05.976150" />
-			<float key="cost" value="77.42439689719312" />
+			<date key="time:timestamp" value="2025-07-31T09:47:02.964798" />
+			<float key="cost" value="26.08" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-07-31T09:37:05.976150" />
-			<float key="cost" value="77.42439689719312" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-07-31T09:52:02.964798" />
+			<float key="cost" value="26.08" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-07-31T09:42:05.976150" />
-			<float key="cost" value="77.42439689719312" />
+			<date key="time:timestamp" value="2025-07-31T09:57:02.964798" />
+			<float key="cost" value="26.08" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1516,20 +1516,20 @@
 		<string key="concept:name" value="Trace 72" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-01T09:32:05.976150" />
-			<float key="cost" value="76.12621650404449" />
+			<date key="time:timestamp" value="2025-08-01T09:47:02.964798" />
+			<float key="cost" value="72.85" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-01T09:37:05.976150" />
-			<float key="cost" value="76.12621650404449" />
+			<date key="time:timestamp" value="2025-08-01T09:52:02.964798" />
+			<float key="cost" value="72.85" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-01T09:42:05.976150" />
-			<float key="cost" value="76.12621650404449" />
+			<date key="time:timestamp" value="2025-08-01T09:57:02.964798" />
+			<float key="cost" value="72.85" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1537,20 +1537,20 @@
 		<string key="concept:name" value="Trace 73" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-02T09:32:05.976150" />
-			<float key="cost" value="18.604928301666913" />
+			<date key="time:timestamp" value="2025-08-02T09:47:02.964798" />
+			<float key="cost" value="98.63" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-02T09:37:05.976150" />
-			<float key="cost" value="18.604928301666913" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-02T09:52:02.964798" />
+			<float key="cost" value="98.63" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-02T09:42:05.976150" />
-			<float key="cost" value="18.604928301666913" />
+			<date key="time:timestamp" value="2025-08-02T09:57:02.964798" />
+			<float key="cost" value="98.63" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1558,20 +1558,20 @@
 		<string key="concept:name" value="Trace 74" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-03T09:32:05.976150" />
-			<float key="cost" value="69.8857324256365" />
+			<date key="time:timestamp" value="2025-08-03T09:47:02.964798" />
+			<float key="cost" value="79.07" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-03T09:37:05.976150" />
-			<float key="cost" value="69.8857324256365" />
+			<date key="time:timestamp" value="2025-08-03T09:52:02.964798" />
+			<float key="cost" value="79.07" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-03T09:42:05.976150" />
-			<float key="cost" value="69.8857324256365" />
+			<date key="time:timestamp" value="2025-08-03T09:57:02.964798" />
+			<float key="cost" value="79.07" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1579,41 +1579,41 @@
 		<string key="concept:name" value="Trace 75" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-04T09:32:05.976150" />
-			<float key="cost" value="93.75682221631126" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-04T09:47:02.964798" />
+			<float key="cost" value="63.2" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-04T09:37:05.976150" />
-			<float key="cost" value="93.75682221631126" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-04T09:52:02.964798" />
+			<float key="cost" value="63.2" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-04T09:42:05.976150" />
-			<float key="cost" value="93.75682221631126" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-04T09:57:02.964798" />
+			<float key="cost" value="63.2" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 76" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-05T09:32:05.976150" />
-			<float key="cost" value="26.329394988914622" />
+			<date key="time:timestamp" value="2025-08-05T09:47:02.964798" />
+			<float key="cost" value="8.17" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-05T09:37:05.976150" />
-			<float key="cost" value="26.329394988914622" />
+			<date key="time:timestamp" value="2025-08-05T09:52:02.964798" />
+			<float key="cost" value="8.17" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-05T09:42:05.976150" />
-			<float key="cost" value="26.329394988914622" />
+			<date key="time:timestamp" value="2025-08-05T09:57:02.964798" />
+			<float key="cost" value="8.17" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1621,20 +1621,20 @@
 		<string key="concept:name" value="Trace 77" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-06T09:32:05.976150" />
-			<float key="cost" value="24.491966705542556" />
+			<date key="time:timestamp" value="2025-08-06T09:47:02.964798" />
+			<float key="cost" value="26.6" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-06T09:37:05.976150" />
-			<float key="cost" value="24.491966705542556" />
+			<date key="time:timestamp" value="2025-08-06T09:52:02.964798" />
+			<float key="cost" value="26.6" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-06T09:42:05.976150" />
-			<float key="cost" value="24.491966705542556" />
+			<date key="time:timestamp" value="2025-08-06T09:57:02.964798" />
+			<float key="cost" value="26.6" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1642,62 +1642,62 @@
 		<string key="concept:name" value="Trace 78" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-07T09:32:05.976150" />
-			<float key="cost" value="57.30500902437651" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-07T09:47:02.964798" />
+			<float key="cost" value="7.01" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-07T09:37:05.976150" />
-			<float key="cost" value="57.30500902437651" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-08-07T09:52:02.964798" />
+			<float key="cost" value="7.01" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-07T09:42:05.976150" />
-			<float key="cost" value="57.30500902437651" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-07T09:57:02.964798" />
+			<float key="cost" value="7.01" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 79" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-08T09:32:05.976150" />
-			<float key="cost" value="23.837482192764213" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-08T09:47:02.964798" />
+			<float key="cost" value="76.95" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-08T09:37:05.976150" />
-			<float key="cost" value="23.837482192764213" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-08T09:52:02.964798" />
+			<float key="cost" value="76.95" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-08T09:42:05.976150" />
-			<float key="cost" value="23.837482192764213" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-08T09:57:02.964798" />
+			<float key="cost" value="76.95" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 80" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-09T09:32:05.976150" />
-			<float key="cost" value="34.684743167949385" />
+			<date key="time:timestamp" value="2025-08-09T09:47:02.964798" />
+			<float key="cost" value="28.74" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-09T09:37:05.976150" />
-			<float key="cost" value="34.684743167949385" />
+			<date key="time:timestamp" value="2025-08-09T09:52:02.964798" />
+			<float key="cost" value="28.74" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-09T09:42:05.976150" />
-			<float key="cost" value="34.684743167949385" />
+			<date key="time:timestamp" value="2025-08-09T09:57:02.964798" />
+			<float key="cost" value="28.74" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1705,62 +1705,62 @@
 		<string key="concept:name" value="Trace 81" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-10T09:32:05.976150" />
-			<float key="cost" value="61.10169224800745" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-10T09:47:02.964798" />
+			<float key="cost" value="22.2" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-10T09:37:05.976150" />
-			<float key="cost" value="61.10169224800745" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-08-10T09:52:02.964798" />
+			<float key="cost" value="22.2" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-10T09:42:05.976150" />
-			<float key="cost" value="61.10169224800745" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-10T09:57:02.964798" />
+			<float key="cost" value="22.2" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 82" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-11T09:32:05.976150" />
-			<float key="cost" value="23.943663101598457" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-11T09:47:02.964798" />
+			<float key="cost" value="58.92" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-11T09:37:05.976150" />
-			<float key="cost" value="23.943663101598457" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-11T09:52:02.964798" />
+			<float key="cost" value="58.92" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-11T09:42:05.976150" />
-			<float key="cost" value="23.943663101598457" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-11T09:57:02.964798" />
+			<float key="cost" value="58.92" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 83" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-12T09:32:05.976150" />
-			<float key="cost" value="9.128905292465216" />
+			<date key="time:timestamp" value="2025-08-12T09:47:02.964798" />
+			<float key="cost" value="87.91" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-12T09:37:05.976150" />
-			<float key="cost" value="9.128905292465216" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-12T09:52:02.964798" />
+			<float key="cost" value="87.91" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-12T09:42:05.976150" />
-			<float key="cost" value="9.128905292465216" />
+			<date key="time:timestamp" value="2025-08-12T09:57:02.964798" />
+			<float key="cost" value="87.91" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1768,20 +1768,20 @@
 		<string key="concept:name" value="Trace 84" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-13T09:32:05.976150" />
-			<float key="cost" value="85.86450843351888" />
+			<date key="time:timestamp" value="2025-08-13T09:47:02.964798" />
+			<float key="cost" value="6.39" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-13T09:37:05.976150" />
-			<float key="cost" value="85.86450843351888" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-08-13T09:52:02.964798" />
+			<float key="cost" value="6.39" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-13T09:42:05.976150" />
-			<float key="cost" value="85.86450843351888" />
+			<date key="time:timestamp" value="2025-08-13T09:57:02.964798" />
+			<float key="cost" value="6.39" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1789,62 +1789,62 @@
 		<string key="concept:name" value="Trace 85" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-14T09:32:05.976150" />
-			<float key="cost" value="5.801518229003855" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-14T09:47:02.964798" />
+			<float key="cost" value="97.62" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-14T09:37:05.976150" />
-			<float key="cost" value="5.801518229003855" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-14T09:52:02.964798" />
+			<float key="cost" value="97.62" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-14T09:42:05.976150" />
-			<float key="cost" value="5.801518229003855" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-14T09:57:02.964798" />
+			<float key="cost" value="97.62" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 86" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-15T09:32:05.976150" />
-			<float key="cost" value="80.86237630214212" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-15T09:47:02.964798" />
+			<float key="cost" value="32.15" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-15T09:37:05.976150" />
-			<float key="cost" value="80.86237630214212" />
-			<boolean key="is_manual" value="true" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-08-15T09:52:02.964798" />
+			<float key="cost" value="32.15" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-15T09:42:05.976150" />
-			<float key="cost" value="80.86237630214212" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-15T09:57:02.964798" />
+			<float key="cost" value="32.15" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 87" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-16T09:32:05.976150" />
-			<float key="cost" value="13.907833906185129" />
+			<date key="time:timestamp" value="2025-08-16T09:47:02.964798" />
+			<float key="cost" value="24.88" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-16T09:37:05.976150" />
-			<float key="cost" value="13.907833906185129" />
+			<date key="time:timestamp" value="2025-08-16T09:52:02.964798" />
+			<float key="cost" value="24.88" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-16T09:42:05.976150" />
-			<float key="cost" value="13.907833906185129" />
+			<date key="time:timestamp" value="2025-08-16T09:57:02.964798" />
+			<float key="cost" value="24.88" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1852,41 +1852,41 @@
 		<string key="concept:name" value="Trace 88" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-17T09:32:05.976150" />
-			<float key="cost" value="13.02762692476447" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-17T09:47:02.964798" />
+			<float key="cost" value="67.42" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-17T09:37:05.976150" />
-			<float key="cost" value="13.02762692476447" />
-			<boolean key="is_manual" value="false" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-17T09:52:02.964798" />
+			<float key="cost" value="67.42" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-17T09:42:05.976150" />
-			<float key="cost" value="13.02762692476447" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-17T09:57:02.964798" />
+			<float key="cost" value="67.42" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 89" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-18T09:32:05.976150" />
-			<float key="cost" value="95.29428548158755" />
+			<date key="time:timestamp" value="2025-08-18T09:47:02.964798" />
+			<float key="cost" value="73.38" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-18T09:37:05.976150" />
-			<float key="cost" value="95.29428548158755" />
+			<date key="time:timestamp" value="2025-08-18T09:52:02.964798" />
+			<float key="cost" value="73.38" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-18T09:42:05.976150" />
-			<float key="cost" value="95.29428548158755" />
+			<date key="time:timestamp" value="2025-08-18T09:57:02.964798" />
+			<float key="cost" value="73.38" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -1894,20 +1894,20 @@
 		<string key="concept:name" value="Trace 90" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-19T09:32:05.976150" />
-			<float key="cost" value="14.499113316230794" />
+			<date key="time:timestamp" value="2025-08-19T09:47:02.964798" />
+			<float key="cost" value="92.09" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-19T09:37:05.976150" />
-			<float key="cost" value="14.499113316230794" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-19T09:52:02.964798" />
+			<float key="cost" value="92.09" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-19T09:42:05.976150" />
-			<float key="cost" value="14.499113316230794" />
+			<date key="time:timestamp" value="2025-08-19T09:57:02.964798" />
+			<float key="cost" value="92.09" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1915,41 +1915,41 @@
 		<string key="concept:name" value="Trace 91" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-20T09:32:05.976150" />
-			<float key="cost" value="9.593422942321773" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-20T09:47:02.964798" />
+			<float key="cost" value="42.57" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-20T09:37:05.976150" />
-			<float key="cost" value="9.593422942321773" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-20T09:52:02.964798" />
+			<float key="cost" value="42.57" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-20T09:42:05.976150" />
-			<float key="cost" value="9.593422942321773" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-20T09:57:02.964798" />
+			<float key="cost" value="42.57" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 92" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-21T09:32:05.976150" />
-			<float key="cost" value="84.05050011070927" />
+			<date key="time:timestamp" value="2025-08-21T09:47:02.964798" />
+			<float key="cost" value="28.77" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-21T09:37:05.976150" />
-			<float key="cost" value="84.05050011070927" />
+			<string key="concept:name" value="Path_B" />
+			<date key="time:timestamp" value="2025-08-21T09:52:02.964798" />
+			<float key="cost" value="28.77" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-21T09:42:05.976150" />
-			<float key="cost" value="84.05050011070927" />
+			<date key="time:timestamp" value="2025-08-21T09:57:02.964798" />
+			<float key="cost" value="28.77" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -1957,62 +1957,62 @@
 		<string key="concept:name" value="Trace 93" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-22T09:32:05.976150" />
-			<float key="cost" value="86.10554715687722" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-22T09:47:02.964798" />
+			<float key="cost" value="62.14" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-22T09:37:05.976150" />
-			<float key="cost" value="86.10554715687722" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-22T09:52:02.964798" />
+			<float key="cost" value="62.14" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-22T09:42:05.976150" />
-			<float key="cost" value="86.10554715687722" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-22T09:57:02.964798" />
+			<float key="cost" value="62.14" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 94" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-23T09:32:05.976150" />
-			<float key="cost" value="95.45783729579176" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-23T09:47:02.964798" />
+			<float key="cost" value="95.14" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-23T09:37:05.976150" />
-			<float key="cost" value="95.45783729579176" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-23T09:52:02.964798" />
+			<float key="cost" value="95.14" />
+			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-23T09:42:05.976150" />
-			<float key="cost" value="95.45783729579176" />
-			<boolean key="is_manual" value="false" />
+			<date key="time:timestamp" value="2025-08-23T09:57:02.964798" />
+			<float key="cost" value="95.14" />
+			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 95" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-24T09:32:05.976150" />
-			<float key="cost" value="44.275950963834575" />
+			<date key="time:timestamp" value="2025-08-24T09:47:02.964798" />
+			<float key="cost" value="14.24" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-24T09:37:05.976150" />
-			<float key="cost" value="44.275950963834575" />
+			<date key="time:timestamp" value="2025-08-24T09:52:02.964798" />
+			<float key="cost" value="14.24" />
 			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-24T09:42:05.976150" />
-			<float key="cost" value="44.275950963834575" />
+			<date key="time:timestamp" value="2025-08-24T09:57:02.964798" />
+			<float key="cost" value="14.24" />
 			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
@@ -2020,41 +2020,41 @@
 		<string key="concept:name" value="Trace 96" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-25T09:32:05.976150" />
-			<float key="cost" value="6.377560433027762" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-25T09:47:02.964798" />
+			<float key="cost" value="47.89" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-25T09:37:05.976150" />
-			<float key="cost" value="6.377560433027762" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-25T09:52:02.964798" />
+			<float key="cost" value="47.89" />
+			<boolean key="is_manual" value="false" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-25T09:42:05.976150" />
-			<float key="cost" value="6.377560433027762" />
-			<boolean key="is_manual" value="true" />
+			<date key="time:timestamp" value="2025-08-25T09:57:02.964798" />
+			<float key="cost" value="47.89" />
+			<boolean key="is_manual" value="false" />
 		</event>
 	</trace>
 	<trace>
 		<string key="concept:name" value="Trace 97" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-26T09:32:05.976150" />
-			<float key="cost" value="57.04785855192025" />
+			<date key="time:timestamp" value="2025-08-26T09:47:02.964798" />
+			<float key="cost" value="65.07" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="Path_A" />
-			<date key="time:timestamp" value="2025-08-26T09:37:05.976150" />
-			<float key="cost" value="57.04785855192025" />
+			<date key="time:timestamp" value="2025-08-26T09:52:02.964798" />
+			<float key="cost" value="65.07" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-26T09:42:05.976150" />
-			<float key="cost" value="57.04785855192025" />
+			<date key="time:timestamp" value="2025-08-26T09:57:02.964798" />
+			<float key="cost" value="65.07" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -2062,20 +2062,20 @@
 		<string key="concept:name" value="Trace 98" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-27T09:32:05.976150" />
-			<float key="cost" value="45.065664781140846" />
+			<date key="time:timestamp" value="2025-08-27T09:47:02.964798" />
+			<float key="cost" value="55.75" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-27T09:37:05.976150" />
-			<float key="cost" value="45.065664781140846" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-27T09:52:02.964798" />
+			<float key="cost" value="55.75" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-27T09:42:05.976150" />
-			<float key="cost" value="45.065664781140846" />
+			<date key="time:timestamp" value="2025-08-27T09:57:02.964798" />
+			<float key="cost" value="55.75" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>
@@ -2083,20 +2083,20 @@
 		<string key="concept:name" value="Trace 99" />
 		<event>
 			<string key="concept:name" value="Start" />
-			<date key="time:timestamp" value="2025-08-28T09:32:05.976150" />
-			<float key="cost" value="27.45357869423031" />
+			<date key="time:timestamp" value="2025-08-28T09:47:02.964798" />
+			<float key="cost" value="69.87" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
-			<string key="concept:name" value="Path_B" />
-			<date key="time:timestamp" value="2025-08-28T09:37:05.976150" />
-			<float key="cost" value="27.45357869423031" />
+			<string key="concept:name" value="Path_A" />
+			<date key="time:timestamp" value="2025-08-28T09:52:02.964798" />
+			<float key="cost" value="69.87" />
 			<boolean key="is_manual" value="true" />
 		</event>
 		<event>
 			<string key="concept:name" value="End" />
-			<date key="time:timestamp" value="2025-08-28T09:42:05.976150" />
-			<float key="cost" value="27.45357869423031" />
+			<date key="time:timestamp" value="2025-08-28T09:57:02.964798" />
+			<float key="cost" value="69.87" />
 			<boolean key="is_manual" value="true" />
 		</event>
 	</trace>

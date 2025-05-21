@@ -1,0 +1,7 @@
+{
+    "attr_0": "continuous",
+    "attr_1": "boolean",
+    "attr_2": "categorical",
+    "attr_3": "continuous",
+    "decision_label": "categorical"
+}
