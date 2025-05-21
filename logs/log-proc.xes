@@ -1,0 +1,364 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log xes.version="1.0" xes.features="nested-attributes">
+  <string key="concept:name" value="Example log"/>
+  <trace>
+    <string key="concept:name" value="0001"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-13T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-13T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-13T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0002"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-15T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-15T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-15T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0003"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-15T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-15T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-15T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0004"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-17T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-17T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-17T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0005"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-17T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-17T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-17T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0006"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-19T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-19T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-19T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0007"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-19T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-19T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-19T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0008"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-21T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-21T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-21T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0009"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-21T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-21T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-21T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0010"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-23T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-23T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-23T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0011"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-23T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-23T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-23T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0012"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-25T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-25T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-25T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0013"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-25T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-25T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-25T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0014"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-27T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-27T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-27T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0015"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-27T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-27T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-27T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0016"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-29T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-29T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-29T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0017"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-29T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-29T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-29T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0018"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-31T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-05-31T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-31T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0019"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-05-31T15:54:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="C"/>
+      <date key="time:timestamp" value="2025-05-31T15:56:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-05-31T15:57:40+01:00"/>
+      <string key="cat" value="cat2"/>
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="0020"/>
+    <event>
+      <string key="concept:name" value="A"/>
+      <date key="time:timestamp" value="2025-06-02T03:13:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="B"/>
+      <date key="time:timestamp" value="2025-06-02T03:14:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+    <event>
+      <string key="concept:name" value="D"/>
+      <date key="time:timestamp" value="2025-06-02T03:16:40+01:00"/>
+      <string key="cat" value="cat1"/>
+    </event>
+  </trace>
+</log>
