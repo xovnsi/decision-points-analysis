@@ -13,12 +13,30 @@ from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from backward_search import get_decision_points_and_targets, get_all_dp_from_sink_to_last_event
-from rules_extraction import sampling_dataset, extract_rules_with_pruning, pessimistic_pruning,\
-    discover_overlapping_rules, shorten_rules_manually
+from rules_extraction import sampling_dataset, shorten_rules_manually, discover_overlapping_rules, \
+    extract_rules_with_pruning
 from utils import get_attributes_from_event, get_map_events_to_transitions
-from daikon_utils import discover_branching_conditions
 from DecisionTreeC45 import DecisionTree
+from rules_extraction import pessimistic_pruning
 
+"""
+Skrypt z funkcjonalnościami aplikacji webowej, ale działający w konsoli
+Teraz działa tylko decision trees i no pruning
+
+Lokalizacja:
+/decision-points-analysis/decision-points-analysis-no-streamlit.py
+
+Instrukcja:
+
+>>> python decision_points_analysis_no_streamlit.py <nazwa>
+
+gdzie <nazwa> to nazwa danych:
+ - ./logs/log-<nazwa>.xes - logi w formacie xes
+ - .dt-attributes/<nazwa>.attr - kategorie atrybutów w formacie json
+"""
+
+
+print("START")
 
 def main():
     def ModelCompleter(**kwargs):
@@ -38,8 +56,7 @@ def main():
     attributes_map_file = f"{net_name}.attr"
     if attributes_map_file in os.listdir('dt-attributes'):
         with open(os.path.join('dt-attributes', attributes_map_file), 'r') as f:
-            json_string = json.load(f)
-            attributes_map = json.loads(json_string)
+            attributes_map = json.load(f)
     else:
         raise FileNotFoundError('Create a configuration file for the decision tree before fitting it.')
 
@@ -74,10 +91,10 @@ def main():
     decision_points_data, event_attr, stored_dicts = dict(), dict(), dict()
     variants = variants_filter.get_variants(log)
     # Decision points of interest are searched considering the variants only
-    for variant in tqdm(variants):
+    for variant_key, traces in tqdm(variants.items()):
         transitions_sequence, events_sequence = list(), list()
         dp_events_sequence = dict()
-        for i, event_name in enumerate(variant.split(',')):
+        for i, event_name in enumerate(variant_key):
             trans_from_event = events_to_trans_map[event_name]
             transitions_sequence.append(trans_from_event)
             events_sequence.append(event_name)
@@ -89,7 +106,7 @@ def main():
         transition = [trans for trans in net.transitions if trans.label == event_name][0]
         dp_events_sequence['End'] = get_all_dp_from_sink_to_last_event(transition, sink_complete_net, dp_events_sequence)
 
-        for trace in variants[variant]:
+        for trace in traces:
             # Storing the trace attributes (if any)
             if len(trace.attributes.keys()) > 1 and 'concept:name' in trace.attributes.keys():
                 event_attr.update(trace.attributes)
@@ -167,6 +184,9 @@ def main():
 
             # Predict
             y_pred = dt.predict(dataset.drop(columns=['target']))
+            if y_pred is None:
+                raise ValueError(
+                    "Prediction failed: 'y_pred' is None. Check if the decision tree is trained and input is valid.")
 
             # Accuracy
             accuracy = metrics.accuracy_score(dataset['target'], y_pred)
@@ -195,14 +215,21 @@ def main():
                 rules = dt.extract_rules()
 
                 # Rule extraction with pruning
+                # NIE ODPALAC - NISZCZY KOMPUTER
                 # rules = dt.extract_rules_with_pruning(dataset)
 
                 # Alternative pruning (directly on tree)
+                # NIE DZIALA - NIE MA METODY
                 # dt.pessimistic_pruning(dataset)
-                # rules = dt.extract_rules()
+
+                print("Pruning the decision tree...")
+                pessimistic_pruning(dt, dataset)
+                # rules= extract_rules_with_pruning(dt, dataset)
+                print("Rules after pruning:")
+                print(rules)
 
                 # Overlapping rules discovery
-                # rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
+                rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
 
                 rules = shorten_rules_manually(rules, attributes_map)
                 rules = {k: rules[k].replace('_', ':') for k in rules}
@@ -221,5 +248,4 @@ def main():
     print("\nTotal time: {}".format(toc-tic))
 
 
-if __name__ == '__main__':
-    main()
+main()
