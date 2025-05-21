@@ -1,0 +1,5 @@
+{
+    "speed": "continuous",
+    "color": "categorical",
+    "isManual": "boolean"
+}
