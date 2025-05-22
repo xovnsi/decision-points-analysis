@@ -40,6 +40,15 @@ class Condition:
         return eval(f"{repr(actual)} {self.operator} {repr(self.value)}")
 
 
+class ConditionAnd:
+    def __init__(self, conditions, output):
+        self.conditions = conditions
+        self.output = output
+
+    def is_satisfied(self, trace):
+        return all(c.is_satisfied(trace) for c in self.conditions)
+
+
 class Node:
     def __init__(self, name, conditions, default_output):
         self.name = name
@@ -139,7 +148,10 @@ title = args.output_name
 # Define nodes and their xor conditions
 nodes = [
     Node("A", [
-        Condition("speed", ">", 3.0, "B"),
+        ConditionAnd([
+            Condition("speed", ">", 3.0, None),
+            Condition("ac", "==", "yes", None),
+        ], "B")
     ], "C"),
     Node("B", [
         Condition("color", "==", "black", "D"),
