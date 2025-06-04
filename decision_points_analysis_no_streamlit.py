@@ -12,6 +12,8 @@ from pm4py.algo.filtering.log.variants import variants_filter
 from pm4py.objects.petri_net.importer import importer as pnml_importer
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
+from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
+from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
 from backward_search import get_decision_points_and_targets, get_all_dp_from_sink_to_last_event
 from rules_extraction import sampling_dataset, shorten_rules_manually, discover_overlapping_rules, \
     extract_rules_with_pruning
@@ -80,10 +82,25 @@ def main():
     # Stuff...
     sink_complete_net = [place for place in net.places if place.name == 'sink'][0]
     gviz = pn_visualizer.apply(net, im, fm)
-    pn_visualizer.view(gviz)
+    # pn_visualizer.view(gviz)
 
     # Dealing with loops and other stuff... needs cleaning
     events_to_trans_map = get_map_events_to_transitions(net)
+
+    # --- Convert Petri Net to BPMN ---
+    print("Converting Petri net to BPMN...")
+    bpmn_model = pm4py.convert_to_bpmn(net, im, fm)
+    
+
+    # Visualize BPMN
+    bpmn_gviz = bpmn_visualizer.apply(bpmn_model, parameters={"font_size": 10})
+    bpmn_visualizer.view(bpmn_gviz)
+
+    # Save BPMN model to file
+    # if not os.path.exists("tmp"):
+    #     os.mkdir("tmp")
+    # bpmn_exporter.apply(bpmn_model, "tmp/initial_in.bpmn")
+    # print("BPMN model saved to tmp/initial_in.bpmn")
 
     tic = time()
     # Scanning the log to get the logs related to decision points
@@ -219,14 +236,14 @@ def main():
                 # rules = dt.extract_rules_with_pruning(dataset)
 
                 # Alternative pruning (directly on tree)
-                # NIE DZIALA - NIE MA METODY
+                # NIE DZIALA
                 # dt.pessimistic_pruning(dataset)
 
-                print("Pruning the decision tree...")
-                pessimistic_pruning(dt, dataset)
-                # rules= extract_rules_with_pruning(dt, dataset)
-                print("Rules after pruning:")
-                print(rules)
+                # print("Pruning the decision tree...")
+                # pessimistic_pruning(dt, dataset)
+                # # rules= extract_rules_with_pruning(dt, dataset)
+                # print("Rules after pruning:")
+                # print(rules)
 
                 # Overlapping rules discovery
                 rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
