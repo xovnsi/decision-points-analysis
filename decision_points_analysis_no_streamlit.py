@@ -97,10 +97,25 @@ def main():
     bpmn_visualizer.view(bpmn_gviz)
 
     # Save BPMN model to file
-    # if not os.path.exists("tmp"):
-    #     os.mkdir("tmp")
-    # bpmn_exporter.apply(bpmn_model, "tmp/initial_in.bpmn")
-    # print("BPMN model saved to tmp/initial_in.bpmn")
+    if not os.path.exists("tmp"):
+        os.mkdir("tmp")
+    bpmn_exporter.apply(bpmn_model, f"tmp/{net_name}.bpmn")
+    print(f"BPMN model saved to tmp/{net_name}.bpmn")
+
+
+
+    # Loading initial BPMN model using bpmn-python and exporting to an image
+    from bpmn_python.bpmn_diagram_visualizer import bpmn_diagram_to_png
+    from bpmn_python.bpmn_diagram_rep import BpmnDiagramGraph
+
+    diagram = BpmnDiagramGraph()
+    diagram.load_diagram_from_xml_file(f"tmp/{net_name}.bpmn")
+
+    bpmn_diagram_to_png(diagram, f"tmp/bpmnpython-{net_name}")
+    return
+
+
+
 
     tic = time()
     # Scanning the log to get the logs related to decision points
