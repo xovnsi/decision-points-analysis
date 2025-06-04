@@ -87,36 +87,6 @@ def main():
     # Dealing with loops and other stuff... needs cleaning
     events_to_trans_map = get_map_events_to_transitions(net)
 
-    # --- Convert Petri Net to BPMN ---
-    print("Converting Petri net to BPMN...")
-    bpmn_model = pm4py.convert_to_bpmn(net, im, fm)
-    
-
-    # Visualize BPMN
-    bpmn_gviz = bpmn_visualizer.apply(bpmn_model, parameters={"font_size": 10})
-    bpmn_visualizer.view(bpmn_gviz)
-
-    # Save BPMN model to file
-    if not os.path.exists("tmp"):
-        os.mkdir("tmp")
-    bpmn_exporter.apply(bpmn_model, f"tmp/{net_name}.bpmn")
-    print(f"BPMN model saved to tmp/{net_name}.bpmn")
-
-
-
-    # Loading initial BPMN model using bpmn-python and exporting to an image
-    from bpmn_python.bpmn_diagram_visualizer import bpmn_diagram_to_png
-    from bpmn_python.bpmn_diagram_rep import BpmnDiagramGraph
-
-    diagram = BpmnDiagramGraph()
-    diagram.load_diagram_from_xml_file(f"tmp/{net_name}.bpmn")
-
-    bpmn_diagram_to_png(diagram, f"tmp/bpmnpython-{net_name}")
-    return
-
-
-
-
     tic = time()
     # Scanning the log to get the logs related to decision points
     print('Extracting training logs from Event Log...')
@@ -191,6 +161,8 @@ def main():
 
     # Data has been gathered. For each decision point, fitting a decision tree on its logs and extracting the rules
     file_name = 'test.txt'
+    all_rules = {}
+
     for decision_point in decision_points_data.keys():
         print("\nDecision point: {}".format(decision_point))
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
@@ -266,6 +238,8 @@ def main():
                 rules = shorten_rules_manually(rules, attributes_map)
                 rules = {k: rules[k].replace('_', ':') for k in rules}
 
+                all_rules = {**all_rules, **rules}
+
                 f.write('Rules:\n')
                 for k in rules:
                     f.write('{}: {}\n'.format(k, rules[k]))
@@ -279,5 +253,44 @@ def main():
     toc = time()
     print("\nTotal time: {}".format(toc-tic))
 
+
+
+    rule_labels = {k: all_rules[v] for k, v in events_to_trans_map.items() if v in all_rules}
+    print(rule_labels)
+
+    bpmn_model = pm4py.convert_to_bpmn(net, im, fm)
+    bpmn_gviz = bpmn_visualizer.apply(bpmn_model, parameters={"font_size": 10})
+    # bpmn_visualizer.view(bpmn_gviz)
+
+    if not os.path.exists("tmp"):
+        os.mkdir("tmp")
+    bpmn_exporter.apply(bpmn_model, f"tmp/{net_name}.bpmn")
+    print(f"BPMN model saved to tmp/{net_name}.bpmn")
+
+    import xml.etree.ElementTree as ET
+    tree = ET.parse(f"tmp/{net_name}.bpmn")
+    root = tree.getroot()
+    ns = {'bpmn': 'http://www.omg.org/spec/BPMN/20100524/MODEL'}
+
+    for node in root.findall('.//bpmn:*', ns):
+        name = node.attrib.get('name')
+        if name in rule_labels:
+            flow_id = node.find('bpmn:incoming', ns).text
+            flow = root.find(f".//bpmn:sequenceFlow[@id='{flow_id}']", ns)
+            if flow is not None:
+                flow.set('name', rule_labels[name])
+
+    tree.write(f"tmp/et-{net_name}.bpmn", encoding='utf-8', xml_declaration=True)
+    print(f"BPMN model edited")
+
+
+
+    from bpmn_python.bpmn_diagram_visualizer import bpmn_diagram_to_png
+    from bpmn_python.bpmn_diagram_rep import BpmnDiagramGraph
+
+    diagram = BpmnDiagramGraph()
+    diagram.load_diagram_from_xml_file(f"tmp/et-{net_name}.bpmn")
+
+    bpmn_diagram_to_png(diagram, f"tmp/bpmnpython-{net_name}")
 
 main()
