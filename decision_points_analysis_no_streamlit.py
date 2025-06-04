@@ -1,4 +1,3 @@
-import pm4py
 import os
 from time import time
 from tqdm import tqdm
@@ -7,19 +6,20 @@ import pandas as pd
 import argcomplete
 import argparse
 import json
+import copy
 from sklearn import metrics
+
+import pm4py
 from pm4py.algo.filtering.log.variants import variants_filter
 from pm4py.objects.petri_net.importer import importer as pnml_importer
-from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
 from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
+
 from backward_search import get_decision_points_and_targets, get_all_dp_from_sink_to_last_event
-from rules_extraction import sampling_dataset, shorten_rules_manually, discover_overlapping_rules, \
-    extract_rules_with_pruning
+from rules_extraction import sampling_dataset, shorten_rules_manually, discover_overlapping_rules
 from utils import get_attributes_from_event, get_map_events_to_transitions
 from DecisionTreeC45 import DecisionTree
-from rules_extraction import pessimistic_pruning
 
 """
 Skrypt z funkcjonalnościami aplikacji webowej, ale działający w konsoli
@@ -40,29 +40,37 @@ gdzie <nazwa> to nazwa danych:
 
 print("START")
 
-def main():
-    def ModelCompleter(**kwargs):
-        return [name.split('.')[0] for name in os.listdir('models')]
+def parse_args():
     # Argument (verbose and net_name)
     parser = argparse.ArgumentParser()
-    parser.add_argument("net_name", help="name of the petri net file (without extension)", type=str).completer = ModelCompleter
+    parser.add_argument("-i", "--input_name", help="name of the petri net file (without extension)", type=str)\
+        .completer = lambda **kwargs: [name.split('.')[0] for name in os.listdir('models') if name.endswith('.pnml')]
+    parser.add_argument("-n", "--num_trees", help="number of decision trees (default: 10)", type=int, default=10)
+    parser.add_argument("-o", "--output_name", help="output .bpmn file path, optional", type=str, default=None)
     argcomplete.autocomplete(parser)
-    # parse arguments
-    args = parser.parse_args()
-    net_name = args.net_name
+    return parser.parse_args()
 
-    # Importing the log
-    log = xes_importer.apply('logs/log-{}.xes'.format(net_name))
 
-    # Importing the attributes_map file
-    attributes_map_file = f"{net_name}.attr"
+def main():
+    # Parse args
+    args = parse_args()
+    input_name = args.input_name
+    output_name = args.output_name
+    num_trees = args.num_trees
+
+
+    # Import input files
+    log = xes_importer.apply('logs/log-{}.xes'.format(input_name))
+
+    attributes_map_file = f'{input_name}.attr'
     if attributes_map_file in os.listdir('dt-attributes'):
         with open(os.path.join('dt-attributes', attributes_map_file), 'r') as f:
             attributes_map = json.load(f)
     else:
         raise FileNotFoundError('Create a configuration file for the decision tree before fitting it.')
 
-    # Converting attributes types according to the attributes_map file
+
+    # Convert attribute types according to the attributes_map file
     for trace in log:
         for event in trace:
             for attribute in event.keys():
@@ -72,26 +80,28 @@ def main():
                     elif attributes_map[attribute] == 'boolean':
                         event[attribute] = bool(event[attribute])
 
-    # Importing the Petri net model, if it exists
+
+    # Import the BPMN model and convert to Petri net
+    # TODO
     try:
-        net, im, fm = pnml_importer.apply("models/{}.pnml".format(net_name))
+        net, im, fm = pnml_importer.apply("models/{}.pnml".format(input_name))
     except FileNotFoundError:
         print("Existing Petri Net model not found. Extracting one using the Inductive Miner...")
         net, im, fm = pm4py.discover_petri_net_inductive(log)
-
-    # Stuff...
     sink_complete_net = [place for place in net.places if place.name == 'sink'][0]
-    gviz = pn_visualizer.apply(net, im, fm)
-    # pn_visualizer.view(gviz)
 
-    # Dealing with loops and other stuff... needs cleaning
+
+    # Map observed events to corresponding transitions in the Petri net
+    # (Note: additional cleanup may be needed to handle loops or complex structures)
     events_to_trans_map = get_map_events_to_transitions(net)
 
-    tic = time()
+
     # Scanning the log to get the logs related to decision points
     print('Extracting training logs from Event Log...')
     decision_points_data, event_attr, stored_dicts = dict(), dict(), dict()
     variants = variants_filter.get_variants(log)
+
+
     # Decision points of interest are searched considering the variants only
     for variant_key, traces in tqdm(variants.items()):
         transitions_sequence, events_sequence = list(), list()
@@ -159,10 +169,9 @@ def main():
                                 decision_points_data[dp][a].append(event_attr[a])
                         decision_points_data[dp]['target'].append(dp_target)
 
-    # Data has been gathered. For each decision point, fitting a decision tree on its logs and extracting the rules
-    file_name = 'test.txt'
-    all_rules = {}
 
+    # For each decision point, fit decision trees and extract rules
+    all_rules = {}
     for decision_point in decision_points_data.keys():
         print("\nDecision point: {}".format(decision_point))
         dataset = pd.DataFrame.from_dict(decision_points_data[decision_point])
@@ -170,105 +179,72 @@ def main():
         dataset.columns = dataset.columns.str.replace(':', '_')
         attributes_map = {k.replace(':', '_'): attributes_map[k] for k in attributes_map}
 
-        # Discovering branching conditions with Daikon - comment these four lines to go back to decision tree + pruning
-        # rules = discover_branching_conditions(dataset)
-        # rules = {k: rules[k].replace('_', ':') for k in rules}
-        # print(rules)
-        # continue
-
-        print("Fitting a decision tree on the decision point's dataset...")
         accuracies, f_scores = list(), list()
-        for i in tqdm(range(10)):
-            # Sampling
-            dataset = sampling_dataset(dataset)
+        best_dt = None
+        best_score = 0
 
-            # Fitting
+        # Train trees to find decision point's rules
+        for _ in tqdm(range(num_trees)):
+            dataset = sampling_dataset(dataset)
             dt = DecisionTree.DecisionTree(attributes_map)
             dt.fit(dataset)
 
-            # Predict
             y_pred = dt.predict(dataset.drop(columns=['target']))
             if y_pred is None:
                 raise ValueError(
                     "Prediction failed: 'y_pred' is None. Check if the decision tree is trained and input is valid.")
 
-            # Accuracy
             accuracy = metrics.accuracy_score(dataset['target'], y_pred)
             accuracies.append(accuracy)
 
-            # F1-score
             if len(dataset['target'].unique()) > 2:
                 f1_score = metrics.f1_score(dataset['target'], y_pred, average='weighted')
             else:
                 f1_score = metrics.f1_score(dataset['target'], y_pred, pos_label=dataset['target'].unique()[0])
+
             f_scores.append(f1_score)
+            if f1_score > best_score:
+                best_score = f1_score
+                best_dt = copy.deepcopy(dt)
 
-        # Rules extraction
-        if len(dt.get_nodes()) > 1:
-            print("Training complete. Extracting rules...")
-            with open(file_name, 'a') as f:
-                f.write('{} - SUCCESS\n'.format(decision_point))
-                f.write('Dataset target values counts:\n {}\n'.format(dataset['target'].value_counts()))
+        # If no rules are found, return
+        if len(best_dt.get_nodes()) <= 1:
+            print('{} - FAIL\n'.format(decision_point))
+            return
 
-                print("Train accuracy: {}".format(sum(accuracies) / len(accuracies)))
-                f.write('Accuracy: {}\n'.format(sum(accuracies) / len(accuracies)))
-                print("F1 score: {}".format(sum(f_scores) / len(f_scores)))
-                f.write('F1 score: {}\n'.format(sum(f_scores) / len(f_scores)))
+        print(f"Avg acc: {sum(accuracies) / len(accuracies)}")
+        print(f"Avg F1: {sum(f_scores) / len(f_scores)}")
+        print(f"Best model F1: {best_score}")
+        print("Extracting rules from best model...")
 
-                # Rule extraction without pruning
-                rules = dt.extract_rules()
+        # Rule extraction without pruning
+        rules = best_dt.extract_rules()
+        rules = discover_overlapping_rules(best_dt, dataset, attributes_map, rules)
 
-                # Rule extraction with pruning
-                # NIE ODPALAC - NISZCZY KOMPUTER
-                # rules = dt.extract_rules_with_pruning(dataset)
-
-                # Alternative pruning (directly on tree)
-                # NIE DZIALA
-                # dt.pessimistic_pruning(dataset)
-
-                # print("Pruning the decision tree...")
-                # pessimistic_pruning(dt, dataset)
-                # # rules= extract_rules_with_pruning(dt, dataset)
-                # print("Rules after pruning:")
-                # print(rules)
-
-                # Overlapping rules discovery
-                rules = discover_overlapping_rules(dt, dataset, attributes_map, rules)
-
-                rules = shorten_rules_manually(rules, attributes_map)
-                rules = {k: rules[k].replace('_', ':') for k in rules}
-
-                all_rules = {**all_rules, **rules}
-
-                f.write('Rules:\n')
-                for k in rules:
-                    f.write('{}: {}\n'.format(k, rules[k]))
-                f.write('\n')
-            print(rules)
-        else:
-            with open(file_name, 'a') as f:
-                f.write('{} - FAIL\n'.format(decision_point))
-                f.write('Dataset target values counts: {}\n'.format(dataset['target'].value_counts()))
-
-    toc = time()
-    print("\nTotal time: {}".format(toc-tic))
+        # Shorten rules and append to dict
+        rules = shorten_rules_manually(rules, attributes_map)
+        rules = {k: rules[k].replace('_', ':') for k in rules}
+        all_rules = {**all_rules, **rules}
+        print(rules)
 
 
-
+    # Combine rules with corresponding nodes
     rule_labels = {k: all_rules[v] for k, v in events_to_trans_map.items() if v in all_rules}
     print(rule_labels)
 
+
+    # Save BPMN model on the net
+    output_path = f"tmp/{input_name}.bpmn" if output_name is None else \
+        output_name if '.' in output_name else (output_name.rstrip('/\\') + f"/{input_name}.bpmn")
+
     bpmn_model = pm4py.convert_to_bpmn(net, im, fm)
-    bpmn_gviz = bpmn_visualizer.apply(bpmn_model, parameters={"font_size": 10})
-    # bpmn_visualizer.view(bpmn_gviz)
+    bpmn_exporter.apply(bpmn_model, output_path)
+    print(f"BPMN model saved to {output_path}")
 
-    if not os.path.exists("tmp"):
-        os.mkdir("tmp")
-    bpmn_exporter.apply(bpmn_model, f"tmp/{net_name}.bpmn")
-    print(f"BPMN model saved to tmp/{net_name}.bpmn")
 
+    # Edit saved model by adding discovered rules to flows
     import xml.etree.ElementTree as ET
-    tree = ET.parse(f"tmp/{net_name}.bpmn")
+    tree = ET.parse(output_path)
     root = tree.getroot()
     ns = {'bpmn': 'http://www.omg.org/spec/BPMN/20100524/MODEL'}
 
@@ -280,17 +256,8 @@ def main():
             if flow is not None:
                 flow.set('name', rule_labels[name])
 
-    tree.write(f"tmp/et-{net_name}.bpmn", encoding='utf-8', xml_declaration=True)
-    print(f"BPMN model edited")
+    tree.write(output_path, encoding='utf-8', xml_declaration=True)
+    print(f"BPMN model edited with rule labels")
 
-
-
-    from bpmn_python.bpmn_diagram_visualizer import bpmn_diagram_to_png
-    from bpmn_python.bpmn_diagram_rep import BpmnDiagramGraph
-
-    diagram = BpmnDiagramGraph()
-    diagram.load_diagram_from_xml_file(f"tmp/et-{net_name}.bpmn")
-
-    bpmn_diagram_to_png(diagram, f"tmp/bpmnpython-{net_name}")
 
 main()
