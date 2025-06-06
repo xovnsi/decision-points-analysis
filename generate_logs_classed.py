@@ -4,9 +4,11 @@ import datetime
 from datetime import timedelta
 
 
+# Trace object is a process instance that is run through the model, contains instance parameters' values and
+#   a definition of said parameters and their types, current timestamp and path travelled through the nodes
 class Trace:
     def __init__(self):
-        # Define possible process attributes here
+        # >>> Define possible process attributes here
         self.attribute_space = {
             "speed": [1.0, 5.0],
             "color": ["red", "blue", "black", "silver"],
@@ -26,6 +28,8 @@ class Trace:
                 self.attributes[key] = random.choice(values)
 
 
+# Condition models a single decision in a decision point, whose outcome is based on a trace's parameters and
+#   leads to a new node
 class Condition:
     def __init__(self, attribute_name, operator, value, output):
         self.attribute_name = attribute_name
@@ -40,6 +44,7 @@ class Condition:
         return eval(f"{repr(actual)} {self.operator} {repr(self.value)}")
 
 
+# ConditionAnd allows to combine multiple Condition objects into a single AND statement
 class ConditionAnd:
     def __init__(self, conditions, output):
         self.conditions = conditions
@@ -49,6 +54,7 @@ class ConditionAnd:
         return all(c.is_satisfied(trace) for c in self.conditions)
 
 
+# Node object models a single event in a model, as well as any decision points following the event
 class Node:
     def __init__(self, name, conditions, default_output):
         self.name = name
@@ -63,6 +69,7 @@ class Node:
         trace.path.append(self.default_output)
 
 
+# Parse console arguments
 def parse_args():
     parser = argparse.ArgumentParser(description="Define log generation parameters")
     parser.add_argument("-n", "--num-traces", type=int, default=100,
@@ -72,6 +79,7 @@ def parse_args():
     return parser.parse_args()
 
 
+# Convert Trace to a XES trace element based on its path
 def trace_to_xes(trace, concept_name):
     current_time = trace.timestamp
     delta = timedelta(minutes=2)
@@ -97,6 +105,7 @@ def trace_to_xes(trace, concept_name):
     return xes_trace
 
 
+# Run trace through the nodes based on its parameters and return a ready XES trace object
 def run_trace(node_map, start, index):
     trace = Trace()
     trace.path = [start]
@@ -110,6 +119,7 @@ def run_trace(node_map, start, index):
     return retval
 
 
+# Run <num_traces> Trace objects through the node model and generate full log
 def generate_logs(nodes, start, num_traces):
     node_map = {node.name: node for node in nodes}
     log = """<?xml version="1.0" encoding="utf-8" ?>
@@ -123,6 +133,7 @@ def generate_logs(nodes, start, num_traces):
     return log
 
 
+# Generate attribute type JSON based on Trace object's config
 def infer_list_types(trace):
     result = {}
     for key, values in trace.attribute_space.items():
@@ -140,12 +151,13 @@ def infer_list_types(trace):
 
 
 
-# Define model title
+# Parses args
 args = parse_args()
 num_traces = args.num_traces
 title = args.output_name
 
-# Define nodes and their xor conditions
+# >>> Define nodes and their xor conditions
+start_node_name = "A"
 nodes = [
     Node("A", [
         ConditionAnd([
@@ -177,7 +189,7 @@ print("Defined nodes:", [n.name for n in nodes])
 
 # Saves log traces
 with open(f"logs/log-{title}.xes", "w", encoding="utf-8") as f:
-    f.write(generate_logs(nodes, "A", num_traces))
+    f.write(generate_logs(nodes, start_node_name, num_traces))
 
 # Saves attr categories
 with open(f"dt-attributes/{title}.attr", "w", encoding="utf-8") as f:
