@@ -1,5 +1,4 @@
 import os
-from time import time
 from tqdm import tqdm
 import numpy as np
 import pandas as pd
@@ -11,9 +10,9 @@ from sklearn import metrics
 
 import pm4py
 from pm4py.algo.filtering.log.variants import variants_filter
-from pm4py.objects.petri_net.importer import importer as pnml_importer
+from pm4py.objects.bpmn.importer import importer as bpmn_importer
 from pm4py.objects.log.importer.xes import importer as xes_importer
-from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
+from pm4py.objects.conversion.bpmn import converter as bpmn_to_petri_converter
 from pm4py.objects.bpmn.exporter import exporter as bpmn_exporter
 
 from backward_search import get_decision_points_and_targets, get_all_dp_from_sink_to_last_event
@@ -22,31 +21,40 @@ from utils import get_attributes_from_event, get_map_events_to_transitions
 from DecisionTreeC45 import DecisionTree
 
 """
-Skrypt z funkcjonalnościami aplikacji webowej, ale działający w konsoli
-Teraz działa tylko decision trees i no pruning
+A python script for BPMN model decision points analysis, based on the streamlit webapp.
+BPMN model is loaded from file or mined from provided logs. Then, based on the logs and the attribute types,
+it discovers decision point rules and updates the BPMN model file if exists, or creates a new one.
 
-Lokalizacja:
-/decision-points-analysis/decision-points-analysis-no-streamlit.py
+Script still relies on the decision-points-analysis project.
 
-Instrukcja:
+Location:
+decision-points-analysis/decision-points-analysis-no-streamlit.py
 
->>> python decision_points_analysis_no_streamlit.py <nazwa>
+Instructions:
+ > python decision_points_analysis_no_streamlit.py -i <name> -n <number-of-trees>
 
-gdzie <nazwa> to nazwa danych:
- - ./logs/log-<nazwa>.xes - logi w formacie xes
- - .dt-attributes/<nazwa>.attr - kategorie atrybutów w formacie json
+where:
+<name> is the name of the dataset:
+ - ./models/<name>.bpmn – BPMN 2.0 XML model (optional)
+ - ./logs/log-<name>.xes – logs in XES format
+ - ./dt-attributes/<name>.attr – attribute categories in JSON format
+<number-of-trees> is the number of trees to be trained for each decision point.
 """
 
-
 print("START")
+
+MODEL_FOLDER_PATH = "models/"
+LOGS_FOLDER_PATH = "logs/"
+ATTR_FOLDER_PATH = "dt-attributes/"
+
 
 def parse_args():
     # Argument (verbose and net_name)
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input_name", help="name of the petri net file (without extension)", type=str)\
-        .completer = lambda **kwargs: [name.split('.')[0] for name in os.listdir('models') if name.endswith('.pnml')]
-    parser.add_argument("-n", "--num_trees", help="number of decision trees (default: 10)", type=int, default=10)
-    parser.add_argument("-o", "--output_name", help="output .bpmn file path, optional", type=str, default=None)
+    parser.add_argument("-i", "--input_name", help="Name of the bpmn model file (without extension)", type=str) \
+        .completer = lambda **kwargs: [name.split('.')[0]
+                                       for name in os.listdir(MODEL_FOLDER_PATH.rstrip('/')) if name.endswith('.bpmn')]
+    parser.add_argument("-n", "--num_trees", help="Number of decision trees (default: 10)", type=int, default=10)
     argcomplete.autocomplete(parser)
     return parser.parse_args()
 
@@ -55,16 +63,15 @@ def main():
     # Parse args
     args = parse_args()
     input_name = args.input_name
-    output_name = args.output_name
     num_trees = args.num_trees
 
 
     # Import input files
-    log = xes_importer.apply('logs/log-{}.xes'.format(input_name))
+    log = xes_importer.apply(f'{LOGS_FOLDER_PATH}/log-{input_name}.xes')
 
     attributes_map_file = f'{input_name}.attr'
-    if attributes_map_file in os.listdir('dt-attributes'):
-        with open(os.path.join('dt-attributes', attributes_map_file), 'r') as f:
+    if attributes_map_file in os.listdir(ATTR_FOLDER_PATH):
+        with open(os.path.join(ATTR_FOLDER_PATH, attributes_map_file), 'r') as f:
             attributes_map = json.load(f)
     else:
         raise FileNotFoundError('Create a configuration file for the decision tree before fitting it.')
@@ -83,8 +90,11 @@ def main():
 
     # Import the BPMN model and convert to Petri net
     # TODO
+    bpmn_net = None
     try:
-        net, im, fm = pnml_importer.apply("models/{}.pnml".format(input_name))
+        bpmn_net = bpmn_importer.apply(f"{MODEL_FOLDER_PATH}/{input_name}.bpmn")
+        net, im, fm = bpmn_to_petri_converter.apply(bpmn_net)
+        print("Petri Net model converted from BPMN file")
     except FileNotFoundError:
         print("Existing Petri Net model not found. Extracting one using the Inductive Miner...")
         net, im, fm = pm4py.discover_petri_net_inductive(log)
@@ -112,11 +122,12 @@ def main():
             events_sequence.append(event_name)
             if len(transitions_sequence) > 1:
                 dp_dict, stored_dicts = get_decision_points_and_targets(transitions_sequence, net, stored_dicts)
-                dp_events_sequence['Event_{}'.format(i+1)] = dp_dict
+                dp_events_sequence['Event_{}'.format(i + 1)] = dp_dict
 
         # Final update of the current trace (from last event to sink)
         transition = [trans for trans in net.transitions if trans.label == event_name][0]
-        dp_events_sequence['End'] = get_all_dp_from_sink_to_last_event(transition, sink_complete_net, dp_events_sequence)
+        dp_events_sequence['End'] = get_all_dp_from_sink_to_last_event(transition, sink_complete_net,
+                                                                       dp_events_sequence)
 
         for trace in traces:
             # Storing the trace attributes (if any)
@@ -227,20 +238,18 @@ def main():
         all_rules = {**all_rules, **rules}
         print(rules)
 
-
     # Combine rules with corresponding nodes
     rule_labels = {k: all_rules[v] for k, v in events_to_trans_map.items() if v in all_rules}
     print(rule_labels)
 
-
     # Save BPMN model on the net
-    output_path = f"tmp/{input_name}.bpmn" if output_name is None else \
-        output_name if '.' in output_name else (output_name.rstrip('/\\') + f"/{input_name}.bpmn")
+    output_path = f"{MODEL_FOLDER_PATH}/{input_name}.bpmn"
 
-    bpmn_model = pm4py.convert_to_bpmn(net, im, fm)
-    bpmn_exporter.apply(bpmn_model, output_path)
-    print(f"BPMN model saved to {output_path}")
-
+    if bpmn_net is None:
+        # Model was not loaded so the file may not exist - save model
+        bpmn_net = pm4py.convert_to_bpmn(net, im, fm)
+        bpmn_exporter.apply(bpmn_net, output_path)
+        print(f"BPMN model saved to {output_path}")
 
     # Edit saved model by adding discovered rules to flows
     import xml.etree.ElementTree as ET
@@ -258,6 +267,7 @@ def main():
 
     tree.write(output_path, encoding='utf-8', xml_declaration=True)
     print(f"BPMN model edited with rule labels")
+
 
 
 main()
